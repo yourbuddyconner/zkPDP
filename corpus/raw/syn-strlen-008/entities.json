@@ -1,0 +1,994 @@
+[
+ {
+  "attrs": {},
+  "parents": [],
+  "uid": {
+   "id": "TinyTodo",
+   "type": "Application"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "temp",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "admin",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "interns",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "readers-0-0",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "editors-0",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {
+   "editors": {
+    "__entity": {
+     "id": "editors-0",
+     "type": "Team"
+    }
+   },
+   "name": "name-0",
+   "owner": {
+    "__entity": {
+     "id": "u0",
+     "type": "User"
+    }
+   },
+   "readers": {
+    "__entity": {
+     "id": "readers-0-0",
+     "type": "Team"
+    }
+   },
+   "tasks": [
+    {
+     "id": 0,
+     "name": "task 0",
+     "state": "done"
+    },
+    {
+     "id": 1,
+     "name": "task 1",
+     "state": "done"
+    },
+    {
+     "id": 2,
+     "name": "task 2",
+     "state": "done"
+    }
+   ]
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "l0",
+   "type": "List"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "readers-1-0",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "editors-1",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {
+   "editors": {
+    "__entity": {
+     "id": "editors-1",
+     "type": "Team"
+    }
+   },
+   "name": "name-1",
+   "owner": {
+    "__entity": {
+     "id": "u8",
+     "type": "User"
+    }
+   },
+   "readers": {
+    "__entity": {
+     "id": "readers-1-0",
+     "type": "Team"
+    }
+   },
+   "tasks": []
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "l1",
+   "type": "List"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "readers-2-0",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "editors-2",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {
+   "editors": {
+    "__entity": {
+     "id": "editors-2",
+     "type": "Team"
+    }
+   },
+   "name": "name-2",
+   "owner": {
+    "__entity": {
+     "id": "u5",
+     "type": "User"
+    }
+   },
+   "readers": {
+    "__entity": {
+     "id": "readers-2-0",
+     "type": "Team"
+    }
+   },
+   "tasks": [
+    {
+     "id": 0,
+     "name": "task 0",
+     "state": "done"
+    },
+    {
+     "id": 1,
+     "name": "task 1",
+     "state": "open"
+    },
+    {
+     "id": 2,
+     "name": "task 2",
+     "state": "open"
+    }
+   ]
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "l2",
+   "type": "List"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "readers-3-0",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "editors-3",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {
+   "editors": {
+    "__entity": {
+     "id": "editors-3",
+     "type": "Team"
+    }
+   },
+   "name": "name-3",
+   "owner": {
+    "__entity": {
+     "id": "u3",
+     "type": "User"
+    }
+   },
+   "readers": {
+    "__entity": {
+     "id": "readers-3-0",
+     "type": "Team"
+    }
+   },
+   "tasks": [
+    {
+     "id": 0,
+     "name": "task 0",
+     "state": "done"
+    }
+   ]
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "l3",
+   "type": "List"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "readers-4-0",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "editors-4",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {
+   "editors": {
+    "__entity": {
+     "id": "editors-4",
+     "type": "Team"
+    }
+   },
+   "name": "name-4",
+   "owner": {
+    "__entity": {
+     "id": "u2",
+     "type": "User"
+    }
+   },
+   "readers": {
+    "__entity": {
+     "id": "readers-4-0",
+     "type": "Team"
+    }
+   },
+   "tasks": [
+    {
+     "id": 0,
+     "name": "task 0",
+     "state": "open"
+    },
+    {
+     "id": 1,
+     "name": "task 1",
+     "state": "done"
+    }
+   ]
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "l4",
+   "type": "List"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "readers-5-0",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "editors-5",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {
+   "editors": {
+    "__entity": {
+     "id": "editors-5",
+     "type": "Team"
+    }
+   },
+   "name": "name-5",
+   "owner": {
+    "__entity": {
+     "id": "u6",
+     "type": "User"
+    }
+   },
+   "readers": {
+    "__entity": {
+     "id": "readers-5-0",
+     "type": "Team"
+    }
+   },
+   "tasks": [
+    {
+     "id": 0,
+     "name": "task 0",
+     "state": "done"
+    },
+    {
+     "id": 1,
+     "name": "task 1",
+     "state": "done"
+    }
+   ]
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "l5",
+   "type": "List"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "readers-6-0",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "editors-6",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {
+   "editors": {
+    "__entity": {
+     "id": "editors-6",
+     "type": "Team"
+    }
+   },
+   "name": "name-6",
+   "owner": {
+    "__entity": {
+     "id": "u2",
+     "type": "User"
+    }
+   },
+   "readers": {
+    "__entity": {
+     "id": "readers-6-0",
+     "type": "Team"
+    }
+   },
+   "tasks": [
+    {
+     "id": 0,
+     "name": "task 0",
+     "state": "done"
+    }
+   ]
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "l6",
+   "type": "List"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "readers-7-0",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "editors-7",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {
+   "editors": {
+    "__entity": {
+     "id": "editors-7",
+     "type": "Team"
+    }
+   },
+   "name": "name-7",
+   "owner": {
+    "__entity": {
+     "id": "u4",
+     "type": "User"
+    }
+   },
+   "readers": {
+    "__entity": {
+     "id": "readers-7-0",
+     "type": "Team"
+    }
+   },
+   "tasks": [
+    {
+     "id": 0,
+     "name": "task 0",
+     "state": "done"
+    },
+    {
+     "id": 1,
+     "name": "task 1",
+     "state": "done"
+    }
+   ]
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "l7",
+   "type": "List"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "readers-8-0",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "editors-8",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {
+   "editors": {
+    "__entity": {
+     "id": "editors-8",
+     "type": "Team"
+    }
+   },
+   "name": "name-8",
+   "owner": {
+    "__entity": {
+     "id": "u5",
+     "type": "User"
+    }
+   },
+   "readers": {
+    "__entity": {
+     "id": "readers-8-0",
+     "type": "Team"
+    }
+   },
+   "tasks": [
+    {
+     "id": 0,
+     "name": "task 0",
+     "state": "done"
+    },
+    {
+     "id": 1,
+     "name": "task 1",
+     "state": "open"
+    },
+    {
+     "id": 2,
+     "name": "task 2",
+     "state": "done"
+    }
+   ]
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "l8",
+   "type": "List"
+  }
+ },
+ {
+  "attrs": {
+   "joblevel": 9,
+   "location": "CEYEEZZZ"
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   },
+   {
+    "id": "temp",
+    "type": "Team"
+   },
+   {
+    "id": "editors-1",
+    "type": "Team"
+   },
+   {
+    "id": "editors-3",
+    "type": "Team"
+   }
+  ],
+  "uid": {
+   "id": "u0",
+   "type": "User"
+  }
+ },
+ {
+  "attrs": {
+   "joblevel": 1,
+   "location": "XEDYZFBF"
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   },
+   {
+    "id": "temp",
+    "type": "Team"
+   }
+  ],
+  "uid": {
+   "id": "u1",
+   "type": "User"
+  }
+ },
+ {
+  "attrs": {
+   "joblevel": 3,
+   "location": "DBAAEDBZ"
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   },
+   {
+    "id": "temp",
+    "type": "Team"
+   }
+  ],
+  "uid": {
+   "id": "u2",
+   "type": "User"
+  }
+ },
+ {
+  "attrs": {
+   "joblevel": 6,
+   "location": "EDDAXAAF"
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   },
+   {
+    "id": "admin",
+    "type": "Team"
+   },
+   {
+    "id": "editors-0",
+    "type": "Team"
+   },
+   {
+    "id": "readers-4-0",
+    "type": "Team"
+   }
+  ],
+  "uid": {
+   "id": "u3",
+   "type": "User"
+  }
+ },
+ {
+  "attrs": {
+   "joblevel": 1,
+   "location": "CDABBBAA"
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   },
+   {
+    "id": "temp",
+    "type": "Team"
+   },
+   {
+    "id": "readers-1-0",
+    "type": "Team"
+   },
+   {
+    "id": "readers-3-0",
+    "type": "Team"
+   }
+  ],
+  "uid": {
+   "id": "u4",
+   "type": "User"
+  }
+ },
+ {
+  "attrs": {
+   "joblevel": 1,
+   "location": "FECCCZAX"
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   },
+   {
+    "id": "interns",
+    "type": "Team"
+   },
+   {
+    "id": "editors-5",
+    "type": "Team"
+   }
+  ],
+  "uid": {
+   "id": "u5",
+   "type": "User"
+  }
+ },
+ {
+  "attrs": {
+   "joblevel": 8,
+   "location": "DCAAFBEF"
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   },
+   {
+    "id": "interns",
+    "type": "Team"
+   },
+   {
+    "id": "editors-2",
+    "type": "Team"
+   }
+  ],
+  "uid": {
+   "id": "u6",
+   "type": "User"
+  }
+ },
+ {
+  "attrs": {
+   "joblevel": 8,
+   "location": "AEYZAEXC"
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   },
+   {
+    "id": "admin",
+    "type": "Team"
+   },
+   {
+    "id": "readers-6-0",
+    "type": "Team"
+   }
+  ],
+  "uid": {
+   "id": "u7",
+   "type": "User"
+  }
+ },
+ {
+  "attrs": {
+   "joblevel": 7,
+   "location": "DBFBAYCZ"
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   },
+   {
+    "id": "admin",
+    "type": "Team"
+   },
+   {
+    "id": "readers-2-0",
+    "type": "Team"
+   },
+   {
+    "id": "readers-7-0",
+    "type": "Team"
+   }
+  ],
+  "uid": {
+   "id": "u8",
+   "type": "User"
+  }
+ },
+ {
+  "attrs": {
+   "joblevel": 1,
+   "location": "YZFCFEEX"
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   },
+   {
+    "id": "interns",
+    "type": "Team"
+   },
+   {
+    "id": "readers-5-0",
+    "type": "Team"
+   },
+   {
+    "id": "editors-6",
+    "type": "Team"
+   },
+   {
+    "id": "editors-8",
+    "type": "Team"
+   }
+  ],
+  "uid": {
+   "id": "u9",
+   "type": "User"
+  }
+ },
+ {
+  "attrs": {
+   "joblevel": 2,
+   "location": "ZCAEACCC"
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   },
+   {
+    "id": "temp",
+    "type": "Team"
+   },
+   {
+    "id": "readers-0-0",
+    "type": "Team"
+   },
+   {
+    "id": "editors-4",
+    "type": "Team"
+   },
+   {
+    "id": "editors-7",
+    "type": "Team"
+   },
+   {
+    "id": "readers-8-0",
+    "type": "Team"
+   }
+  ],
+  "uid": {
+   "id": "u10",
+   "type": "User"
+  }
+ },
+ {
+  "attrs": {
+   "joblevel": 5,
+   "location": "YDZADDYB"
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   },
+   {
+    "id": "interns",
+    "type": "Team"
+   }
+  ],
+  "uid": {
+   "id": "u11",
+   "type": "User"
+  }
+ }
+]

@@ -1,0 +1,19 @@
+[package]
+name = "envelope"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[features]
+default = ["std"]
+# std adds canonicalization, the Merkle commitment and the verification procedure.
+# Without it the crate is only the journal type, which is all the guest needs.
+std = ["dep:serde_json", "dep:serde_jcs", "dep:sha2", "dep:hex", "dep:base64"]
+
+[dependencies]
+serde = { version = "1", default-features = false, features = ["derive", "alloc"] }
+serde_json = { version = "1", optional = true }
+serde_jcs = { version = "0.2", optional = true }
+sha2 = { version = "0.10", optional = true }
+hex = { version = "0.4", optional = true }
+base64 = { version = "0.22", optional = true }

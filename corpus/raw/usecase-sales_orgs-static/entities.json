@@ -1,0 +1,82 @@
+[
+ {
+  "attrs": {
+   "customerId": "1AYZ",
+   "job": {
+    "id": "internal",
+    "type": "Job"
+   }
+  },
+  "parents": [
+   {
+    "id": "YoungAdult",
+    "type": "Market"
+   }
+  ],
+  "uid": {
+   "id": "Alice",
+   "type": "User"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [],
+  "uid": {
+   "id": "YoungAdult",
+   "type": "Market"
+  }
+ },
+ {
+  "attrs": {
+   "customerId": "1AYZ",
+   "job": {
+    "id": "customer",
+    "type": "Job"
+   }
+  },
+  "parents": [
+   {
+    "id": "YoungAdult",
+    "type": "Market"
+   }
+  ],
+  "uid": {
+   "id": "Bob",
+   "type": "User"
+  }
+ },
+ {
+  "attrs": {
+   "customerId": "1AYZ",
+   "job": {
+    "id": "distributor",
+    "type": "Job"
+   }
+  },
+  "parents": [],
+  "uid": {
+   "id": "Charlie",
+   "type": "User"
+  }
+ },
+ {
+  "attrs": {
+   "editors": [],
+   "owner": {
+    "id": "Alice",
+    "type": "User"
+   },
+   "viewers": [
+    {
+     "id": "Bob",
+     "type": "User"
+    }
+   ]
+  },
+  "parents": [],
+  "uid": {
+   "id": "proposal",
+   "type": "Presentation"
+  }
+ }
+]

@@ -1,0 +1,102 @@
+[
+ {
+  "name": "allow/alice_create_authenticated",
+  "request": {
+   "action": {
+    "name": "CreateDocument"
+   },
+   "context": {
+    "is_authenticated": true
+   },
+   "resource": {
+    "id": "drive",
+    "type": "Drive"
+   },
+   "subject": {
+    "id": "alice",
+    "type": "User"
+   }
+  },
+  "upstream_expectation": true
+ },
+ {
+  "name": "allow/alice_view_alice_public",
+  "request": {
+   "action": {
+    "name": "ViewDocument"
+   },
+   "context": {
+    "is_authenticated": true
+   },
+   "resource": {
+    "id": "alice_public",
+    "type": "Document"
+   },
+   "subject": {
+    "id": "alice",
+    "type": "User"
+   }
+  },
+  "upstream_expectation": true
+ },
+ {
+  "name": "allow/charlie_view_alice_public",
+  "request": {
+   "action": {
+    "name": "ViewDocument"
+   },
+   "context": {
+    "is_authenticated": true
+   },
+   "resource": {
+    "id": "alice_public",
+    "type": "Document"
+   },
+   "subject": {
+    "id": "charlie",
+    "type": "User"
+   }
+  },
+  "upstream_expectation": true
+ },
+ {
+  "name": "deny/alice_create_unauthenticated",
+  "request": {
+   "action": {
+    "name": "CreateDocument"
+   },
+   "context": {
+    "is_authenticated": false
+   },
+   "resource": {
+    "id": "drive",
+    "type": "Drive"
+   },
+   "subject": {
+    "id": "alice",
+    "type": "User"
+   }
+  },
+  "upstream_expectation": false
+ },
+ {
+  "name": "deny/bob_view_alice_public",
+  "request": {
+   "action": {
+    "name": "ViewDocument"
+   },
+   "context": {
+    "is_authenticated": true
+   },
+   "resource": {
+    "id": "alice_public",
+    "type": "Document"
+   },
+   "subject": {
+    "id": "bob",
+    "type": "User"
+   }
+  },
+  "upstream_expectation": false
+ }
+]

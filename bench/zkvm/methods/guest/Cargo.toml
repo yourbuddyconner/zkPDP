@@ -1,0 +1,22 @@
+[package]
+name = "cedar-guest"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[workspace]
+
+[dependencies]
+risc0-zkvm = { version = "3.0", default-features = false, features = ["std"] }
+cedar-policy = "=4.14.1"
+serde_json = "1"
+envelope = { path = "../../../envelope", default-features = false }
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+
+# The real stacker does not build for the guest target. Decision 0015.
+[patch.crates-io]
+stacker = { path = "../stacker-stub" }

@@ -1,0 +1,363 @@
+[
+ {
+  "name": "l0-reader-gets",
+  "request": {
+   "action": {
+    "name": "GetList"
+   },
+   "context": {
+    "nonce": "n-0-0"
+   },
+   "resource": {
+    "id": "l0",
+    "type": "List"
+   },
+   "subject": {
+    "id": "u0",
+    "type": "User"
+   }
+  }
+ },
+ {
+  "name": "l0-stranger-gets",
+  "request": {
+   "action": {
+    "name": "GetList"
+   },
+   "context": {
+    "nonce": "n-0-1"
+   },
+   "resource": {
+    "id": "l0",
+    "type": "List"
+   },
+   "subject": {
+    "id": "u1",
+    "type": "User"
+   }
+  }
+ },
+ {
+  "name": "l0-editor-updates",
+  "request": {
+   "action": {
+    "name": "UpdateList"
+   },
+   "context": {
+    "nonce": "n-0-2"
+   },
+   "resource": {
+    "id": "l0",
+    "type": "List"
+   },
+   "subject": {
+    "id": "u8",
+    "type": "User"
+   }
+  }
+ },
+ {
+  "name": "l0-reader-updates",
+  "request": {
+   "action": {
+    "name": "UpdateList"
+   },
+   "context": {
+    "nonce": "n-0-3"
+   },
+   "resource": {
+    "id": "l0",
+    "type": "List"
+   },
+   "subject": {
+    "id": "u0",
+    "type": "User"
+   }
+  }
+ },
+ {
+  "name": "l0-owner-deletes",
+  "request": {
+   "action": {
+    "name": "DeleteList"
+   },
+   "context": {
+    "nonce": "n-0-4"
+   },
+   "resource": {
+    "id": "l0",
+    "type": "List"
+   },
+   "subject": {
+    "id": "u7",
+    "type": "User"
+   }
+  }
+ },
+ {
+  "name": "l0-editor-deletes",
+  "request": {
+   "action": {
+    "name": "DeleteList"
+   },
+   "context": {
+    "nonce": "n-0-5"
+   },
+   "resource": {
+    "id": "l0",
+    "type": "List"
+   },
+   "subject": {
+    "id": "u8",
+    "type": "User"
+   }
+  }
+ },
+ {
+  "name": "l1-reader-gets",
+  "request": {
+   "action": {
+    "name": "GetList"
+   },
+   "context": {
+    "nonce": "n-1-0"
+   },
+   "resource": {
+    "id": "l1",
+    "type": "List"
+   },
+   "subject": {
+    "id": "u3",
+    "type": "User"
+   }
+  }
+ },
+ {
+  "name": "l1-stranger-gets",
+  "request": {
+   "action": {
+    "name": "GetList"
+   },
+   "context": {
+    "nonce": "n-1-1"
+   },
+   "resource": {
+    "id": "l1",
+    "type": "List"
+   },
+   "subject": {
+    "id": "u0",
+    "type": "User"
+   }
+  }
+ },
+ {
+  "name": "l1-editor-updates",
+  "request": {
+   "action": {
+    "name": "UpdateList"
+   },
+   "context": {
+    "nonce": "n-1-2"
+   },
+   "resource": {
+    "id": "l1",
+    "type": "List"
+   },
+   "subject": {
+    "id": "u10",
+    "type": "User"
+   }
+  }
+ },
+ {
+  "name": "l1-reader-updates",
+  "request": {
+   "action": {
+    "name": "UpdateList"
+   },
+   "context": {
+    "nonce": "n-1-3"
+   },
+   "resource": {
+    "id": "l1",
+    "type": "List"
+   },
+   "subject": {
+    "id": "u3",
+    "type": "User"
+   }
+  }
+ },
+ {
+  "name": "l1-owner-deletes",
+  "request": {
+   "action": {
+    "name": "DeleteList"
+   },
+   "context": {
+    "nonce": "n-1-4"
+   },
+   "resource": {
+    "id": "l1",
+    "type": "List"
+   },
+   "subject": {
+    "id": "u11",
+    "type": "User"
+   }
+  }
+ },
+ {
+  "name": "l1-editor-deletes",
+  "request": {
+   "action": {
+    "name": "DeleteList"
+   },
+   "context": {
+    "nonce": "n-1-5"
+   },
+   "resource": {
+    "id": "l1",
+    "type": "List"
+   },
+   "subject": {
+    "id": "u10",
+    "type": "User"
+   }
+  }
+ },
+ {
+  "name": "l2-reader-gets",
+  "request": {
+   "action": {
+    "name": "GetList"
+   },
+   "context": {
+    "nonce": "n-2-0"
+   },
+   "resource": {
+    "id": "l2",
+    "type": "List"
+   },
+   "subject": {
+    "id": "u0",
+    "type": "User"
+   }
+  }
+ },
+ {
+  "name": "l2-stranger-gets",
+  "request": {
+   "action": {
+    "name": "GetList"
+   },
+   "context": {
+    "nonce": "n-2-1"
+   },
+   "resource": {
+    "id": "l2",
+    "type": "List"
+   },
+   "subject": {
+    "id": "u2",
+    "type": "User"
+   }
+  }
+ },
+ {
+  "name": "l2-editor-updates",
+  "request": {
+   "action": {
+    "name": "UpdateList"
+   },
+   "context": {
+    "nonce": "n-2-2"
+   },
+   "resource": {
+    "id": "l2",
+    "type": "List"
+   },
+   "subject": {
+    "id": "u1",
+    "type": "User"
+   }
+  }
+ },
+ {
+  "name": "l2-reader-updates",
+  "request": {
+   "action": {
+    "name": "UpdateList"
+   },
+   "context": {
+    "nonce": "n-2-3"
+   },
+   "resource": {
+    "id": "l2",
+    "type": "List"
+   },
+   "subject": {
+    "id": "u0",
+    "type": "User"
+   }
+  }
+ },
+ {
+  "name": "l2-owner-deletes",
+  "request": {
+   "action": {
+    "name": "DeleteList"
+   },
+   "context": {
+    "nonce": "n-2-4"
+   },
+   "resource": {
+    "id": "l2",
+    "type": "List"
+   },
+   "subject": {
+    "id": "u5",
+    "type": "User"
+   }
+  }
+ },
+ {
+  "name": "l2-editor-deletes",
+  "request": {
+   "action": {
+    "name": "DeleteList"
+   },
+   "context": {
+    "nonce": "n-2-5"
+   },
+   "resource": {
+    "id": "l2",
+    "type": "List"
+   },
+   "subject": {
+    "id": "u1",
+    "type": "User"
+   }
+  }
+ },
+ {
+  "name": "anyone-creates-list",
+  "request": {
+   "action": {
+    "name": "CreateList"
+   },
+   "context": {
+    "nonce": "n-app-0"
+   },
+   "resource": {
+    "id": "TinyTodo",
+    "type": "Application"
+   },
+   "subject": {
+    "id": "u0",
+    "type": "User"
+   }
+  }
+ }
+]

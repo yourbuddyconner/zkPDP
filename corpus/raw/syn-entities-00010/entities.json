@@ -1,0 +1,208 @@
+[
+ {
+  "attrs": {},
+  "parents": [],
+  "uid": {
+   "id": "TinyTodo",
+   "type": "Application"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "temp",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "admin",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "interns",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "readers-0-0",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "editors-0",
+   "type": "Team"
+  }
+ },
+ {
+  "attrs": {
+   "editors": {
+    "__entity": {
+     "id": "editors-0",
+     "type": "Team"
+    }
+   },
+   "name": "name-0",
+   "owner": {
+    "__entity": {
+     "id": "u1",
+     "type": "User"
+    }
+   },
+   "readers": {
+    "__entity": {
+     "id": "readers-0-0",
+     "type": "Team"
+    }
+   },
+   "tasks": [
+    {
+     "id": 0,
+     "name": "task 0",
+     "state": "open"
+    },
+    {
+     "id": 1,
+     "name": "task 1",
+     "state": "open"
+    }
+   ]
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   }
+  ],
+  "uid": {
+   "id": "l0",
+   "type": "List"
+  }
+ },
+ {
+  "attrs": {
+   "joblevel": 9,
+   "location": "CXXZF"
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   },
+   {
+    "id": "temp",
+    "type": "Team"
+   }
+  ],
+  "uid": {
+   "id": "u0",
+   "type": "User"
+  }
+ },
+ {
+  "attrs": {
+   "joblevel": 6,
+   "location": "YZEAA"
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   },
+   {
+    "id": "temp",
+    "type": "Team"
+   }
+  ],
+  "uid": {
+   "id": "u1",
+   "type": "User"
+  }
+ },
+ {
+  "attrs": {
+   "joblevel": 3,
+   "location": "YFXXZ"
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   },
+   {
+    "id": "temp",
+    "type": "Team"
+   },
+   {
+    "id": "editors-0",
+    "type": "Team"
+   }
+  ],
+  "uid": {
+   "id": "u2",
+   "type": "User"
+  }
+ },
+ {
+  "attrs": {
+   "joblevel": 3,
+   "location": "ZCDDA"
+  },
+  "parents": [
+   {
+    "id": "TinyTodo",
+    "type": "Application"
+   },
+   {
+    "id": "admin",
+    "type": "Team"
+   },
+   {
+    "id": "readers-0-0",
+    "type": "Team"
+   }
+  ],
+  "uid": {
+   "id": "u3",
+   "type": "User"
+  }
+ }
+]

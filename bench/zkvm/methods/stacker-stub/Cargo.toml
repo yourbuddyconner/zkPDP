@@ -1,0 +1,6 @@
+[package]
+name = "stacker"
+version = "0.1.25"
+edition = "2021"
+publish = false
+description = "Stand-in for the stacker crate on the RISC Zero guest target. See docs/decisions/0015."

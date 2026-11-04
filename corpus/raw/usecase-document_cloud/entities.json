@@ -1,0 +1,202 @@
+[
+ {
+  "attrs": {
+   "blocked": [
+    {
+     "__entity": {
+      "id": "bob",
+      "type": "User"
+     }
+    }
+   ],
+   "personalGroup": {
+    "__entity": {
+     "id": "alice_personal",
+     "type": "Group"
+    }
+   }
+  },
+  "parents": [
+   {
+    "id": "alice_personal",
+    "type": "Group"
+   }
+  ],
+  "uid": {
+   "id": "alice",
+   "type": "User"
+  }
+ },
+ {
+  "attrs": {
+   "blocked": [],
+   "personalGroup": {
+    "__entity": {
+     "id": "bob_personal",
+     "type": "Group"
+    }
+   }
+  },
+  "parents": [
+   {
+    "id": "bob_personal",
+    "type": "Group"
+   }
+  ],
+  "uid": {
+   "id": "bob",
+   "type": "User"
+  }
+ },
+ {
+  "attrs": {
+   "blocked": [],
+   "personalGroup": {
+    "__entity": {
+     "id": "charlie_personal",
+     "type": "Group"
+    }
+   }
+  },
+  "parents": [
+   {
+    "id": "charlie_personal",
+    "type": "Group"
+   }
+  ],
+  "uid": {
+   "id": "charlie",
+   "type": "User"
+  }
+ },
+ {
+  "attrs": {
+   "owner": {
+    "__entity": {
+     "id": "alice",
+     "type": "User"
+    }
+   }
+  },
+  "parents": [],
+  "uid": {
+   "id": "alice_personal",
+   "type": "Group"
+  }
+ },
+ {
+  "attrs": {
+   "owner": {
+    "__entity": {
+     "id": "bob",
+     "type": "User"
+    }
+   }
+  },
+  "parents": [
+   {
+    "id": "alice_public_view",
+    "type": "DocumentShare"
+   }
+  ],
+  "uid": {
+   "id": "bob_personal",
+   "type": "Group"
+  }
+ },
+ {
+  "attrs": {
+   "owner": {
+    "__entity": {
+     "id": "charlie",
+     "type": "User"
+    }
+   }
+  },
+  "parents": [
+   {
+    "id": "alice_public_view",
+    "type": "DocumentShare"
+   }
+  ],
+  "uid": {
+   "id": "charlie_personal",
+   "type": "Group"
+  }
+ },
+ {
+  "attrs": {
+   "isPrivate": false,
+   "manageACL": {
+    "__entity": {
+     "id": "alice_public_manage",
+     "type": "Document"
+    }
+   },
+   "modifyACL": {
+    "__entity": {
+     "id": "alice_public_modify",
+     "type": "Document"
+    }
+   },
+   "owner": {
+    "__entity": {
+     "id": "alice",
+     "type": "User"
+    }
+   },
+   "publicAccess": "view",
+   "viewACL": {
+    "__entity": {
+     "id": "alice_public_view",
+     "type": "DocumentShare"
+    }
+   }
+  },
+  "parents": [],
+  "uid": {
+   "id": "alice_public",
+   "type": "Document"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [],
+  "uid": {
+   "id": "alice_public_view",
+   "type": "DocumentShare"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [],
+  "uid": {
+   "id": "alice_public_modify",
+   "type": "DocumentShare"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [],
+  "uid": {
+   "id": "alice_public_manage",
+   "type": "DocumentShare"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [],
+  "uid": {
+   "id": "unauthenticated",
+   "type": "Public"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [],
+  "uid": {
+   "id": "drive",
+   "type": "Drive"
+  }
+ }
+]

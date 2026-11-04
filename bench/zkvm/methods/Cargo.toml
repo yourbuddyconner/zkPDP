@@ -1,0 +1,11 @@
+[package]
+name = "methods"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[build-dependencies]
+risc0-build = "3.0"
+
+[package.metadata.risc0]
+methods = ["guest"]

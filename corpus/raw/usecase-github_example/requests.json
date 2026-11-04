@@ -1,0 +1,128 @@
+[
+ {
+  "name": "allow/query_alice_read_common_knowledge",
+  "request": {
+   "action": {
+    "name": "pull"
+   },
+   "context": {},
+   "resource": {
+    "id": "common_knowledge",
+    "type": "Repository"
+   },
+   "subject": {
+    "id": "alice",
+    "type": "User"
+   }
+  },
+  "upstream_expectation": true
+ },
+ {
+  "name": "allow/query_alice_read_uncommon_knowledge",
+  "request": {
+   "action": {
+    "name": "pull"
+   },
+   "context": {},
+   "resource": {
+    "id": "uncommon_knowledge",
+    "type": "Repository"
+   },
+   "subject": {
+    "id": "alice",
+    "type": "User"
+   }
+  },
+  "upstream_expectation": true
+ },
+ {
+  "name": "allow/query_alice_write_uncommon_knowledge",
+  "request": {
+   "action": {
+    "name": "push"
+   },
+   "context": {},
+   "resource": {
+    "id": "uncommon_knowledge",
+    "type": "Repository"
+   },
+   "subject": {
+    "id": "alice",
+    "type": "User"
+   }
+  },
+  "upstream_expectation": true
+ },
+ {
+  "name": "allow/query_bob_push_secret",
+  "request": {
+   "action": {
+    "name": "push"
+   },
+   "context": {},
+   "resource": {
+    "id": "secret",
+    "type": "Repository"
+   },
+   "subject": {
+    "id": "bob",
+    "type": "User"
+   }
+  },
+  "upstream_expectation": true
+ },
+ {
+  "name": "allow/query_jane_read_secret",
+  "request": {
+   "action": {
+    "name": "pull"
+   },
+   "context": {},
+   "resource": {
+    "id": "secret",
+    "type": "Repository"
+   },
+   "subject": {
+    "id": "jane",
+    "type": "User"
+   }
+  },
+  "upstream_expectation": true
+ },
+ {
+  "name": "deny/query_alice_read_secret",
+  "request": {
+   "action": {
+    "name": "pull"
+   },
+   "context": {},
+   "resource": {
+    "id": "secret",
+    "type": "Repository"
+   },
+   "subject": {
+    "id": "alice",
+    "type": "User"
+   }
+  },
+  "upstream_expectation": false
+ },
+ {
+  "name": "deny/query_alice_write_secret",
+  "request": {
+   "action": {
+    "name": "push"
+   },
+   "context": {},
+   "resource": {
+    "id": "secret",
+    "type": "Repository"
+   },
+   "subject": {
+    "id": "alice",
+    "type": "User"
+   }
+  },
+  "upstream_expectation": false
+ }
+]

@@ -1,0 +1,56 @@
+[
+ {
+  "name": "allow/alice_read",
+  "request": {
+   "action": {
+    "name": "ReadWorkspace"
+   },
+   "context": {},
+   "resource": {
+    "id": "workspace-1",
+    "type": "Workspace"
+   },
+   "subject": {
+    "id": "Alice",
+    "type": "User"
+   }
+  },
+  "upstream_expectation": true
+ },
+ {
+  "name": "allow/joe_read",
+  "request": {
+   "action": {
+    "name": "ReadWorkspace"
+   },
+   "context": {},
+   "resource": {
+    "id": "workspace-1",
+    "type": "Workspace"
+   },
+   "subject": {
+    "id": "Joe",
+    "type": "User"
+   }
+  },
+  "upstream_expectation": true
+ },
+ {
+  "name": "deny/alice_update",
+  "request": {
+   "action": {
+    "name": "UpdateWorkspace"
+   },
+   "context": {},
+   "resource": {
+    "id": "workspace-1",
+    "type": "Workspace"
+   },
+   "subject": {
+    "id": "Alice",
+    "type": "User"
+   }
+  },
+  "upstream_expectation": false
+ }
+]

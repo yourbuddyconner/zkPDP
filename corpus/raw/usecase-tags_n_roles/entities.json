@@ -1,0 +1,104 @@
+[
+ {
+  "attrs": {},
+  "parents": [],
+  "uid": {
+   "id": "Role-A",
+   "type": "Role"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [],
+  "uid": {
+   "id": "Role-B",
+   "type": "Role"
+  }
+ },
+ {
+  "attrs": {
+   "allowedTagsForRole": {
+    "Role-A": {
+     "country": [
+      "germany"
+     ],
+     "production_status": [
+      "production"
+     ],
+     "stage": [
+      "reporting"
+     ]
+    },
+    "Role-B": {
+     "country": [
+      "italy"
+     ],
+     "production_status": [
+      "test"
+     ],
+     "stage": [
+      "valuation"
+     ]
+    }
+   }
+  },
+  "parents": [
+   {
+    "id": "Role-A",
+    "type": "Role"
+   },
+   {
+    "id": "Role-B",
+    "type": "Role"
+   }
+  ],
+  "uid": {
+   "id": "Joe",
+   "type": "User"
+  }
+ },
+ {
+  "attrs": {
+   "allowedTagsForRole": {
+    "Role-B": {
+     "country": [
+      "ALL"
+     ],
+     "production_status": [
+      "production"
+     ],
+     "stage": [
+      "valuation"
+     ]
+    }
+   }
+  },
+  "parents": [
+   {
+    "id": "Role-B",
+    "type": "Role"
+   }
+  ],
+  "uid": {
+   "id": "Alice",
+   "type": "User"
+  }
+ },
+ {
+  "attrs": {
+   "tags": {
+    "country": [
+     "germany"
+    ],
+    "production_status": [
+     "production"
+    ]
+   }
+  },
+  "parents": [],
+  "uid": {
+   "id": "workspace-1",
+   "type": "Workspace"
+  }
+ }
+]

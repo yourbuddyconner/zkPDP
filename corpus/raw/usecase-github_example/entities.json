@@ -1,0 +1,480 @@
+[
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "__entity": {
+     "id": "common_knowledge_writers",
+     "type": "UserGroup"
+    }
+   },
+   {
+    "__entity": {
+     "id": "uncommon_knowledge_writers",
+     "type": "UserGroup"
+    }
+   }
+  ],
+  "uid": {
+   "__entity": {
+    "id": "alice",
+    "type": "User"
+   }
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "__entity": {
+     "id": "common_knowledge_maintainers",
+     "type": "UserGroup"
+    }
+   },
+   {
+    "__entity": {
+     "id": "team_that_can_read_everything",
+     "type": "Team"
+    }
+   }
+  ],
+  "uid": {
+   "__entity": {
+    "id": "jane",
+    "type": "User"
+   }
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "__entity": {
+     "id": "tiny_corp_owners",
+     "type": "Organization"
+    }
+   }
+  ],
+  "uid": {
+   "__entity": {
+    "id": "bob",
+    "type": "User"
+   }
+  }
+ },
+ {
+  "attrs": {
+   "admins": {
+    "__entity": {
+     "id": "common_knowledge_admins",
+     "type": "UserGroup"
+    }
+   },
+   "maintainers": {
+    "__entity": {
+     "id": "common_knowledge_maintainers",
+     "type": "UserGroup"
+    }
+   },
+   "readers": {
+    "__entity": {
+     "id": "common_knowledge_readers",
+     "type": "UserGroup"
+    }
+   },
+   "triagers": {
+    "__entity": {
+     "id": "common_knowledge_triagers",
+     "type": "UserGroup"
+    }
+   },
+   "writers": {
+    "__entity": {
+     "id": "common_knowledge_writers",
+     "type": "UserGroup"
+    }
+   }
+  },
+  "parents": [],
+  "uid": {
+   "__entity": {
+    "id": "common_knowledge",
+    "type": "Repository"
+   }
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [],
+  "uid": {
+   "__entity": {
+    "id": "common_knowledge_readers",
+    "type": "UserGroup"
+   }
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "__entity": {
+     "id": "common_knowledge_readers",
+     "type": "UserGroup"
+    }
+   }
+  ],
+  "uid": {
+   "__entity": {
+    "id": "common_knowledge_triagers",
+    "type": "UserGroup"
+   }
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "__entity": {
+     "id": "common_knowledge_triagers",
+     "type": "UserGroup"
+    }
+   }
+  ],
+  "uid": {
+   "__entity": {
+    "id": "common_knowledge_writers",
+    "type": "UserGroup"
+   }
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "__entity": {
+     "id": "common_knowledge_writers",
+     "type": "UserGroup"
+    }
+   }
+  ],
+  "uid": {
+   "__entity": {
+    "id": "common_knowledge_maintainers",
+    "type": "UserGroup"
+   }
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "__entity": {
+     "id": "common_knowledge_maintainers",
+     "type": "UserGroup"
+    }
+   }
+  ],
+  "uid": {
+   "__entity": {
+    "id": "common_knowledge_admins",
+    "type": "UserGroup"
+   }
+  }
+ },
+ {
+  "attrs": {
+   "admins": {
+    "__entity": {
+     "id": "secret_admins",
+     "type": "UserGroup"
+    }
+   },
+   "maintainers": {
+    "__entity": {
+     "id": "secret_maintainers",
+     "type": "UserGroup"
+    }
+   },
+   "readers": {
+    "__entity": {
+     "id": "secret_readers",
+     "type": "UserGroup"
+    }
+   },
+   "triagers": {
+    "__entity": {
+     "id": "secret_triagers",
+     "type": "UserGroup"
+    }
+   },
+   "writers": {
+    "__entity": {
+     "id": "secret_writers",
+     "type": "UserGroup"
+    }
+   }
+  },
+  "parents": [],
+  "uid": {
+   "__entity": {
+    "id": "secret",
+    "type": "Repository"
+   }
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [],
+  "uid": {
+   "__entity": {
+    "id": "secret_readers",
+    "type": "UserGroup"
+   }
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "__entity": {
+     "id": "secret_readers",
+     "type": "UserGroup"
+    }
+   }
+  ],
+  "uid": {
+   "__entity": {
+    "id": "secret_triagers",
+    "type": "UserGroup"
+   }
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "__entity": {
+     "id": "secret_triagers",
+     "type": "UserGroup"
+    }
+   }
+  ],
+  "uid": {
+   "__entity": {
+    "id": "secret_writers",
+    "type": "UserGroup"
+   }
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "__entity": {
+     "id": "secret_writers",
+     "type": "UserGroup"
+    }
+   }
+  ],
+  "uid": {
+   "__entity": {
+    "id": "secret_maintainers",
+    "type": "UserGroup"
+   }
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "__entity": {
+     "id": "secret_maintainers",
+     "type": "UserGroup"
+    }
+   }
+  ],
+  "uid": {
+   "__entity": {
+    "id": "secret_admins",
+    "type": "UserGroup"
+   }
+  }
+ },
+ {
+  "attrs": {
+   "admins": {
+    "__entity": {
+     "id": "uncommon_knowledge_admins",
+     "type": "UserGroup"
+    }
+   },
+   "maintainers": {
+    "__entity": {
+     "id": "uncommon_knowledge_maintainers",
+     "type": "UserGroup"
+    }
+   },
+   "readers": {
+    "__entity": {
+     "id": "uncommon_knowledge_readers",
+     "type": "UserGroup"
+    }
+   },
+   "triagers": {
+    "__entity": {
+     "id": "uncommon_knowledge_triagers",
+     "type": "UserGroup"
+    }
+   },
+   "writers": {
+    "__entity": {
+     "id": "uncommon_knowledge_writers",
+     "type": "UserGroup"
+    }
+   }
+  },
+  "parents": [],
+  "uid": {
+   "__entity": {
+    "id": "uncommon_knowledge",
+    "type": "Repository"
+   }
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [],
+  "uid": {
+   "__entity": {
+    "id": "uncommon_knowledge_readers",
+    "type": "UserGroup"
+   }
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "__entity": {
+     "id": "uncommon_knowledge_readers",
+     "type": "UserGroup"
+    }
+   }
+  ],
+  "uid": {
+   "__entity": {
+    "id": "uncommon_knowledge_triagers",
+    "type": "UserGroup"
+   }
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "__entity": {
+     "id": "uncommon_knowledge_triagers",
+     "type": "UserGroup"
+    }
+   }
+  ],
+  "uid": {
+   "__entity": {
+    "id": "uncommon_knowledge_writers",
+    "type": "UserGroup"
+   }
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "__entity": {
+     "id": "uncommon_knowledge_writers",
+     "type": "UserGroup"
+    }
+   }
+  ],
+  "uid": {
+   "__entity": {
+    "id": "uncommon_knowledge_maintainers",
+    "type": "UserGroup"
+   }
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "__entity": {
+     "id": "uncommon_knowledge_maintainers",
+     "type": "UserGroup"
+    }
+   }
+  ],
+  "uid": {
+   "__entity": {
+    "id": "uncommon_knowledge_admins",
+    "type": "UserGroup"
+   }
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "__entity": {
+     "id": "common_knowledge_readers",
+     "type": "UserGroup"
+    }
+   },
+   {
+    "__entity": {
+     "id": "secret_readers",
+     "type": "UserGroup"
+    }
+   },
+   {
+    "__entity": {
+     "id": "uncommon_knowledge_readers",
+     "type": "UserGroup"
+    }
+   }
+  ],
+  "uid": {
+   "__entity": {
+    "id": "team_that_can_read_everything",
+    "type": "Team"
+   }
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [
+   {
+    "__entity": {
+     "id": "common_knowledge_admins",
+     "type": "UserGroup"
+    }
+   },
+   {
+    "__entity": {
+     "id": "secret_admins",
+     "type": "UserGroup"
+    }
+   },
+   {
+    "__entity": {
+     "id": "uncommon_knowledge_admins",
+     "type": "UserGroup"
+    }
+   }
+  ],
+  "uid": {
+   "__entity": {
+    "id": "tiny_corp_owners",
+    "type": "Organization"
+   }
+  }
+ }
+]

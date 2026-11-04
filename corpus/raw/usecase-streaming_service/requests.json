@@ -1,0 +1,230 @@
+[
+ {
+  "name": "allow/alice_rent_oscar_movie",
+  "request": {
+   "action": {
+    "name": "rent"
+   },
+   "context": {
+    "now": {
+     "datetime": {
+      "arg": "2025-02-20T13:00:00-0500",
+      "fn": "datetime"
+     }
+    }
+   },
+   "resource": {
+    "id": "Devilish",
+    "type": "Movie"
+   },
+   "subject": {
+    "id": "Alice",
+    "type": "Subscriber"
+   }
+  },
+  "upstream_expectation": true
+ },
+ {
+  "name": "allow/alice_watch_show",
+  "request": {
+   "action": {
+    "name": "watch"
+   },
+   "context": {
+    "now": {
+     "datetime": {
+      "arg": "2025-02-20T13:00:00-0500",
+      "fn": "datetime"
+     },
+     "localTimeOffset": {
+      "arg": "-5h",
+      "fn": "duration"
+     }
+    }
+   },
+   "resource": {
+    "id": "Buddies",
+    "type": "Show"
+   },
+   "subject": {
+    "id": "Alice",
+    "type": "Subscriber"
+   }
+  },
+  "upstream_expectation": true
+ },
+ {
+  "name": "allow/bob_watch_free_movie",
+  "request": {
+   "action": {
+    "name": "watch"
+   },
+   "context": {
+    "now": {
+     "datetime": {
+      "arg": "2025-02-20T13:00:00-0500",
+      "fn": "datetime"
+     },
+     "localTimeOffset": {
+      "arg": "-5h",
+      "fn": "duration"
+     }
+    }
+   },
+   "resource": {
+    "id": "The Godparent",
+    "type": "Movie"
+   },
+   "subject": {
+    "id": "Bob",
+    "type": "FreeMember"
+   }
+  },
+  "upstream_expectation": true
+ },
+ {
+  "name": "allow/charlie_watch_early_access_show",
+  "request": {
+   "action": {
+    "name": "watch"
+   },
+   "context": {
+    "now": {
+     "datetime": {
+      "arg": "2025-02-20T13:00:00-0500",
+      "fn": "datetime"
+     },
+     "localTimeOffset": {
+      "arg": "-5h",
+      "fn": "duration"
+     }
+    }
+   },
+   "resource": {
+    "id": "Breach",
+    "type": "Show"
+   },
+   "subject": {
+    "id": "Charlie",
+    "type": "Subscriber"
+   }
+  },
+  "upstream_expectation": true
+ },
+ {
+  "name": "allow/dave_watch_after_early_access",
+  "request": {
+   "action": {
+    "name": "watch"
+   },
+   "context": {
+    "now": {
+     "datetime": {
+      "arg": "2025-02-22T13:00:00-0500",
+      "fn": "datetime"
+     },
+     "localTimeOffset": {
+      "arg": "-5h",
+      "fn": "duration"
+     }
+    }
+   },
+   "resource": {
+    "id": "Breach",
+    "type": "Show"
+   },
+   "subject": {
+    "id": "Dave",
+    "type": "Subscriber"
+   }
+  },
+  "upstream_expectation": true
+ },
+ {
+  "name": "deny/alice_watch_early_access_show",
+  "request": {
+   "action": {
+    "name": "watch"
+   },
+   "context": {
+    "now": {
+     "datetime": {
+      "arg": "2025-02-20T13:00:00-0500",
+      "fn": "datetime"
+     },
+     "localTimeOffset": {
+      "arg": "-5h",
+      "fn": "duration"
+     }
+    }
+   },
+   "resource": {
+    "id": "Breach",
+    "type": "Show"
+   },
+   "subject": {
+    "id": "Alice",
+    "type": "Subscriber"
+   }
+  },
+  "upstream_expectation": false
+ },
+ {
+  "name": "deny/bob_watch_paid_movie",
+  "request": {
+   "action": {
+    "name": "watch"
+   },
+   "context": {
+    "now": {
+     "datetime": {
+      "arg": "2025-02-20T13:00:00-0500",
+      "fn": "datetime"
+     },
+     "localTimeOffset": {
+      "arg": "-5h",
+      "fn": "duration"
+     }
+    }
+   },
+   "resource": {
+    "id": "The Gleaming",
+    "type": "Movie"
+   },
+   "subject": {
+    "id": "Bob",
+    "type": "FreeMember"
+   }
+  },
+  "upstream_expectation": false
+ },
+ {
+  "name": "deny/dave_watch_bedtime_show",
+  "request": {
+   "action": {
+    "name": "watch"
+   },
+   "context": {
+    "now": {
+     "datetime": {
+      "arg": "2025-02-20T22:00:00-0500",
+      "fn": "datetime"
+     },
+     "localTimeOffset": {
+      "arg": "-5h",
+      "fn": "duration"
+     }
+    }
+   },
+   "resource": {
+    "id": "Buddies",
+    "type": "Show"
+   },
+   "subject": {
+    "id": "Dave",
+    "type": "Subscriber"
+   }
+  },
+  "upstream_expectation": false
+ }
+]

@@ -1,0 +1,115 @@
+[
+ {
+  "attrs": {
+   "profile": {
+    "isKid": false
+   },
+   "subscription": {
+    "tier": "standard"
+   }
+  },
+  "parents": [],
+  "uid": {
+   "id": "Alice",
+   "type": "Subscriber"
+  }
+ },
+ {
+  "attrs": {},
+  "parents": [],
+  "uid": {
+   "id": "Bob",
+   "type": "FreeMember"
+  }
+ },
+ {
+  "attrs": {
+   "profile": {
+    "isKid": false
+   },
+   "subscription": {
+    "tier": "premium"
+   }
+  },
+  "parents": [],
+  "uid": {
+   "id": "Charlie",
+   "type": "Subscriber"
+  }
+ },
+ {
+  "attrs": {
+   "profile": {
+    "isKid": true
+   },
+   "subscription": {
+    "tier": "standard"
+   }
+  },
+  "parents": [],
+  "uid": {
+   "id": "Dave",
+   "type": "Subscriber"
+  }
+ },
+ {
+  "attrs": {
+   "isFree": true,
+   "isOscarNominated": true,
+   "needsRentOrBuy": false
+  },
+  "parents": [],
+  "uid": {
+   "id": "The Godparent",
+   "type": "Movie"
+  }
+ },
+ {
+  "attrs": {
+   "isFree": false,
+   "isOscarNominated": false,
+   "needsRentOrBuy": false
+  },
+  "parents": [],
+  "uid": {
+   "id": "The Gleaming",
+   "type": "Movie"
+  }
+ },
+ {
+  "attrs": {
+   "isFree": false,
+   "isOscarNominated": true,
+   "needsRentOrBuy": true
+  },
+  "parents": [],
+  "uid": {
+   "id": "Devilish",
+   "type": "Movie"
+  }
+ },
+ {
+  "attrs": {
+   "isEarlyAccess": false,
+   "isFree": false,
+   "releaseDate": "2024-10-10"
+  },
+  "parents": [],
+  "uid": {
+   "id": "Buddies",
+   "type": "Show"
+  }
+ },
+ {
+  "attrs": {
+   "isEarlyAccess": true,
+   "isFree": false,
+   "releaseDate": "2025-02-21"
+  },
+  "parents": [],
+  "uid": {
+   "id": "Breach",
+   "type": "Show"
+  }
+ }
+]

@@ -1,0 +1,12 @@
+[package]
+name = "corpus-tool"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+cedar-policy = "=4.14.1"
+cedar-policy-formatter = "=4.14.1"
+envelope = { path = "../envelope" }
+serde_json = { version = "1", features = ["preserve_order"] }
+hex = "0.4"

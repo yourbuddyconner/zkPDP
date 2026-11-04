@@ -1,0 +1,40 @@
+[
+ {
+  "name": "l0-reader-gets",
+  "request": {
+   "action": {
+    "name": "GetList"
+   },
+   "context": {
+    "nonce": "n-0-0"
+   },
+   "resource": {
+    "id": "l0",
+    "type": "List"
+   },
+   "subject": {
+    "id": "u10",
+    "type": "User"
+   }
+  }
+ },
+ {
+  "name": "l0-stranger-gets",
+  "request": {
+   "action": {
+    "name": "GetList"
+   },
+   "context": {
+    "nonce": "n-0-1"
+   },
+   "resource": {
+    "id": "l0",
+    "type": "List"
+   },
+   "subject": {
+    "id": "u1",
+    "type": "User"
+   }
+  }
+ }
+]

@@ -1,0 +1,56 @@
+[
+ {
+  "name": "allow/alice_view",
+  "request": {
+   "action": {
+    "name": "viewPresentation"
+   },
+   "context": {},
+   "resource": {
+    "id": "proposal",
+    "type": "Presentation"
+   },
+   "subject": {
+    "id": "Alice",
+    "type": "User"
+   }
+  },
+  "upstream_expectation": true
+ },
+ {
+  "name": "allow/bob_view",
+  "request": {
+   "action": {
+    "name": "viewPresentation"
+   },
+   "context": {},
+   "resource": {
+    "id": "proposal",
+    "type": "Presentation"
+   },
+   "subject": {
+    "id": "Bob",
+    "type": "User"
+   }
+  },
+  "upstream_expectation": true
+ },
+ {
+  "name": "deny/charlie_view",
+  "request": {
+   "action": {
+    "name": "viewPresentation"
+   },
+   "context": {},
+   "resource": {
+    "id": "proposal",
+    "type": "Presentation"
+   },
+   "subject": {
+    "id": "Charlie",
+    "type": "User"
+   }
+  },
+  "upstream_expectation": false
+ }
+]
