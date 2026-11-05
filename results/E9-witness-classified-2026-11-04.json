@@ -1,0 +1,1004 @@
+{
+ "counts": {
+  "tinytodo/brillig_output/zero_multiplicand": 4,
+  "tinytodo/internal/other": 1,
+  "usecase-github_example/brillig_output/other": 1,
+  "usecase-github_example/brillig_output/zero_multiplicand": 16,
+  "usecase-hotel_chains-static/brillig_output/zero_multiplicand": 49
+ },
+ "accepted": [
+  {
+   "set": "tinytodo",
+   "request": "l0-reader-gets",
+   "witness": 15208,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     20884
+    ]
+   ]
+  },
+  {
+   "set": "tinytodo",
+   "request": "l0-reader-gets",
+   "witness": 6424,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     8473
+    ]
+   ]
+  },
+  {
+   "set": "tinytodo",
+   "request": "l0-reader-gets",
+   "witness": 15184,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     20854
+    ]
+   ]
+  },
+  {
+   "set": "tinytodo",
+   "request": "l0-stranger-gets",
+   "witness": 4104,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     4653
+    ]
+   ]
+  },
+  {
+   "set": "tinytodo",
+   "request": "l0-stranger-gets",
+   "witness": 14063,
+   "stratum": "internal",
+   "region": "internal",
+   "classification": "other",
+   "uses": []
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "allow/query_alice_read_common_knowledge",
+   "witness": 20682,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     27830
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "allow/query_alice_read_common_knowledge",
+   "witness": 5984,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     6974
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "allow/query_alice_read_common_knowledge",
+   "witness": 21810,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     29490
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "allow/query_alice_read_common_knowledge",
+   "witness": 30625,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     41165
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "allow/query_alice_read_common_knowledge",
+   "witness": 31345,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     42065
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "allow/query_alice_read_common_knowledge",
+   "witness": 30339,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     40798
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "allow/query_alice_read_common_knowledge",
+   "witness": 32613,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     43684
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "allow/query_alice_read_common_knowledge",
+   "witness": 20002,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     26810
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "allow/query_alice_read_common_knowledge",
+   "witness": 22804,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     30735
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "allow/query_alice_read_common_knowledge",
+   "witness": 22352,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     30170
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "deny/query_alice_read_secret",
+   "witness": 27515,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     37209
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "deny/query_alice_read_secret",
+   "witness": 19678,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     26324
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "deny/query_alice_read_secret",
+   "witness": 23800,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "other",
+   "uses": [
+    [
+     "mul",
+     31985
+    ],
+    [
+     "lin",
+     31985
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "deny/query_alice_read_secret",
+   "witness": 20150,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     27032
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "deny/query_alice_read_secret",
+   "witness": 31753,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     42575
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "deny/query_alice_read_secret",
+   "witness": 33713,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     45059
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "deny/query_alice_read_secret",
+   "witness": 26455,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     35884
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 246013,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     329262
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 248561,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     332479
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 242949,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     325400
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 234567,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     314792
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 101571,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     140255
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 176622,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     241581
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 214722,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     289789
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 34787,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     49582
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 174286,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     238629
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 52054,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     75040
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 93306,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     128017
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 170350,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     233645
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 102743,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     141990
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 114549,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     158990
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 195038,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     264891
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 48958,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     70396
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 181010,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     247130
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 238315,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     319541
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 114621,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     159080
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 179710,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     245505
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 43686,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     62488
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 225075,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     302799
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 250653,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     335126
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 123073,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     169773
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "allow/alice_update_green",
+   "witness": 173586,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     237754
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 97771,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     134555
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 177446,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     242643
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 186150,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     253653
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 30575,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     43264
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 149938,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     207839
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 184406,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     251441
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 101607,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     140309
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 54542,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     78772
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 74450,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     104179
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 182524,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     249056
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 114389,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     158790
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 74354,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     104059
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 225575,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     303424
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 117425,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     162617
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 274155,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     364828
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 110213,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     153217
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 225743,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     303634
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 29799,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     42100
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 189922,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     258400
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 264107,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     352141
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 198952,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     269819
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 35847,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     51172
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 212826,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     287387
+    ]
+   ]
+  },
+  {
+   "set": "usecase-hotel_chains-static",
+   "request": "deny/alice_update_gray",
+   "witness": 233231,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     313122
+    ]
+   ]
+  }
+ ]
+}

@@ -63,6 +63,8 @@ pub fn assert_plain<let N: u32>(s: BoundedVec<u8, N>) {
         let c = s.get_unchecked(i);
         let ok = (c >= 0x20) & (c < 0x7f) & (c != 0x22) & (c != 0x5c);
         assert(ok | (i >= s.len()));
+        // Padding is zero, so one string has one encoding. E9 found this missing.
+        assert((i < s.len()) | (c == 0));
     }
 }
 

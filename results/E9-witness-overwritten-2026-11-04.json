@@ -1,0 +1,197 @@
+{
+ "deterministic": true,
+ "rows": [
+  {
+   "kind": "sha_output",
+   "witness": 11879,
+   "outcome": "identical_proof",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "sha_output",
+   "witness": 14093,
+   "outcome": "rejected",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "sha_output",
+   "witness": 13779,
+   "outcome": "rejected",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "sha_output",
+   "witness": 11461,
+   "outcome": "identical_proof",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "sha_output",
+   "witness": 12832,
+   "outcome": "rejected",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "sha_output",
+   "witness": 14205,
+   "outcome": "rejected",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "sha_output",
+   "witness": 13547,
+   "outcome": "identical_proof",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "sha_output",
+   "witness": 14410,
+   "outcome": "identical_proof",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "sha_output",
+   "witness": 14064,
+   "outcome": "identical_proof",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "sha_output",
+   "witness": 10278,
+   "outcome": "identical_proof",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "sha_output",
+   "witness": 14207,
+   "outcome": "rejected",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "sha_output",
+   "witness": 8511,
+   "outcome": "identical_proof",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "sha_output",
+   "witness": 13542,
+   "outcome": "identical_proof",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "sha_output",
+   "witness": 12019,
+   "outcome": "rejected",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "sha_output",
+   "witness": 13834,
+   "outcome": "identical_proof",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "sha_output",
+   "witness": 11827,
+   "outcome": "rejected",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "brillig_next_to_assert",
+   "witness": 5459,
+   "outcome": "rejected",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "brillig_next_to_assert",
+   "witness": 18499,
+   "outcome": "rejected",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "brillig_next_to_assert",
+   "witness": 16483,
+   "outcome": "rejected",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "brillig_next_to_assert",
+   "witness": 17059,
+   "outcome": "rejected",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "brillig_next_to_assert",
+   "witness": 19489,
+   "outcome": "rejected",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "brillig_next_to_assert",
+   "witness": 17131,
+   "outcome": "rejected",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "brillig_next_to_assert",
+   "witness": 16531,
+   "outcome": "rejected",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "brillig_next_to_assert",
+   "witness": 15925,
+   "outcome": "rejected",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "brillig_next_to_assert",
+   "witness": 17863,
+   "outcome": "rejected",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "brillig_next_to_assert",
+   "witness": 19689,
+   "outcome": "rejected",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "brillig_next_to_assert",
+   "witness": 4990,
+   "outcome": "different_proof_verifies",
+   "honest_value_zero": true
+  },
+  {
+   "kind": "brillig_next_to_assert",
+   "witness": 5922,
+   "outcome": "rejected",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "brillig_next_to_assert",
+   "witness": 17831,
+   "outcome": "rejected",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "brillig_next_to_assert",
+   "witness": 5000,
+   "outcome": "rejected",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "brillig_next_to_assert",
+   "witness": 19745,
+   "outcome": "rejected",
+   "honest_value_zero": false
+  },
+  {
+   "kind": "brillig_next_to_assert",
+   "witness": 20221,
+   "outcome": "rejected",
+   "honest_value_zero": false
+  }
+ ]
+}
