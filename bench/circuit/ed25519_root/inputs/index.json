@@ -1,0 +1,54 @@
+[
+ {
+  "name": "honest-0",
+  "expect_valid": true
+ },
+ {
+  "name": "honest-1",
+  "expect_valid": true
+ },
+ {
+  "name": "honest-2",
+  "expect_valid": true
+ },
+ {
+  "name": "wrong-root",
+  "expect_valid": false
+ },
+ {
+  "name": "wrong-epoch",
+  "expect_valid": false
+ },
+ {
+  "name": "wrong-key",
+  "expect_valid": false
+ },
+ {
+  "name": "s-flipped",
+  "expect_valid": false
+ },
+ {
+  "name": "s-plus-L",
+  "expect_valid": false
+ },
+ {
+  "name": "r-from-other-sig",
+  "expect_valid": false
+ },
+ {
+  "name": "pk-y-equals-p",
+  "expect_valid": false
+ },
+ {
+  "name": "pk-identity",
+  "expect_valid": false
+ },
+ {
+  "name": "pk-order-2",
+  "expect_valid": false
+ },
+ {
+  "name": "s-equals-L",
+  "expect_valid": false
+ }
+]

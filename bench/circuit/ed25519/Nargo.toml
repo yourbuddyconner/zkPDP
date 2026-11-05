@@ -1,0 +1,9 @@
+[package]
+name = "ed25519"
+type = "lib"
+authors = [""]
+compiler_version = ">=1.0.0"
+
+# noir-lang/noir-bignum v0.10.0 = 00d4360fbaaa. Curve arithmetic and SHA-512 are ours.
+[dependencies]
+bignum = { git = "https://github.com/noir-lang/noir-bignum", tag = "v0.10.0" }

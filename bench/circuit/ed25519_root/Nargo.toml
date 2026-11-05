@@ -1,0 +1,8 @@
+[package]
+name = "ed25519_root"
+type = "bin"
+authors = [""]
+compiler_version = ">=1.0.0"
+
+[dependencies]
+ed25519 = { path = "../ed25519" }
