@@ -4,9 +4,9 @@
 
 ## Abstract
 
-An authorization decision is usually trusted because of who made it. Proof-carrying authorization has long proposed trusting what was shown instead. We report what that takes today for Cedar, a widely used policy language with a formal model. We run one policy set on three proof backends behind one journal: the published evaluator in a zkVM, validated policies compiled to arithmetic circuits through Cedar's own symbolic compiler, and the same compiled form on a proof system whose security theorems are machine-checked. On one decision on a laptop, proving took 13 minutes on the zkVM, 1.9 seconds on the circuit, and 37 milliseconds on the third, with proofs of 2.2 MB, 15 KB and 117 KB. In the zkVM, parsing and not policy evaluation took about 99 percent of cycles. The compiler handles 5 of 7 sample policy sets. Generated circuits agreed with the native evaluator on all 40 test requests, and rejected every attack we tried that would change a decision. An attribute authority's signature over the facts adds little to any backend. We say what is not shown: these are one-at-a-time attacks and not a soundness proof, our translation is unverified, and zero knowledge is unproven for two of the three backends.
+An authorization decision is usually trusted because of who made it. Proof-carrying authorization has long proposed trusting what was shown instead. We report what that takes today for Cedar, a widely used policy language with a formal model. We run one policy set on three proof backends behind one journal: the published evaluator in a zkVM, validated policies compiled to arithmetic circuits through Cedar's own symbolic compiler, and the same compiled form on a proof system whose security theorems are machine-checked. On one decision on a laptop, all three reading the same two records and compiled once per policy, proving took 13 minutes on the zkVM, 2.1 seconds on the circuit, and 43 milliseconds on the third, with proofs of 2.2 MB, 15 KB and 125 KB. In the zkVM, parsing and not policy evaluation took about 99 percent of cycles. The compiler handles 5 of 7 sample policy sets. Generated circuits agreed with the native evaluator on all 40 test requests, and rejected every attack we tried that would change a decision. An attribute authority's signature over the facts adds little to any backend. We say what is not shown: these are one-at-a-time attacks and not a soundness proof, our translation is unverified, and zero knowledge is unproven for two of the three backends.
 
-`TODO:` rewrite after idle timing of E11 and the E10 verdict. The three proving times are hand-written TinyTodo on the second and third backends, and are not yet like for like: see section 7.
+`TODO:` rewrite after the E10 verdict.
 
 ## 1. Introduction
 
@@ -48,9 +48,9 @@ All three bind the same statement: request hash, policy hash, schema hash, entit
 
 **Cedar in a zkVM [E1, E1b].** The guest is the published `cedar-policy` crate and a thin shell, with policy as input, so the program's identity does not change when policy does. One dependency, `stacker`, does not build for the guest target and is replaced by a stand-in. Cedar's own source is unchanged. In the fair-comparison form, the guest recomputes the two record leaves from JSON, checks their Merkle paths, and hands Cedar only those two entities.
 
-**Cedar compiled to circuits [E2, E4].** Cedar's symbolic compiler specializes each policy to a principal type, action and resource type, and reduces it to a typed term. For TinyTodo these terms are, one for one, what we had written by hand. We translate terms to Noir, one function per environment. Hashing to the root is shared across environments. Strings are compared by hash. Request context becomes a record behind its own public hash, computed by the verifier, since rebuilding arbitrary JSON in a circuit would be large and fragile. Not supported: extension values, integer arithmetic, entity tags, the `like` operator, and an entity absent from the store.
+**Cedar compiled to circuits [E2, E4].** Cedar's symbolic compiler specializes each policy to a principal type, action and resource type, and reduces it to a typed term. For TinyTodo these terms are, one for one, what we had written by hand. We translate terms to Noir, one function per environment. Hashing to the root is shared across environments. Strings are compared by hash, and the request and entity UIDs are hashed in a fixed layout, one length byte and zero-padded bytes, so rebuilding text never arises and one circuit serves every length. Request context becomes a record behind its own public hash, computed by the verifier, since rebuilding arbitrary JSON in a circuit would be large and fragile. Not supported: extension values, integer arithmetic, entity tags, the `like` operator, and an entity absent from the store.
 
-**The machine-checked target [E8, E11].** GordieHowe is a language, a certifying compiler and a proof system whose knowledge soundness and zero knowledge are machine-checked in Lean, conditional on the source program being complete and round-by-round knowledge sound [@sharp2026gordiehowe]. We wrote TinyTodo in it by hand, then ran the compiler's output through an interpreter at run time, so a policy is data and needs no C++ build. Its strings have fixed lengths per request shape, and each shape compiles in seconds.
+**The machine-checked target [E8, E11].** GordieHowe is a language, a certifying compiler and a proof system whose knowledge soundness and zero knowledge are machine-checked in Lean, conditional on the source program being complete and round-by-round knowledge sound [@sharp2026gordiehowe]. We wrote TinyTodo in it by hand, then ran the compiler's output through an interpreter at run time, so a policy is data and needs no C++ build. With the fixed layout, one system serves every request of a policy, and it compiles in seconds.
 
 ## 5. A path to a machine-checked chain
 
@@ -58,7 +58,7 @@ All three bind the same statement: request hash, policy hash, schema hash, entit
 
 Both Cedar's model and GordieHowe are in Lean, and we found no prior attempt to connect such a policy model to such a proof system. The chain has six links: Cedar's authorizer agrees with term evaluation (proved [@torlak2026symcert]); a satisfying witness of our relation makes the decision equal term evaluation over committed facts (ours, not yet stated); record openings bind facts under collision resistance (ours); the realized program implies the source (per-program kernel check); the argument is sound and zero-knowledge given a sound source (proved [@sharp2026gordiehowe]); and the source is round-by-round knowledge sound (ours, and large: the one worked example is about 47,000 lines of Lean, and we found no Lean specification of the SHA-256 gadget).
 
-Status: TinyTodo exports to 132 Lean modules. `TODO:` the kernel check, then the second link for one policy. If these fail, the paper reports per-program certificates and names the gap.
+Status: TinyTodo exports to 171 Lean modules. Our first export's program was 115 MB of Lean, because a shared expression prints as a tree. Committing intermediate bits cut it to 14 MB and did not slow proving. `TODO:` the kernel check, then the second link for one policy. If these fail, the paper reports per-program certificates and names the gap.
 
 ## 6. Input provenance
 
@@ -66,8 +66,11 @@ An attribute authority signs SHA-256 of a tag, the root and an epoch with ECDSA 
 
 | Backend | Unsigned | Signed | Signature | Authorization |
 |---|---|---|---|---|
-| Noir, gates | 388,686 | 435,232 | 46,546 | a few hundred |
-| RISC Zero, cycles | 5.38 M | 5.58 M | 198 thousand, with a precompile | 69 thousand |
+| Noir, gates | 367,960 | 415,020 | 47,060 | a few hundred |
+| RISC Zero, cycles | 5.37 M | 5.56 M | 198 thousand, with a precompile | 69 thousand |
+| GordieHowe, proving | 37.4 ms | 72.3 ms | 34.9 ms | not separable |
+
+GordieHowe's proof grows from 116 KB to 273 KB, and verifying from 13 ms to 33 ms, because the signature needs a second domain over the P-256 field. Noir's proving goes from 1.85 s to 2.07 s.
 
 So the signature costs far more than the policy, and little against the rest of each proof. Prezta found RSA and regular expressions took about 92 percent of user cycles on its heaviest policy [@wei2026prezta]. This is integrity and not a complete private mode: as specified it lacks unlinkability, device binding and revocation beyond epochs. Bormann and Lehmann observe that practical credential systems reach efficiency by hard-coding policy, format and signature scheme [@bormann2026sok]. Keeping policy as data is what we offer in response, at a real cost against specialist systems [@sharp2026gordiehowe; @kaviani2026vega].
 
@@ -77,19 +80,22 @@ All on one Apple M1 Max, 10 cores, 64 GB, macOS 27.2. The corpus is TinyTodo and
 
 ### 7.1 One decision, TinyTodo
 
-| | zkVM, two records | Noir with UltraHonk | GordieHowe |
-|---|---|---|---|
-| Written by | published crate | hand [E2] | hand [E8] |
-| Size | 5.38 M cycles | 388,686 gates | not comparable |
-| Proving | 779 s | 1.93 s | 36.7 ms |
-| Threads | CPU prover | 10 | 1 |
-| Verification | 125 ms | 16 ms | 13.4 ms |
-| Proof | 2.24 MB | 14.7 KB | 116.6 KB |
-| Peak memory | 11.5 GB | 0.84 GB | not measured per proof |
-| Policy change | none | compile, about 1 s of key work | about 3.4 s per request shape |
-| Cedar coverage | all | 5 of 7 sets, compiled | 5 of 7 sets, compiled |
+From one timing pass on an idle machine, `results/T-*-2026-11-05.jsonl`, median of 5 runs per request on circuits and GordieHowe, one zkVM proof here and three earlier at 775 to 783 s [E1b].
 
-We print no ratios. These do not do identical work: the zkVM handles any string length and, in this form, does not refuse a request outside the schema; Noir handles any length up to its limits in one circuit; GordieHowe compiles per request shape, and its time is in-process while Noir's includes process start. The zkVM ran on CPU because RISC Zero's current release does not use the GPU on Apple silicon for its main circuit. RISC Zero's receipt is composite, which leaks execution length; succinct and Groth16 receipts are not measured. `TODO:` variable-length strings on GordieHowe, so that this table is like for like.
+| | zkVM, two records | Noir, compiled | GordieHowe, compiled |
+|---|---|---|---|
+| Size | 5.37 M cycles | 431,573 gates | not comparable |
+| Proving | 768 s | 2.08 s | 42.8 ms |
+| Threads | CPU prover | 10 | 1 |
+| Verification | 126 ms | 15 ms | 14.6 ms |
+| Proof | 2.24 MB | 14.7 KB | 124.7 KB |
+| Peak memory | 12.4 GB | 0.99 GB | not measured per proof |
+| Per policy | nothing, policy is input | compile and 1.0 s for the key | 3.9 s to compile |
+| Cedar coverage | all | 5 of 7 sets | 5 of 7 sets |
+
+We print no ratios, since differences remain. Times include process start for Noir and exclude it for GordieHowe, whose system is already loaded in memory. The zkVM handles any string length and, in this form, denies a request outside the schema where the other two give no proof. The other two refuse strings over their capacities. The zkVM ran on CPU because RISC Zero's current release does not use the GPU on Apple silicon for its main circuit, and a GPU or a server would change this column. Its receipt is composite, which leaks execution length. Succinct and Groth16 receipts are not measured. GordieHowe's build used clang 20 where upstream pins 21, with local patches, and its test switches compiled in and off at run time.
+
+Hand-written TinyTodo costs 1.85 s and 367,960 gates on Noir, and 37.4 ms and 115.8 KB on GordieHowe. So our compiler's overhead is about 17 percent in gates on Noir and about 14 percent in proving time on GordieHowe.
 
 ### 7.2 Parsing dominates the zkVM
 
@@ -97,17 +103,17 @@ Over the whole 43-entity store, a decision took 23.3 million cycles: 50 percent 
 
 ### 7.3 Compiler coverage
 
-Of 7 upstream policy sets, 5 compile. All 40 of their requests match the oracle on Noir and on GordieHowe [E4, E11]. Blocked: `streaming_service` by datetime and arithmetic, `tags_n_roles` by entity tags. Generated Noir circuits range from 474,605 to 879,278 gates. One hundred extra policies add about 11 thousand gates: size follows what a decision opens, not how many policies exist. Store size does not matter below the tree's depth limit. In the browser, proving took 4 to 7 seconds for circuits up to 632 thousand gates and about 45 seconds for one of 859 thousand, before the context change [E2].
+Of 7 upstream policy sets, 5 compile. All 40 of their requests match the oracle on Noir and on GordieHowe [E4, E11]. Blocked: `streaming_service` by datetime and arithmetic, `tags_n_roles` by entity tags. Generated Noir circuits range from 431,573 to 836,248 gates, prove in 2.1 to 3.9 s, and use 1.0 to 2.1 GB. On GordieHowe the same five prove in 43 to 115 ms, verify in 15 to 43 ms, make proofs of 125 to 163 KB, and compile in 3.9 to 6.8 s. One hundred extra policies add about 11 thousand gates: size follows what a decision opens, not how many policies exist. Store size does not matter below the tree's depth limit. In the browser, earlier versions of these circuits proved in 4 to 7 seconds up to 632 thousand gates and took about 45 seconds at 859 thousand [E2]. `TODO:` repeat under the final design.
 
 ### 7.4 Adversarial witnesses
 
 Differential tests use honest witnesses and cannot see a missing constraint [@watzinger2026lie]. So we attacked [E9, E11]:
 
-- **Noir, tampered inputs.** 4,301 attacks on five generated circuits. None got the opposite decision accepted.
+- **Noir, tampered inputs.** 3,880 attacks on the five final circuits, on top of 7,517 on earlier versions. None got the opposite decision accepted.
 - **Noir, tampered witness values.** 546 single-value changes on three circuits, proved and verified with Barretenberg. No public input change was accepted. 71 were accepted without changing any public input: 70 fit the inverse hint of an is-zero check whose operand is zero, and one was a SHA output whose tampered value did not reach the proof, shown by byte-identical deterministic proofs in a follow-up.
-- **GordieHowe.** Forged facts and the opposite decision, with an honest control through the same path. No attack changing a decision was accepted, and all rejections came from the verifier.
+- **GordieHowe.** 2,190 attacks on the five compiled sets and 274 on the signed hand-written relation, with an honest control through the same path. No attack changing a decision was accepted, and all rejections came from the verifier.
 
-The tests found one real gap: string padding was unconstrained, including in the public nonce, so one request had many encodings. It could not change a decision. It is fixed.
+The tests found one real gap: string padding was unconstrained, including in the public nonce, so one request had many encodings. It could not change a decision. The fixed layout of section 4 removes it, since padding is inside the hash.
 
 These are mostly one-at-a-time attacks and not a soundness proof. Noir's own checker is a connectivity heuristic, and its SHA-256 library raises a warning we have not audited. Noir 1.0.0's security file does not recommend production use.
 
@@ -136,7 +142,7 @@ These are mostly one-at-a-time attacks and not a soundness proof. Noir's own che
 
 ## 10. Limitations
 
-One machine. One policy language. TinyTodo is small. Timing for E11 and the signed backends is not from an idle machine. Our Term-to-circuit translation and the interpreter are unverified, and read terms from a Rust crate that a secondary source says is differentially tested, not proved. The compiler's coverage excludes real features. Phone proving is not measured. Most sources were read by an AI assistant in key sections.
+One machine. One policy language. TinyTodo is small. Our Term-to-circuit translation and the interpreter are unverified, and read terms from a Rust crate that a secondary source says is differentially tested, not proved. The compiler's coverage excludes real features. Phone proving is not measured. Most sources were read by an AI assistant in key sections.
 
 ## Disclosure
 

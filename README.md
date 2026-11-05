@@ -39,7 +39,7 @@ A verifier still has to check the proof to gain anything from it:
 
 ## How
 
-There are two ways to produce such a proof. This project builds both and
+There are several ways to produce such a proof. This project builds three and
 compares them on the same policies, the same data and the same requests.
 
 **Run Cedar inside a proving virtual machine.** The published Cedar evaluator
@@ -56,50 +56,38 @@ meaning are not reimplemented. The step from there to Noir is ours, and it is
 tested, not proved. This is the
 fast approach: a circuit does only the work the policy needs.
 
-The circuit reads the facts about users and resources from a Merkle tree, so
-its proof depends on the two or three records a decision touches, not on the
-size of the whole store. The virtual machine route still reads the whole store
-today.
+**Run that circuit on GordieHowe.** The same compiled policy, read at run time, on a
+proof system whose security theorems are machine-checked in Lean. This is the
+fastest route so far, and the one that may let the whole chain be checked.
+
+Every route reads the facts about users and resources from a Merkle tree, so a
+proof depends on the two or three records a decision touches, not on the size
+of the whole store.
 
 ## What we have found so far
 
-Measured on one laptop, an Apple M1 Max, in November 2026. One decision over a
-small to-do list application's policy with 43 users, teams and lists.
+Measured on one laptop, an Apple M1 Max, in November 2026. One decision over a small to-do list application's policy with 43 users, teams and lists. All three routes read the same two records and are compiled once per policy.
 
-| | Cedar in a virtual machine | Policy compiled to a circuit |
-|---|---|---|
-| Gives the same answers as Cedar | yes, 83 of 83 test requests | yes, 36 of 36 test requests |
-| Time to prove | not finished after 28 minutes | 2.2 to 2.8 seconds |
-| Time to prove in a web browser | not attempted | 4 to 7 seconds |
-| Time to check the proof | not measured | 20 milliseconds |
-| Proof size | not measured | 14.7 kilobytes |
-| Cedar features covered | all | 3 of 7 sample policy sets |
+| | Cedar in a virtual machine | Policy compiled to Noir | Policy compiled to GordieHowe |
+|---|---|---|---|
+| Gives the same answers as Cedar | 83 of 83 test requests | 40 of 40 | 40 of 40 |
+| Time to prove | 13 minutes | 2.1 seconds | 43 milliseconds |
+| Time to check the proof | 126 milliseconds | 15 milliseconds | 15 milliseconds |
+| Proof size | 2.2 megabytes | 15 kilobytes | 125 kilobytes |
+| Cedar coverage | all | 5 of 7 sample policy sets | 5 of 7 sample policy sets |
 
 What that says:
 
-- **The circuit is fast enough to use.** A person can wait for it, in a browser, on their own machine.
-- **The virtual machine is not, yet, on a laptop.** Almost none of its work is deciding. 99 percent is parsing text into data structures. It also had to read the whole store where the circuit reads two records, so this comparison is not yet like for like. And RISC Zero does not use the graphics processor on Apple hardware in its current release.
-- **The circuit does not cover everything.** Policies that read extra context from the request, compare dates, or use tags do not compile yet. Most of the gap is one missing feature.
-- **Browsers have a ceiling.** The largest sample circuit proves in 5 seconds natively and about 45 in a browser.
+- **The compiled routes are fast enough to use.** The virtual machine route is not, yet, on a laptop, and it runs on the CPU here because RISC Zero's release does not use the graphics processor on Apple hardware. Its 99 percent of work is parsing text, not deciding.
+- **The compiler does not cover everything.** Policies that compare dates, do arithmetic, or use tags do not compile yet.
+- **Facts can be vouched for.** An authority's signature over the facts adds little: under 40 milliseconds on GordieHowe, though its proof more than doubles.
+- **We tried to cheat and could not.** Thousands of attacks on the circuits found no way to get a wrong decision accepted. They also found one real weakness, now fixed. These attacks mostly change one value at a time, so this is evidence and not a proof of soundness.
 
-A third route is in progress. TinyTodo written by hand in GordieHowe, a proof system whose security theorems are machine-checked in Lean, proves in about 37 ms on one thread, with a 117 KB proof and 13 ms to check. Its strings have fixed lengths per request shape and its Lean certificate has not been checked for this program, so it is not yet comparable. Attack tests on the Noir circuits and on GordieHowe found no way to get a wrong decision accepted, with one change at a time.
-
-None of this is reviewed or published. Phone measurements, a fair
-like-for-like comparison of the two approaches, and proving times for the
-virtual machine on suitable hardware are still to come. One building block,
-the SHA-256 library used inside the circuits, raises a compiler warning that
-has not been audited. Neither route has a published proof that it
-is zero-knowledge, so private inputs are a goal and not yet a claim.
+None of this is reviewed or published. Three caveats matter. The translation from Cedar's compiler to these circuits is ours and is tested, not proved. GordieHowe has machine-checked security theorems, but they do not yet apply to our programs, and work to connect them is in progress. Neither Noir nor RISC Zero has a published proof that it is zero-knowledge, and all three warn they are research or not production-ready in places, so private inputs are a goal and not yet a claim.
 
 ## How new this is
 
-The idea is not new. Proof-carrying authorization dates from 1999, and Prezta
-(USENIX Security 2026) already proves XACML decisions in RISC Zero. What we have
-not found elsewhere is a compiler from Cedar to circuits, or one policy language
-measured on both a virtual machine and a compiled circuit. That is a search
-result, not proof of absence, and this niche moved monthly through 2026. The
-review is in `docs/literature/reports/`, with 423 references in
-`docs/literature/references.bib`.
+The idea is not new. Proof-carrying authorization dates from 1999, and Prezta (USENIX Security 2026) already proves XACML decisions in RISC Zero. What we have not found elsewhere is a compiler from Cedar to circuits, or one policy language measured on both a virtual machine and compiled proofs. That is a search result, not proof of absence, and this niche moved monthly through 2026. The review is in `docs/literature/reports/`, with 423 references in `docs/literature/references.bib`.
 
 ## What this is not
 
