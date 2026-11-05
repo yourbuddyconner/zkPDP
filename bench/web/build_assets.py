@@ -11,6 +11,9 @@ SETS = [
     ("tinytodo-hand", os.path.join(C, "tinytodo"), "tinytodo", "E2", "hand-written TinyTodo"),
     ("tinytodo", os.path.join(C, "generated", "tinytodo"), "policy", "E4", "generated TinyTodo"),
     ("github", os.path.join(C, "generated", "usecase-github_example"), "policy", "E4", "generated GitHub example"),
+    ("tinytodo-signed", os.path.join(C, "tinytodo_signed"), "tinytodo_signed", "E3", "hand-written TinyTodo, signed store"),
+    ("document_cloud", os.path.join(C, "generated", "usecase-document_cloud"), "policy", "E4", "generated Document Cloud"),
+    ("sales_orgs", os.path.join(C, "generated", "usecase-sales_orgs-static"), "policy", "E4", "generated Sales Orgs"),
     ("hotel", os.path.join(C, "generated", "usecase-hotel_chains-static"), "policy", "E4", "generated hotel chains"),
 ]
 out = os.path.join(HERE, "public", "circuits")
