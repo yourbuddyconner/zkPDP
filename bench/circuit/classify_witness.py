@@ -4,6 +4,8 @@
 Usage: classify_witness.py <results.jsonl> <generated dir> <summary out>
 Reads the honest witness again and the constraints that mention the value.
   zero_multiplicand  every use is a product with a value that is 0, the is-zero inverse hint
+  zero_after_offset  the same hint when the operand has a constant offset, (a + k) * inv, with a + k = 0
+  sha_output         an output of a SHA-256 compression, which Barretenberg recomputes; see check_overwritten.py
   unused             no constraint or black box mentions it
   other              anything else; these need a person
 """
@@ -39,6 +41,8 @@ for s in sorted({r["set"] for r in rows}):
                 for w in ws:
                     uses[w].append(("lin", i, []))
     bb = [(i, o) for i, o in enumerate(ops) if "AssertZero" not in o and "BrilligCall" not in o]
+    sha_out = {w for o in ops if "BlackBoxFuncCall" in o and "Sha256Compression" in o["BlackBoxFuncCall"] for w in o["BlackBoxFuncCall"]["Sha256Compression"][2]}
+    P = 21888242871839275222246405745257275088548364400416034343698204186575808495617
     for reqname in sorted({r["request"] for r in rows if r["set"] == s and r["accepted"]}):
         n = next(q["n"] for q in idx["requests"] if q["name"] == reqname)
         shutil.copy(f"{d}/inputs/{n}.toml", d + "/Prover.toml")
@@ -50,12 +54,34 @@ for s in sorted({r["set"] for r in rows}):
                 continue
             w = r["witness"]; u = uses.get(w, [])
             inbb = any(mentions(o, w) for _, o in bb)
-            if inbb:
+            def offset_zero():
+                # c * a * w + k * w + ... with c * a + k = 0: the value multiplies zero.
+                for k, i, _ in u:
+                    t = ops[i]["AssertZero"]
+                    total = 0
+                    for term in t[0]:
+                        ws = [y for y in term if isinstance(y, int)]
+                        if w in ws:
+                            co = int.from_bytes(term[0], "big")
+                            other = [z for z in ws if z != w]
+                            total += co * (val(other[0]) if other else val(w))
+                    for term in t[1]:
+                        ws = [y for y in term if isinstance(y, int)]
+                        if w in ws:
+                            total += int.from_bytes(term[0], "big")
+                    if total % P != 0:
+                        return False
+                return True
+            if w in sha_out:
+                c = "sha_output"
+            elif inbb:
                 c = "other"
             elif not u:
                 c = "unused"
             elif all(k == "mul" and all(val(z) == 0 for z in zs) for k, _, zs in u):
                 c = "zero_multiplicand"
+            elif offset_zero():
+                c = "zero_after_offset"
             else:
                 c = "other"
             region = "public" if w in public else "private_input" if w in private else "internal"

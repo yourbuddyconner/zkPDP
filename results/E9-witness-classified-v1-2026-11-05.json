@@ -1,0 +1,943 @@
+{
+ "counts": {
+  "tinytodo/brillig_output/zero_after_offset": 1,
+  "tinytodo/brillig_output/zero_multiplicand": 8,
+  "tinytodo/internal/sha_output": 3,
+  "usecase-github_example/brillig_output/zero_multiplicand": 19,
+  "usecase-github_example/internal/sha_output": 3,
+  "usecase-sales_orgs-static/brillig_output/zero_after_offset": 1,
+  "usecase-sales_orgs-static/brillig_output/zero_multiplicand": 33
+ },
+ "accepted": [
+  {
+   "set": "tinytodo",
+   "request": "l0-reader-gets",
+   "witness": 8937,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     10507
+    ]
+   ]
+  },
+  {
+   "set": "tinytodo",
+   "request": "l0-reader-gets",
+   "witness": 11261,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     13981
+    ]
+   ]
+  },
+  {
+   "set": "tinytodo",
+   "request": "l0-reader-gets",
+   "witness": 8837,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     10382
+    ]
+   ]
+  },
+  {
+   "set": "tinytodo",
+   "request": "l0-reader-gets",
+   "witness": 8929,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     10497
+    ]
+   ]
+  },
+  {
+   "set": "tinytodo",
+   "request": "l0-reader-gets",
+   "witness": 7809,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     9036
+    ]
+   ]
+  },
+  {
+   "set": "tinytodo",
+   "request": "l0-reader-gets",
+   "witness": 8668,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     10162
+    ]
+   ]
+  },
+  {
+   "set": "tinytodo",
+   "request": "l0-reader-gets",
+   "witness": 7904,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     9155
+    ]
+   ]
+  },
+  {
+   "set": "tinytodo",
+   "request": "l0-reader-gets",
+   "witness": 4272,
+   "stratum": "internal",
+   "region": "internal",
+   "classification": "sha_output",
+   "uses": []
+  },
+  {
+   "set": "tinytodo",
+   "request": "l0-stranger-gets",
+   "witness": 8228,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_after_offset",
+   "uses": [
+    [
+     "mul",
+     9591
+    ],
+    [
+     "lin",
+     9591
+    ]
+   ]
+  },
+  {
+   "set": "tinytodo",
+   "request": "l0-stranger-gets",
+   "witness": 7828,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     9060
+    ]
+   ]
+  },
+  {
+   "set": "tinytodo",
+   "request": "l0-stranger-gets",
+   "witness": 6271,
+   "stratum": "internal",
+   "region": "internal",
+   "classification": "sha_output",
+   "uses": []
+  },
+  {
+   "set": "tinytodo",
+   "request": "l0-stranger-gets",
+   "witness": 4270,
+   "stratum": "internal",
+   "region": "internal",
+   "classification": "sha_output",
+   "uses": []
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "allow/query_alice_read_common_knowledge",
+   "witness": 22991,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     29021
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "allow/query_alice_read_common_knowledge",
+   "witness": 24539,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     30956
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "allow/query_alice_read_common_knowledge",
+   "witness": 26788,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     33803
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "allow/query_alice_read_common_knowledge",
+   "witness": 24419,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     30806
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "allow/query_alice_read_common_knowledge",
+   "witness": 18050,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     22609
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "allow/query_alice_read_common_knowledge",
+   "witness": 23631,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     29821
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "allow/query_alice_read_common_knowledge",
+   "witness": 19996,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     25211
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "allow/query_alice_read_common_knowledge",
+   "witness": 18968,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     23926
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "allow/query_alice_read_common_knowledge",
+   "witness": 9376,
+   "stratum": "internal",
+   "region": "internal",
+   "classification": "sha_output",
+   "uses": []
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "deny/query_alice_read_secret",
+   "witness": 17770,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     22189
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "deny/query_alice_read_secret",
+   "witness": 9010,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     10238
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "deny/query_alice_read_secret",
+   "witness": 17134,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     21235
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "deny/query_alice_read_secret",
+   "witness": 26012,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     32833
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "deny/query_alice_read_secret",
+   "witness": 25456,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     32138
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "deny/query_alice_read_secret",
+   "witness": 23215,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     29301
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "deny/query_alice_read_secret",
+   "witness": 26288,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     33178
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "deny/query_alice_read_secret",
+   "witness": 19080,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     24066
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "deny/query_alice_read_secret",
+   "witness": 24771,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     31246
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "deny/query_alice_read_secret",
+   "witness": 20600,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     25966
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "deny/query_alice_read_secret",
+   "witness": 20324,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     25621
+    ]
+   ]
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "deny/query_alice_read_secret",
+   "witness": 5945,
+   "stratum": "internal",
+   "region": "internal",
+   "classification": "sha_output",
+   "uses": []
+  },
+  {
+   "set": "usecase-github_example",
+   "request": "deny/query_alice_read_secret",
+   "witness": 11130,
+   "stratum": "internal",
+   "region": "internal",
+   "classification": "sha_output",
+   "uses": []
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "allow/alice_view",
+   "witness": 21503,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     26329
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "allow/alice_view",
+   "witness": 55378,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     69690
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "allow/alice_view",
+   "witness": 22721,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     27903
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "allow/alice_view",
+   "witness": 72374,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     91178
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "allow/alice_view",
+   "witness": 70446,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     88736
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "allow/alice_view",
+   "witness": 88941,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     112082
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "allow/alice_view",
+   "witness": 31105,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     38511
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "allow/alice_view",
+   "witness": 62182,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     78278
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "allow/alice_view",
+   "witness": 74258,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     93565
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "allow/alice_view",
+   "witness": 29705,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     36729
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "allow/alice_view",
+   "witness": 25557,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     31480
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "allow/alice_view",
+   "witness": 41942,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     52703
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "allow/alice_view",
+   "witness": 70754,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     89121
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "allow/alice_view",
+   "witness": 28593,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     35339
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "allow/alice_view",
+   "witness": 40614,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     51010
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "allow/alice_view",
+   "witness": 25889,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     31895
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "deny/charlie_view",
+   "witness": 12673,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_after_offset",
+   "uses": [
+    [
+     "mul",
+     14735
+    ],
+    [
+     "lin",
+     14735
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "deny/charlie_view",
+   "witness": 51302,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     64531
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "deny/charlie_view",
+   "witness": 24007,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     29541
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "deny/charlie_view",
+   "witness": 53262,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     67013
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "deny/charlie_view",
+   "witness": 69158,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     87126
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "deny/charlie_view",
+   "witness": 44022,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     55335
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "deny/charlie_view",
+   "witness": 66178,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     83337
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "deny/charlie_view",
+   "witness": 90761,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     114390
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "deny/charlie_view",
+   "witness": 53800,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     67717
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "deny/charlie_view",
+   "witness": 85417,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     107646
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "deny/charlie_view",
+   "witness": 57051,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     71795
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "deny/charlie_view",
+   "witness": 63886,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     80440
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "deny/charlie_view",
+   "witness": 67946,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     85579
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "deny/charlie_view",
+   "witness": 39012,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     48640
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "deny/charlie_view",
+   "witness": 21929,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     26913
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "deny/charlie_view",
+   "witness": 47850,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     60184
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "deny/charlie_view",
+   "witness": 51062,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     64231
+    ]
+   ]
+  },
+  {
+   "set": "usecase-sales_orgs-static",
+   "request": "deny/charlie_view",
+   "witness": 72099,
+   "stratum": "brillig_output",
+   "region": "internal",
+   "classification": "zero_multiplicand",
+   "uses": [
+    [
+     "mul",
+     90834
+    ]
+   ]
+  }
+ ]
+}

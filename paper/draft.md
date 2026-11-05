@@ -110,7 +110,7 @@ Of 7 upstream policy sets, 5 compile. All 40 of their requests match the oracle 
 Differential tests use honest witnesses and cannot see a missing constraint [@watzinger2026lie]. So we attacked [E9, E11]:
 
 - **Noir, tampered inputs.** 3,880 attacks on the five final circuits, on top of 7,517 on earlier versions. None got the opposite decision accepted.
-- **Noir, tampered witness values.** 546 single-value changes on three circuits, proved and verified with Barretenberg. No public input change was accepted. 71 were accepted without changing any public input: 70 fit the inverse hint of an is-zero check whose operand is zero, and one was a SHA output whose tampered value did not reach the proof, shown by byte-identical deterministic proofs in a follow-up.
+- **Noir, tampered witness values.** 366 single-value changes on three final circuits, proved and verified with Barretenberg, after 546 on earlier versions. No public input change was accepted. 68 were accepted without changing any public input, and each matches a checked pattern: 62 are the inverse hint of an is-zero check whose operand is zero, and 6 are SHA compression outputs whose tampered values did not reach the proof, which we inferred from byte-identical deterministic proofs in a targeted test.
 - **GordieHowe.** 2,190 attacks on the five compiled sets and 274 on the signed hand-written relation, with an honest control through the same path. No attack changing a decision was accepted, and all rejections came from the verifier.
 
 The tests found one real gap: string padding was unconstrained, including in the public nonce, so one request had many encodings. It could not change a decision. The fixed layout of section 4 removes it, since padding is inside the hash.

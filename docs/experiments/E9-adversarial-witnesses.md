@@ -60,3 +60,14 @@ Harder-looking result, then settled. Changing a SHA compression output was accep
 ## H11
 
 Supported within these limits.
+
+## Update 2026-11-05: under the final design
+
+Fixed-layout hashes, decision 0026. Three generated circuits, tinytodo, github_example and sales_orgs. `results/E9-witness-attacks-v1-2026-11-05.jsonl`, `results/E9-witness-classified-v1-2026-11-05.json`, `results/E9-witness-overwritten-v1-2026-11-05.json`, `results/E9-input-attacks-v1-2026-11-05.jsonl`.
+
+- 366 single-value witness changes. No public input change was accepted. 68 were accepted without changing any public input.
+- `classify_witness.py` now checks each accepted value against explicit patterns, and leaves none unexplained: 60 are the is-zero inverse hint with a zero operand, 2 the same hint after a constant offset, and 6 are SHA compression outputs.
+- For SHA outputs, of 16 targeted changes, 11 gave a byte-identical deterministic proof and 5 were rejected. None gave a different proof that verified. Of 16 Brillig outputs beside an assertion, 15 were rejected and 1 gave a different proof that verified, with an honest value of 0, which fits the is-zero pattern.
+- 3,880 input attacks on all five circuits, none accepting the opposite decision.
+
+The limits above still apply: one change at a time, and a sample.
