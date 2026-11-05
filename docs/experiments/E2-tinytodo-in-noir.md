@@ -114,6 +114,13 @@ Times include process start. Proving used all 10 cores.
 - `bbup` has no Barretenberg version mapped to Noir 1.0.0, which is six days old. Barretenberg 6.0.0, the latest stable, was chosen by hand. It proves and verifies this circuit.
 - Not measured: browser proving, phone proving, the scaling series. The scaling series matters less here: the circuit's size depends on tree depth and slot counts, not on store size.
 
+### Later change
+
+During E4 the record commitment gained schema layouts, a presence bit per
+attribute, and 16 ancestor slots in place of 8. The hand-written circuit was
+updated to match and is now 388,254 gates. The result file above is from the
+earlier definition.
+
 ### Gate B
 
 Passes. 353,518 gates against a threshold of 1 million. Phase 4, the compiler,
