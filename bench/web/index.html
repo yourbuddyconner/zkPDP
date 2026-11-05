@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>zk-pdp: proving in the browser</title>
+    <style>
+      :root { color-scheme: light dark; }
+      body { font: 16px/1.5 system-ui, sans-serif; max-width: 44rem; margin: 2rem auto; padding: 0 1rem; }
+      h1 { font-size: 1.3rem; }
+      label { display: block; margin: 0.75rem 0 0.25rem; }
+      select, input, button { font: inherit; padding: 0.4rem 0.6rem; }
+      button { margin-top: 1rem; }
+      table { border-collapse: collapse; margin-top: 1rem; width: 100%; }
+      th, td { border-bottom: 1px solid #8884; padding: 0.3rem 0.5rem; text-align: right; font-variant-numeric: tabular-nums; }
+      th:first-child, td:first-child { text-align: left; }
+      #env, #log { font-size: 0.85rem; white-space: pre-wrap; opacity: 0.8; }
+    </style>
+  </head>
+  <body>
+    <h1>Prove one authorization decision in this browser</h1>
+    <p>The page builds the witness for one corpus request and proves it with UltraHonk. Timings are sent back to the machine that serves this page.</p>
+    <div id="env"></div>
+    <label for="circuit">Circuit</label>
+    <select id="circuit"></select>
+    <label for="mode">Mode</label>
+    <select id="mode">
+      <option value="noir-recursive">zero-knowledge</option>
+      <option value="noir-recursive-no-zk">plain</option>
+    </select>
+    <label for="repeats">Repeats</label>
+    <input id="repeats" type="number" min="1" max="10" value="3" />
+    <label for="device">Device name, as you want it recorded</label>
+    <input id="device" placeholder="for example: iPhone 15, Safari" />
+    <div><button id="run">Run</button></div>
+    <table id="out" hidden>
+      <thead><tr><th>Run</th><th>Witness s</th><th>Prove s</th><th>Verify ms</th><th>Proof bytes</th><th>Valid</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <div id="log"></div>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>

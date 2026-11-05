@@ -1,0 +1,11 @@
+{
+  "name": "zk-pdp-web-bench",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "vite build", "serve": "node server.mjs" },
+  "dependencies": {
+    "@aztec/bb.js": "npm:@aztec-foundation/bb.js@6.0.0",
+    "@noir-lang/noir_js": "1.0.0"
+  },
+  "devDependencies": { "vite": "^6.0.0" }
+}
