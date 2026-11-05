@@ -33,7 +33,7 @@ fn main() {
     let policy_hash = parse_hex_hash(m["policy_hash"].as_str().unwrap()).unwrap();
     let schema_hash = parse_hex_hash(m["schema_hash"].as_str().unwrap()).unwrap();
     let entities: Value = serde_json::from_slice(&fs::read(dir.join("entities.json")).unwrap()).unwrap();
-    let store = RecordStore::new(&entities).expect("record store");
+    let store = RecordStore::new(&entities, &envelope::Layouts::new()).expect("record store");
 
     fs::write(
         out.join("src/consts.nr"),
@@ -77,7 +77,7 @@ fn main() {
             }
             let rows = |v: &[[u8; 32]]| format!("[{}]", v.iter().map(|x| arr(x)).collect::<Vec<_>>().join(", "));
             writeln!(t, "[{name}]").unwrap();
-            writeln!(t, "n_attrs = {}", rec.n_attrs).unwrap();
+            writeln!(t, "present = {}", rec.present).unwrap();
             writeln!(t, "attrs = {}", rows(&rec.attrs[..MAX_ATTRS])).unwrap();
             writeln!(t, "ancestors = {}", rows(&rec.ancestors[..MAX_ANC])).unwrap();
             writeln!(t, "path = {}", rows(&sib)).unwrap();

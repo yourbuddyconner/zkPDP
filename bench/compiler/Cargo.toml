@@ -1,0 +1,12 @@
+[package]
+name = "cedar-to-noir"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+cedar-policy = "=4.14.1"
+cedar-policy-symcc = "0.8"
+envelope = { path = "../envelope" }
+serde_json = "1"
+smol_str = "0.3"

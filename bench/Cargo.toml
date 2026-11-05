@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["envelope", "zkvm/methods", "zkvm/host", "corpus-tool", "circuit-tool"]
+members = ["envelope", "zkvm/methods", "zkvm/host", "corpus-tool", "circuit-tool", "compiler"]
 exclude = ["zkvm/methods/guest"]
 
 [profile.dev]

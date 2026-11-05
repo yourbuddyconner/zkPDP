@@ -1,6 +1,6 @@
 {
   "entities": {
-    "root": "sha256:1e1aea52c3e79d080d5e6d07f7d544985d999594d43c92718130465bd179a37d",
+    "root": "sha256:6fb3fd1202fb63b9042a269a5cbe690f10da57574c5d7df3a50f5ad6c427cb6a",
     "type": "merkle-sha256-record-v0"
   },
   "policy_hash": "sha256:443dfe8937a65db10be57915411e301daf0ee9111fd6146e3e8c643eaca1f866",

@@ -1,15 +1,21 @@
 #!/usr/bin/env python3
-"""E2 harness: run the hand-written TinyTodo circuit over the corpus and write results as JSON Lines.
+"""Circuit harness: run one Noir circuit over its corpus inputs and write results as JSON Lines.
 
-Usage: python3 bench/circuit/run.py <out.jsonl> [repeats]
-Needs nargo and bb on PATH. Run `circuit-tool` first to write inputs/.
+Usage: python3 bench/circuit/run.py <out.jsonl> [repeats] [circuit dir] [experiment] [description]
+
+Defaults run E2, the hand-written TinyTodo circuit. For E4 pass a directory
+written by `cedar-to-noir compile`. Needs nargo and bb on PATH. With 0
+repeats only correctness and gate count are recorded.
 """
 import json, os, re, shutil, subprocess, sys, time, statistics
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
-C = os.path.join(HERE, "tinytodo")
 out_path, repeats = sys.argv[1], int(sys.argv[2]) if len(sys.argv) > 2 else 5
+C = os.path.abspath(sys.argv[3]) if len(sys.argv) > 3 else os.path.join(HERE, "tinytodo")
+EXPERIMENT = sys.argv[4] if len(sys.argv) > 4 else "E2"
+DESC = sys.argv[5] if len(sys.argv) > 5 else "bench/circuit/tinytodo, hand-written"
+PKG = re.search(r'name = "([^"]+)"', open(os.path.join(C, "Nargo.toml")).read()).group(1)
 
 
 def sh(*a, cwd=None):
@@ -23,7 +29,7 @@ def one(*a):
 idx = json.load(open(os.path.join(C, "inputs", "index.json")))
 dirty = bool(one("git", "-C", REPO, "status", "--porcelain", "--", "bench", "corpus"))
 header = {
-    "experiment": "E2",
+    "experiment": EXPERIMENT,
     "backend": "circuit-noir",
     "commit": one("git", "-C", REPO, "rev-parse", "HEAD"),
     "tree_dirty": dirty,
@@ -36,7 +42,7 @@ header = {
     "toolchain": {"nargo": one("nargo", "--version").splitlines()[0], "bb": one("bb", "--version"),
                   "sha256_lib": "noir-lang/sha256 v0.3.0"},
     "set": idx["set"],
-    "circuit": "bench/circuit/tinytodo, hand-written",
+    "circuit": DESC,
 }
 out = open(out_path, "a")
 
@@ -68,7 +74,11 @@ sh("nargo", "compile", cwd=C)
 
 # Correctness: the circuit accepts the oracle's decision and rejects the opposite one.
 ok = bad = 0
+runnable = [r for r in idx["requests"] if "skipped" not in r]
 for req in idx["requests"]:
+    if "skipped" in req:
+        line(req, "matches_oracle", None, status="skipped", notes=req["skipped"])
+        continue
     accepts, _ = execute(req["n"])
     rejects_flip = not execute(req["n"], flip=True)[0]
     good = accepts and rejects_flip
@@ -80,11 +90,15 @@ print(f"matched oracle: {ok}  failed: {bad}")
 if bad:
     sys.exit(1)
 
-req = idx["requests"][0]
-g = json.loads(one("bb", "gates", "-b", os.path.join(C, "target/tinytodo.json")))["functions"][0]
+if not runnable:
+    sys.exit(0)
+req = runnable[0]
+g = json.loads(one("bb", "gates", "-b", os.path.join(C, f"target/{PKG}.json")))["functions"][0]
 line(req, "acir_opcodes", g["acir_opcodes"])
 line(req, "gates", g["circuit_size"], notes="bb gates circuit_size")
 print("gates", g["circuit_size"])
+if repeats == 0:
+    sys.exit(0)
 
 for i in range(repeats):
     _, secs = execute(req["n"])
@@ -96,12 +110,12 @@ for mode, target in [("zk", "noir-recursive"), ("plain", "noir-recursive-no-zk")
     shutil.rmtree(d, ignore_errors=True)
     os.makedirs(d)
     t0 = time.time()
-    r = sh("bb", "write_vk", "-b", "target/tinytodo.json", "-o", f"target/{mode}", "-t", target, cwd=C)
+    r = sh("bb", "write_vk", "-b", f"target/{PKG}.json", "-o", f"target/{mode}", "-t", target, cwd=C)
     line(req, f"vk_time_s_{mode}", time.time() - t0, status="ok" if r.returncode == 0 else "failed", notes=r.stderr[-200:] if r.returncode else "once per circuit")
     times = []
     for i in range(repeats):
         t0 = time.time()
-        r = sh("/usr/bin/time", "-l", "bb", "prove", "-b", "target/tinytodo.json", "-w", "target/tinytodo.gz",
+        r = sh("/usr/bin/time", "-l", "bb", "prove", "-b", f"target/{PKG}.json", "-w", f"target/{PKG}.gz",
                "-k", f"target/{mode}/vk", "-o", f"target/{mode}", "-t", target, cwd=C)
         secs = time.time() - t0
         if r.returncode != 0:

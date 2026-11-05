@@ -4,3 +4,4 @@ node_modules/
 .DS_Store
 bench/circuit/*/target/
 bench/circuit/*/Prover.toml
+bench/circuit/generated/

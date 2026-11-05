@@ -19,7 +19,7 @@ global MAX_NONCE: u32 = 32;
 global MAX_UID: u32 = 52; // type, `::"`, id, `"`
 global MAX_REQ: u32 = 256;
 global MAX_ATTRS: u32 = 8;
-global MAX_ANC: u32 = 8;
+global MAX_ANC: u32 = 16;
 global MAX_DEPTH: u32 = 12;
 
 // List attributes in name order: editors, name, owner, readers, tasks.
@@ -29,7 +29,7 @@ global LIST_READERS: u32 = 3;
 
 // One opened leaf of the entity commitment.
 struct Entity {
-    n_attrs: u8,
+    present: u8, // bit i set when attribute i is present
     attrs: [[u8; 32]; MAX_ATTRS],
     ancestors: [[u8; 32]; MAX_ANC],
     path: [[u8; 32]; MAX_DEPTH],
@@ -99,7 +99,7 @@ fn request_digest(
 
 fn leaf_hash(uid_h: [u8; 32], e: Entity) -> [u8; 32] {
     let mut a: [u8; 1 + 32 * MAX_ATTRS] = [0; 1 + 32 * MAX_ATTRS];
-    a[0] = e.n_attrs;
+    a[0] = e.present;
     for i in 0..MAX_ATTRS {
         for j in 0..32 {
             a[1 + 32 * i + j] = e.attrs[i][j];
@@ -200,7 +200,7 @@ fn main(
     let app_action = eq_str(action, "CreateList") | eq_str(action, "GetLists");
     assert(eq_str(subject_type, "User"));
     assert((list_action & is_list) | (app_action & is_app));
-    assert(!is_list | (resource.n_attrs == 5));
+    assert(!is_list | (resource.present == 31)); // all five List attributes
 
     let in_readers = is_in(principal.ancestors, resource.attrs[LIST_READERS]);
     let in_editors = is_in(principal.ancestors, resource.attrs[LIST_EDITORS]);
