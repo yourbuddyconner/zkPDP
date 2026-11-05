@@ -114,6 +114,31 @@ Times include process start. Proving used all 10 cores.
 - `bbup` has no Barretenberg version mapped to Noir 1.0.0, which is six days old. Barretenberg 6.0.0, the latest stable, was chosen by hand. It proves and verifies this circuit.
 - Not measured: browser proving, phone proving, the scaling series. The scaling series matters less here: the circuit's size depends on tree depth and slot counts, not on store size.
 
+### Browser, laptop
+
+Run on 2026-11-04 at commit 4f7f7e1. Chrome 156 on the same laptop, 10 threads,
+`noir_js` 1.0.0 and `bb.js` 6.0.0 in WebAssembly, page in `bench/web`.
+`results/E2-E4-browser-2026-11-04.jsonl`. Zero-knowledge mode.
+
+| Circuit | Gates | Witness | Prove, median | Prove, native | Slowdown |
+|---|---|---|---|---|---|
+| hand-written TinyTodo | 388,254 | 0.18 s | 4.3 s | about 2.4 s | 1.8 times |
+| generated TinyTodo | 453,510 | 0.22 s | 5.2 s | 2.75 s | 1.9 times |
+| generated GitHub example | 631,404 | 0.36 s | 6.9 s | 3.83 s | 1.8 times |
+| generated hotel chains | 858,182 | 2.86 s | 45 s, range 24 to 54 | 4.92 s | 9 times |
+
+- Under H2's 10 second bound for the three smaller circuits.
+- Hotel chains falls off a cliff. Natively it needs 2.1 GB. In WebAssembly it is slow and erratic, which fits memory pressure against the 4 GB address space. Circuits near a million gates are not practical in a browser with this prover.
+- The first proof after a page load is slower by 15 to 40 seconds while the reference string downloads. Two of the larger circuits need a bigger reference string than the library's default. The page asks for one.
+- Verification in the page takes 1.7 to 3.6 seconds, not 20 milliseconds. The JavaScript `verifyProof` used here derives the verification key from the circuit each time. A verifier that holds the key does not pay this. Not yet measured that way.
+- The native figure for the hand-written circuit is estimated from E2's 2.2 seconds at 353,518 gates. It was not re-timed after the commitment change.
+
+### Phone
+
+Not measured. The page is ready for it: `node bench/web/server.mjs <results file>`
+serves HTTPS with a self-signed certificate on port 8788 for devices on the
+same network, and records what the phone posts.
+
 ### Later change
 
 During E4 the record commitment gained schema layouts, a presence bit per

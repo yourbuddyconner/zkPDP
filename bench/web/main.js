@@ -48,7 +48,8 @@ $("run").onclick = async () => {
     const circuit = await (await fetch(`/circuits/${meta.name}/circuit.json`)).json();
     const input = await (await fetch(`/circuits/${meta.name}/input.json`)).json();
     let t = performance.now();
-    const api = await Barretenberg.new({ threads });
+    // Room for circuits up to 2^20 gates. The default is 2^19, too small for two of ours. The size must be a multiple of 2^17.
+    const api = await Barretenberg.new({ threads, srsSize: 2 ** 20 + 2 ** 17 });
     const backend = new UltraHonkBackend(circuit.bytecode, api);
     const noir = new Noir(circuit);
     await post({ ...base, metric: "setup_time_s", value: (performance.now() - t) / 1e3, repeat: 0, status: "ok" });
