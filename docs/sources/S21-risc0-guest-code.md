@@ -17,3 +17,7 @@ Accessed 2026-11-04. Trust: primary.
 ## Open items
 
 - Confirm std support in the guest. The Cedar crate needs std. The assistant believes std is supported with no threads, filesystem or network, from memory of earlier RISC Zero releases. Not confirmed this session. E1 step 0 settles it.
+
+## Update 2026-11-04, later the same day
+
+Confirmed by E1 step 0: a guest with `risc0-zkvm` 3.0 and the `std` feature builds and runs std Rust, including `cedar-policy` 4.14.1, `serde_json` and `regex`. The one failure was the `stacker` crate. Decision 0015.

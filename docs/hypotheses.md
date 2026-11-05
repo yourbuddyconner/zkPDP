@@ -10,8 +10,8 @@ named in `benchmark-protocol.md`.
 
 | ID | Hypothesis | Threshold | Tested by | Status |
 |---|---|---|---|---|
-| H1 | The unmodified Cedar evaluator runs in a RISC Zero guest and proves a TinyTodo-sized decision on a laptop CPU in practical time. | Under 50 million cycles. Composite receipt under 5 minutes. Succinct receipt under 15 minutes. | E1 | open |
-| H1b | In the zkVM backend, deserialization and transitive closure cost more cycles than evaluation. | Evaluation under 25 percent of total cycles. | E1 | open |
+| H1 | The unmodified Cedar evaluator runs in a RISC Zero guest and proves a TinyTodo-sized decision on a laptop CPU in practical time. | Under 50 million cycles. Composite receipt under 5 minutes. Succinct receipt under 15 minutes. | E1 | inconclusive. Cycles: supported, 23.3 million with schema, 11.7 million without. Time: one CPU run was stopped unfinished after 28 minutes, so the 5 minute bound fails on the prebuilt CPU prover. GPU prover built, not timed. Proof generation deferred by the human on 2026-11-04. |
+| H1b | In the zkVM backend, deserialization and transitive closure cost more cycles than evaluation. | Evaluation under 25 percent of total cycles. | E1 | supported. Evaluation is 0.3 percent on TinyTodo and at most 5.5 percent on any corpus set. `results/E1-exec-2026-11-04.jsonl`. |
 | H2 | A hand-written circuit for TinyTodo is small enough to prove client-side. | Under 1 million gates. Proves in under 10 seconds in a laptop browser and under 5 seconds natively on a phone. Gate B uses the gate count. | E2 | open |
 | H3 | Verifying one signature over the inputs costs more than evaluating the policy, in both backends. | Signature cost at least 2 times evaluation cost, measured in cycles for the zkVM backend and gates for the circuit backend. | E3 | open |
 | H4 | Most real policies fall in the subset the circuit compiler supports. | At least 80 percent of policy sets in the corpus compile with no construct unsupported. | E4 | open |

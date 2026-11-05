@@ -13,3 +13,7 @@ serde_json = "1"
 bincode = "1"
 hex = "0.4"
 libc = "0.2"
+
+[features]
+# Prove in this process with the Metal GPU prover instead of the prebuilt r0vm.
+metal = ["risc0-zkvm/metal"]

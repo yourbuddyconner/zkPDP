@@ -9,3 +9,9 @@ opt-level = 3
 [profile.release]
 debug = 1
 lto = "thin"
+
+# The Metal kernels in risc0-sys 1.5.0 do not compile with the Metal
+# toolchain of Xcode on macOS 27. Three assignments in poseidon2.metal are
+# made explicit. Prover side only. Decision 0017.
+[patch.crates-io]
+risc0-sys = { path = "vendor/risc0-sys" }

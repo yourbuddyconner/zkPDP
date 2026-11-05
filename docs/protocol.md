@@ -68,8 +68,8 @@ Fields:
 | `v` | Journal version. 0. |
 | `request_hash` | SHA-256 of the JCS (RFC 8785) bytes of the object `{subject, action, resource, context}` from the request, including the nonce. |
 | `policy_hash` | SHA-256 of the UTF-8 bytes of the policy set after Cedar's formatter with default options. |
-| `schema_hash` | SHA-256 of the UTF-8 bytes of the schema in Cedar schema syntax after Cedar's formatter. Required for the circuit backend. Optional for the zkVM backend when no schema is used. |
-| `entities.type` | `sha256-jcs-v0`: SHA-256 of the JCS bytes of the entity array sorted by UID, before transitive closure. `merkle-sha256-v0`: root of a binary Merkle tree whose leaves are SHA-256 of the JCS bytes of each entity after transitive closure, sorted by UID, with the leaf count as the first leaf and SHA-256 over `0x01 || left || right` for inner nodes. |
+| `schema_hash` | SHA-256 of the bytes of the schema file in Cedar schema syntax, as the policy authority publishes it. 32 zero bytes when no schema is used. Required for the circuit backend. |
+| `entities.type` | `sha256-jcs-v0`: SHA-256 of the JCS bytes of the entity array sorted by UID, before transitive closure. `merkle-sha256-v0`: root of a binary Merkle tree whose leaves are SHA-256 of the JCS bytes of each entity after transitive closure, sorted by UID, with SHA-256 of the entity count as 8 big-endian bytes as the first leaf, SHA-256 over `0x01 || left || right` for inner nodes, and a node without a sibling moved up unchanged. |
 | `entities.root` | The hash. |
 | `nonce` | Echo of the request nonce, or empty. |
 | `decision` | Boolean. True is permit. |
@@ -89,7 +89,8 @@ Strict mode. Each step is one check. Stop at the first failure.
 6. Check `schema_hash` if you require one.
 7. Check `entities.root` is the commitment you currently accept. Refuse a mismatch.
 8. Check `nonce` equals the nonce you issued, or that the epoch is current.
-9. Enforce `decision`.
+9. Check the top-level `decision` equals the journal's `decision`. Refuse a mismatch.
+10. Enforce `decision`.
 
 ## Compilation proof
 
@@ -109,6 +110,20 @@ A PDP that produces proofs lists a capability in its AuthZEN metadata at
 `/.well-known/authzen-configuration`. AuthZEN defines `capabilities` as an
 array of registered URNs. No URN is registered for this. Until one is, the
 project uses a placeholder and says so in the paper.
+
+## Mapping an AuthZEN request to a Cedar request
+
+- `subject.type` and `subject.id` form the principal UID. `resource.type` and `resource.id` form the resource UID.
+- `action.name` becomes `Action::"<name>"`. A name that contains `::` is a full Cedar UID.
+- `context` becomes the Cedar context after `nonce` and `epoch` are removed.
+- `properties` are ignored in version 0. Attributes come only from the committed entity store. See decision 0016.
+
+## Who canonicalizes
+
+The evaluator hashes the bytes it parses. It does not canonicalize. The party
+that publishes a hash publishes the hash of canonical bytes, and the verifier
+computes the request hash from its own canonical request. A decider that
+supplies other bytes produces a hash no verifier accepts.
 
 ## Canonicalization notes
 

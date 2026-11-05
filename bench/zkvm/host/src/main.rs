@@ -35,7 +35,9 @@ fn load(repo: &Path, name: &str) -> Set {
     let d = repo.join("corpus/sets").join(name);
     let manifest: Value = serde_json::from_slice(&fs::read(repo.join("corpus/MANIFEST.json")).unwrap()).unwrap();
     let m = manifest["sets"][name].clone();
-    let uses_schema = m["uses_schema"].as_bool().unwrap();
+    // ZKPDP_NO_SCHEMA=1 is the variant where the guest gets no schema. The
+    // authority validates entities against the schema before it commits to them.
+    let uses_schema = m["uses_schema"].as_bool().unwrap() && std::env::var("ZKPDP_NO_SCHEMA").is_err();
     Set {
         name: name.into(),
         policies: fs::read(d.join("policies.cedar")).unwrap(),
@@ -111,6 +113,8 @@ impl Out {
                 "dev_mode": std::env::var("RISC0_DEV_MODE").unwrap_or_default(),
             },
             "image_id": hex::encode(image_id()),
+            "variant": if std::env::var("ZKPDP_NO_SCHEMA").is_ok() { "no-schema" } else { "schema" },
+            "prover_build": if cfg!(feature = "metal") { "in-process, metal" } else { "r0vm prebuilt, ipc" },
         });
         let file = fs::OpenOptions::new().create(true).append(true).open(path).unwrap();
         Out { file, header }
@@ -188,7 +192,13 @@ fn check(set: &Set, request: &Value, j: &Journal) -> Result<(), String> {
 fn cmd_exec(repo: &Path, out: &str) {
     let mut o = Out::new(repo, out, "E1");
     let (mut ok, mut bad) = (0, 0);
+    let only = std::env::var("ZKPDP_SETS").ok();
     for name in set_names(repo) {
+        if let Some(o) = &only {
+            if !o.split(',').any(|x| x == name) {
+                continue;
+            }
+        }
         let set = load(repo, &name);
         for r in &set.requests {
             match execute(&set, r).and_then(|x| check(&set, r, &x.0).map(|_| x)) {
@@ -310,7 +320,7 @@ fn cmd_demo(repo: &Path, name: &str, kind: &str, outdir: &str) {
     let pins = Pins {
         evaluators: vec![(format.into(), image_id())],
         policy_hashes: vec![parse_hex_hash(set.manifest["policy_hash"].as_str().unwrap()).unwrap()],
-        schema_hash: Some(parse_hex_hash(set.manifest["schema_hash"].as_str().unwrap()).unwrap()),
+        schema_hash: if set.schema.is_empty() { None } else { Some(parse_hex_hash(set.manifest["schema_hash"].as_str().unwrap()).unwrap()) },
         entity_roots: vec![parse_hex_hash(set.manifest["entities_sha256_jcs_v0"].as_str().unwrap()).unwrap()],
         nonce: r["request"].pointer("/context/nonce").and_then(Value::as_str).map(str::to_owned),
     };
