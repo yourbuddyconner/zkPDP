@@ -42,4 +42,13 @@ Strict mode.
 
 ## Results
 
-None yet.
+In progress, not a verdict.
+
+Reading done: SymCert's Theorems 1 and 4 are about `evals`, term evaluation under an interpretation, so link A does not depend on an SMT consumer, for the Lean model (S06). `cedar-spec` commit `acb0db7` pins Lean v4.34.0, the same as GordieHowe, and needs `batteries` and not Mathlib, so one project may hold both. Not tried.
+
+Link D so far, on 2026-11-05, with the fixed-layout relation:
+
+- The first export's `Program.lean` was 115 MB, 90 MB of it one `decision` predicate, because a shared expression prints as a tree. Committing intermediate bits cut it to 14 MB, without slowing proving.
+- It first failed with `maximum recursion depth`, a limit and not a rejected proof. At `maxRecDepth` 2,000,000 the program module built in 3.5 minutes. The relation's export therefore carries a local change to `kLeanModuleOptions`.
+- 29 of 169 modules of the certificate tree had built with no failure when Claude Code stopped the build because the machine was critically low on memory. `Valid`, `Realize`, `Annotations`, `Completion`, `Facts`, `Ready` and `Certified` are not built. So the kernel has not accepted this program.
+- Building `cedar-spec` was refused by the permission system, because Lake runs code from that repository. The human has been asked.
