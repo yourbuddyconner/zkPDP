@@ -173,3 +173,16 @@ About 6.8 kHz on this CPU prover. For the last few minutes a low-priority `brew 
 Median 5.38 million cycles: Cedar building its entities 3.08 million, parsing the policy set 2.00 million, opening the records 0.13 million, mapping the request 0.07 million, authorizing 0.07 million.
 
 Differences that remain from the circuits, by design: the guest hashes the schema without parsing it, so it does not refuse a request outside the schema, and Cedar denies it. It handles any string length. A policy that dereferences a third entity would need that entity opened too, and this guest opens two.
+
+### E1b: proving, the first like-for-like number
+
+Commit cdca793, tree clean. One TinyTodo deny, `l0-stranger-gets`, three runs. `results/E1b-prove-records-2026-11-05.jsonl`. A low-priority Lean toolchain download ran alongside.
+
+| Metric | Value |
+|---|---|
+| Composite proof | 779 s median, 775 to 783 |
+| Peak memory | 11.5 GB |
+| Receipt | 2.24 MB |
+| Verification, median of 20 | 125 ms |
+
+Succinct and Groth16 receipts are not measured. Gate A: the 5 minute composite bound in H1 fails by less than ten times, so the zkVM backend stays as the server-side and audit backend, and the client-side claim rests on the circuit backends.

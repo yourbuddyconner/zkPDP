@@ -22,6 +22,10 @@
 #include "gordiehowe/examples/shared/domain_profile.h"
 #include "gordiehowe/lib/sha256.h"
 #include "gordiehowe/system.h"
+#include "gordiehowe/compiler/emit_export.h"
+#include "gordiehowe/compiler/plan_export.h"
+#include "gordiehowe/compiler/plan_program.h"
+#include "gordiehowe/compiler/plan_proofs.h"
 #include "params/param_sets.h"
 #include "random/secure_random_engine.h"
 #include "util/crypto.h"
@@ -130,17 +134,20 @@ struct Tiny {
     assert_equal(pcopy, policy_hash, "policy.pub");
     assert_equal(pcopy, constant(in["policy_hash"]), "policy");
     assert_equal(scopy, schema_hash, "schema.pub");
-    assert_equal(scopy, constant(in["schema_hash"]), "schema");
+    assert_equal(scopy, constant(in["schema_hash"]), "schema_const");
     assert_equal(ncopy, nonce, "nonce.pub");
 
     // Strings JSON and Cedar write without escaping, so concatenation is canonical.
-    for (const CRef &f : {stype, sid, action, rtype, rid}) {
-      auto w = f.from_bits();
-      assert_true(!(w < 0x20) & (w < 0x7f) & (w != 0x22) & (w != 0x5c), "plain");
+    {
+      int fi = 0;
+      for (const CRef &f : {stype, sid, action, rtype, rid}) {
+        auto w = f.from_bits();
+        assert_true(!(w < 0x20) & (w < 0x7f) & (w != 0x22) & (w != 0x5c), "plain" + std::to_string(fi++));
+      }
     }
     {
       auto w = ncopy.from_bits();
-      assert_true(!(w < 0x20) & (w < 0x7f) & (w != 0x22) & (w != 0x5c), "plain nonce");
+      assert_true(!(w < 0x20) & (w < 0x7f) & (w != 0x22) & (w != 0x5c), "plain_nonce");
     }
 
     // The canonical request is the one the verifier hashed.
@@ -201,7 +208,7 @@ struct Tiny {
     BitE list_action = get_list | edits | a("DeleteList") | a("EditShare");
     BitE app_action = a("CreateList") | a("GetLists");
     assert_true(is_str(stype, sl, "User"), "subject type");
-    assert_true((list_action & is_list) | (app_action & is_app), "schema");
+    assert_true((list_action & is_list) | (app_action & is_app), "fits_schema");
     auto &pe = ents[0]; auto &re = ents[1];
     auto slot_eq = [&](BitE x, BitE y) -> BitE { return !(x ^ y).any(0); };
     auto in_anc = [&](BitE group) -> BitE {
@@ -281,8 +288,57 @@ static std::string shape_of(const Input &in) {
   return s.str();
 }
 
+// The compiled system's plan, realized program and proof modules, as Lean, for
+// Lean's kernel to check (E10). Follows examples::write_plan, without its test header.
+template <class C>
+static void export_lean(const C &cs, const std::string &dir, const std::string &commit) {
+  compiler::ExportMeta meta{"zkpdp-tinytodo", P::kId, commit, "zkpdp", 0};
+  meta.lean_name = "Heldout.ZkpdpTinyTodo." + compiler::lean_param_set(P::kId);
+  const std::string plan = compiler::export_lean_plan(cs, meta);
+  const compiler::ProgramData program = compiler::build_program(cs, meta);
+  const compiler::ProofModuleData data = compiler::proof_module_data(cs, meta, program);
+  std::vector<std::pair<std::string, std::string>> modules;
+  modules.emplace_back(compiler::lean_plan_file(dir, meta), plan);
+  modules.emplace_back(compiler::lean_program_file(dir, meta), program.text);
+  modules.emplace_back(compiler::lean_derivs_file(dir, meta), program.derivs);
+  for (const auto &mod : compiler::proof_modules(data, compiler::ProofTemplate{}))
+    modules.emplace_back(compiler::lean_proof_file(dir, meta, mod), mod.text);
+  const std::filesystem::path base = std::filesystem::path(modules.front().first).parent_path();
+  const std::filesystem::path gkr = base / "GKR";
+  size_t certs = 0;
+  for (size_t d = 0; d < cs.num_domains(); ++d) {
+    std::string cert = cs.compiled_domain(d).gkr_certificate();
+    if (cert.empty()) continue;
+    certs++;
+    modules.emplace_back((gkr / (cs.domain(d).name + ".cert")).string(), std::move(cert));
+  }
+  for (auto &ex : compiler::emit_tables(cs, meta)) {
+    modules.emplace_back((gkr / (ex.domain + ".ghc")).string(), std::string(ex.ghc.begin(), ex.ghc.end()));
+    for (auto &[rel, text] : ex.modules) modules.emplace_back((base / rel).string(), std::move(text));
+  }
+  size_t bytes = 0;
+  for (const auto &[path, text] : modules) {
+    std::filesystem::create_directories(std::filesystem::path(path).parent_path());
+    std::ofstream(path, std::ios::binary) << text;
+    bytes += text.size();
+  }
+  printf("exported %zu modules, %zu bytes, %zu GKR certificates, under %s\n", modules.size(), bytes, certs, base.c_str());
+  std::string report = cs.report();
+  printf("%s\n", report.substr(0, 2600).c_str());
+}
+
 int main(int argc, char **argv) {
   std::string dir = argv[1];
+  if (const char *ex = getenv("ZKPDP_EXPORT")) {
+    std::vector<std::string> fs;
+    for (auto &e : std::filesystem::directory_iterator(dir)) fs.push_back(e.path().string());
+    std::sort(fs.begin(), fs.end());
+    Input in = read_input(fs[0]);
+    Tiny t(in);
+    printf("shape %s compile %.0f ms\n", shape_of(in).c_str(), t.compile_ms);
+    export_lean(*t.comp, ex, argv[3]);
+    return 0;
+  }
   std::ofstream out(argv[2], std::ios::app);
   std::string commit = argv[3];
   int repeats = argc > 4 ? atoi(argv[4]) : 1;
