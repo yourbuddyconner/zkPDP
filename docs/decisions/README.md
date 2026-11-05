@@ -34,3 +34,4 @@ reviewing each record. Those records are the ones to re-read first.
 | 0023 | A paper first, practical if possible, and the order of work | accepted |
 | 0024 | The request context is a record behind its own public hash | accepted, pending review |
 | 0025 | Signed credentials are an ECDSA P-256 signature over the store's root | accepted, pending review |
+| 0026 | Fixed-layout request and UID hashes for the record backends | accepted, pending review |
