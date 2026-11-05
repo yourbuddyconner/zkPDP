@@ -1,0 +1,10 @@
+<!doctype html><meta charset="utf-8"><title>GordieHowe in the browser</title>
+<p>GordieHowe, compiled to WebAssembly, one thread, in a Web Worker. Add ?set=tinytodo, github, document_cloud, sales_orgs or hotel, and &repeats=5.</p>
+<pre id="log"></pre>
+<script>
+const q = new URLSearchParams(location.search);
+const w = new Worker(`run.js?set=${q.get("set") || "tinytodo"}&repeats=${q.get("repeats") || 3}&commit=${q.get("commit") || ""}`);
+window.__lines = []; window.__finished = false;
+w.onmessage = (e) => { if (e.data.line) { window.__lines.push(e.data.line); document.getElementById("log").textContent += e.data.line + "\n"; } if (e.data.done) window.__finished = true; };
+w.onerror = (e) => { window.__lines.push("WORKER ERROR " + e.message); window.__finished = true; };
+</script>

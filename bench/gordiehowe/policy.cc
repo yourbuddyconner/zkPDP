@@ -595,6 +595,7 @@ int main(int argc, char **argv) {
   std::ofstream out(argv[3], std::ios::app);
   std::string set = argv[4], commit = argv[5];
   int repeats = argc > 6 ? atoi(argv[6]) : 1;
+  const bool run_attacks = argc > 7 ? atoi(argv[7]) != 0 : true;  // off for browser timing
   std::vector<std::string> files;
   for (auto &e : std::filesystem::directory_iterator(dir)) files.push_back(e.path().string());
   std::sort(files.begin(), files.end());
@@ -633,6 +634,7 @@ int main(int argc, char **argv) {
     typename Sys::ProveOptions opt;
     opt.require_satisfied = false;
     auto attack = [&](const std::string &an, const std::function<void(Input &)> &mut, bool flip) {
+      if (!run_attacks) return;
       auto pr2 = t->comp->prepare(t->statement(in, flip));
       bool acc = false, th = false;
       try { acc = pr2.verify(pr2.prove(t->witness(in, mut), rng, opt)); } catch (...) { th = true; }

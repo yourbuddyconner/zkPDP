@@ -24,6 +24,13 @@ const types = { ".html": "text/html", ".js": "text/javascript", ".json": "applic
 function handle(req, res) {
   res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
   res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+  // Raw lines from the GordieHowe page, which writes its own JSON Lines.
+  if (req.method === "POST" && req.url === "/raw" && process.argv[4]) {
+    let b = "";
+    req.on("data", (c) => (b += c));
+    req.on("end", () => { appendFileSync(process.argv[4], b); res.end("ok"); });
+    return;
+  }
   if (req.method === "POST" && req.url === "/result") {
     let body = "";
     req.on("data", (c) => (body += c));
