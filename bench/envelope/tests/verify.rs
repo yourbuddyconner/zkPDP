@@ -147,3 +147,28 @@ fn merkle_paths_verify_for_every_leaf_and_size() {
         }
     }
 }
+
+#[test]
+fn record_store_opens_every_entity_and_closes_ancestors() {
+    let es = json!([
+        {"uid":{"type":"Team","id":"a"},"attrs":{},"parents":[]},
+        {"uid":{"type":"Team","id":"b"},"attrs":{},"parents":[{"type":"Team","id":"a"}]},
+        {"uid":{"type":"User","id":"u"},"attrs":{"level":7,"home":"x"},"parents":[{"type":"Team","id":"b"}]},
+        {"uid":{"type":"List","id":"l"},"attrs":{"owner":{"__entity":{"type":"User","id":"u"}}},"parents":[]}
+    ]);
+    let store = RecordStore::new(&es).unwrap();
+    for r in &store.records {
+        let (rec, path) = store.open(&r.uid_text).unwrap();
+        assert!(merkle_verify(&rec.leaf(), &path, &store.root));
+    }
+    let (u, _) = store.open("User::\"u\"").unwrap();
+    // u is in b directly and in a through b.
+    assert!(u.ancestors.contains(&uid_hash("Team::\"a\"")));
+    assert!(u.ancestors.contains(&uid_hash("Team::\"b\"")));
+    assert_eq!(u.n_attrs, 2);
+    // Attributes are in name order: home, level.
+    assert_eq!(u.attrs[0], sha256(b"x"));
+    assert_eq!(u.attrs[1][31], 7);
+    let (l, _) = store.open("List::\"l\"").unwrap();
+    assert_eq!(l.attrs[0], uid_hash("User::\"u\""));
+}

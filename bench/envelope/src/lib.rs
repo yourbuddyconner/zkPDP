@@ -41,6 +41,8 @@ mod canon;
 #[cfg(feature = "std")]
 mod merkle;
 #[cfg(feature = "std")]
+mod records;
+#[cfg(feature = "std")]
 mod verify;
 #[cfg(feature = "std")]
 mod wire;
@@ -49,6 +51,8 @@ mod wire;
 pub use canon::*;
 #[cfg(feature = "std")]
 pub use merkle::*;
+#[cfg(feature = "std")]
+pub use records::*;
 #[cfg(feature = "std")]
 pub use verify::*;
 #[cfg(feature = "std")]

@@ -613,6 +613,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "circuit-tool"
+version = "0.0.0"
+dependencies = [
+ "envelope",
+ "serde_json",
+]
+
+[[package]]
 name = "cobs"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"

@@ -1,0 +1,9 @@
+[package]
+name = "circuit-tool"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+envelope = { path = "../envelope" }
+serde_json = "1"
