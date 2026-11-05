@@ -1,5 +1,7 @@
 # Design: proof-carrying authorization decisions
 
+The term comes from Appel and Felten (1999). Decision 0021.
+
 Date: 2026-11-04. Status: approved for planning by the human researcher on
 2026-11-04 ("ship it"). Changes after this date get a decision record.
 
@@ -22,12 +24,12 @@ the attributes that produced it.
 
 The thesis, in one sentence: a policy decision can be moved to a party the
 verifier does not trust, at a cost of seconds of proving and milliseconds of
-verification, inside the standard AuthZEN wire format, with no change to
-enforcement points that do not understand proofs.
+verification, inside the standard AuthZEN wire format, with no change to the
+specification.
 
 ## 2. Why this and why now
 
-- Cedar has a Lean-verified evaluator, a validator that removes runtime errors from validated policies, and a verified symbolic compiler with a typed intermediate representation. No other mainstream policy language offers all three. They make both of our backends possible.
+- Cedar has a Lean model of its evaluator with proofs about that model, tested differentially against the Rust code, a validator that removes runtime errors from validated policies, and a symbolic compiler with a typed intermediate representation whose Lean model is verified. Its parsers are not modeled. We found no other mainstream policy language that offers all three. They make both of our backends possible.
 - AuthZEN 1.0 became a Final specification in January 2026. Its response has an open `context` object and a rule that receivers ignore unknown fields. A proof fits without a spec change.
 - General zkVMs now run unmodified Rust. Prezta, at USENIX Security 2026, proved XACML decisions in RISC Zero. That is the direct precedent and the direct comparator.
 - Client-side proving in Noir is now measured in seconds on laptops and phones.
@@ -90,7 +92,7 @@ The guest program is the Cedar crate plus a thin shell. The policy set, schema, 
 
 First zkVM: RISC Zero. The guest is plain Rust and should port to SP1 if a second data point is wanted. Receipts come in three sizes: composite, succinct, and a Groth16 wrap. We measure all three and let the use case pick.
 
-What we expect to find: deserialization and transitive closure of entities cost more cycles than evaluation. If so, the protobuf input form and a pre-closed store are the first optimizations. Prezta found signature verification over inputs dominated everything else. We expect the same.
+What we expect to find: deserialization and transitive closure of entities cost more cycles than evaluation. If so, the protobuf input form and a pre-closed store are the first optimizations. On Prezta's heaviest policy, RSA was 45 percent and regex 47 percent of user cycles, and most of its policies use under 20K user cycles. We expect verifying a signature over inputs to cost more than evaluation here.
 
 ### 7.3 Backend B: Cedar compiled to a circuit
 
@@ -100,13 +102,13 @@ Front end: the `cedar-policy-symcc` crate, whose Term IR is modeled in Lean. Bac
 
 Design choices the circuit forces:
 
-- Strings are fixed-length byte arrays with a per-schema maximum. Equality with a literal compares hashes. The `like` operator is a bounded glob matcher.
-- The entity hierarchy is closed outside the circuit by the attribute authority. The store is committed as a Merkle root. `in` becomes one membership proof against that root.
+- Strings are fixed-length byte arrays with a per-schema maximum. Equality with a literal compares hashes. The `like` operator is not supported in compiler version 0, because strings are committed as hashes (decision 0019).
+- The entity hierarchy is closed outside the circuit by the attribute authority. The store is committed as a Merkle root. Each opened record holds its closed ancestors, so `in` is a scan of those slots (decisions 0018, 0019).
 - Sets have a per-schema maximum size.
 - Optional attributes carry a presence flag. Extension types map to fixed-width integers and bit operations.
 - A policy change produces a new circuit and a new verification key. The verifier allowlists keys, or accepts a compilation proof (7.5).
 
-Proof system: Noir with Barretenberg's UltraHonk, which has a zero-knowledge mode and proves in the browser and natively on phones.
+Proof system: Noir with Barretenberg's UltraHonk, whose zero-knowledge mode is designed to hide the witness, with no published proof that we found and a critical flaw in releases before v5.0.0 (S08 and the literature review). It proves in the browser and natively on phones.
 
 ### 7.4 Input provenance
 
@@ -121,7 +123,7 @@ A proof that the evaluator said permit over some entities is worthless if the de
 Not proof-in-proof. Verifying one proof system inside another costs millions of cycles or gates and buys little here. Two cheaper compositions:
 
 - **At the verifier.** Two proofs expose the same commitment, for example the hash of the attributes. The verifier checks each proof and checks the commitments match. A credential proof in Noir can bind to a policy proof in either backend.
-- **Compilation proof.** The weak point of the circuit backend is that a policy change yields a new verification key the verifier must trust. Run the Cedar-to-circuit compiler inside RISC Zero once per policy change. The journal states that policy hash H compiled to verification key K. Compilation is rare and offline, so a slow proof is fine. The verifier then accepts any K that arrives with a compilation proof, and policy is data again.
+- **Compilation proof.** The weak point of the circuit backend is that a policy change yields a new verification key the verifier must trust. Run the Cedar-to-circuit compiler inside RISC Zero once per policy change. The journal states that policy hash H compiled to verification key K. Compilation is rare and offline, so a slow proof is fine. The verifier then accepts any K that arrives with a compilation proof for an allowlisted policy hash. This saves distributing keys. It shows which compiler produced K, not that K is faithful to the policy.
 
 ### 7.6 Freshness and revocation
 
@@ -142,7 +144,7 @@ Where it is pure overhead: a trusted decision point inside one organization. A s
 
 ## 9. Decisions made so far
 
-See `decisions/`. In brief: Cedar (0001). AuthZEN envelope with the proof in the response context (0002). Two backends as peers (0003). RISC Zero first (0004). Noir and UltraHonk (0005). Cedar's Term IR as the compiler front end (0006). Policy as data in the zkVM (0007). Order of experiments (0008). Composition at the verifier and by compilation proof (0009). Results as committed JSON Lines (0010). The provenance system itself (0011). Journal contents and canonicalization (0012). Equal effort rule (0013). Plain names (0014).
+See `decisions/`. Later additions: GordieHowe as a third backend (0022). In brief: Cedar (0001). AuthZEN envelope with the proof in the response context (0002). Two backends as peers (0003). RISC Zero first (0004). Noir and UltraHonk (0005). Cedar's Term IR as the compiler front end (0006). Policy as data in the zkVM (0007). Order of experiments (0008). Composition at the verifier and by compilation proof (0009). Results as committed JSON Lines (0010). The provenance system itself (0011). Journal contents and canonicalization (0012). Equal effort rule (0013). Plain names (0014).
 
 ## 10. Left to the builder
 

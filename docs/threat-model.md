@@ -38,7 +38,7 @@ adversary in the privacy model.
 
 | Goal | Control |
 |---|---|
-| 1 | Soundness of the proof system. Correctness of the evaluator (Cedar's Lean model and differential tests) or of the compiler (verified front end, differential tests of the back end). |
+| 1 | Soundness of the proof system. Correctness of the evaluator (Cedar's Lean model and differential tests) or of the compiler (a front end with a verified Lean model, differential tests of the back end). Differential tests use honest witnesses and do not find missing constraints. |
 | 2 | Verifier nonce or epoch in the request context, echoed in the journal. Entity commitment or epoch rotated on revocation. |
 | 3 | Input provenance. Mode 1: Merkle inclusion against a root the verifier owns. Mode 2 and 3: signature of the attribute authority verified inside the proof. The transitive closure is computed by the authority, never by the decider. |
 | 4 | Verifier pins the evaluator identity and allowlists policy hashes, or accepts a compilation proof from a pinned compiler image. Schema hash in the journal. |
@@ -52,6 +52,16 @@ adversary in the privacy model.
 - The verifier obtains the evaluator identity and policy hashes over a channel the adversary does not control. How is out of scope.
 - The attribute authority's keys are not compromised.
 - Cedar's evaluator matches its Lean model for the inputs we use. We rely on Cedar's differential testing and run our own against the native evaluator.
+
+## Known gaps raised by the literature review
+
+Named here so they are not lost. None is addressed yet.
+
+- Adversarial-witness tests of generated circuits.
+- Equivocation: a publisher showing different roots to different verifiers, and a proof over a stale root. CONIKS, SEEMless and SCITT address the first. Zanzibar's "new enemy" problem is the second.
+- A trusted execution environment as the main alternative, and where it fails.
+- Source integrity and execution binding: a sound proof can still authorize the wrong thing.
+- A decision as an oracle: a verifier that can choose policies learns one bit per query.
 
 ## Out of scope
 

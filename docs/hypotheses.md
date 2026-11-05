@@ -20,8 +20,12 @@ named in `benchmark-protocol.md`.
 | H7 | The `reasons` field leaks attribute values. | At least one corpus policy set where the fired policy IDs determine an attribute value. Constructive. | E6 | open |
 | H8 | Verification is cheap enough for a constrained verifier. | Under 50 milliseconds on the laptop for every format except the raw composite receipt. | E1, E2 | supported for the circuit backend: 20 milliseconds, process start included. Not measured for the zkVM backend. |
 | H9 | The zkVM backend beats the circuit backend on policy-change cost, and the circuit backend beats the zkVM backend on client-side proving time, on the same policy set. | Both directions hold on TinyTodo. | E6 | open |
+| H10 | GordieHowe proves the TinyTodo decision faster than UltraHonk, with a Lean-checked certificate for the program. | Under 1 second on the laptop, proof under 1 MB, Lean accepts the certificate. | E8 | open |
+| H11 | Generated circuits reject adversarial witnesses. | No mutation that changes the proven decision, the opened facts or the bound request is accepted, across every compiled upstream set. | E9 | open |
 
 Hypotheses that were considered and not registered, with the reason:
 
 - "RISC Zero is cheaper than SP1" or the reverse. Vendor benchmarks disagree and we have one data point planned. Not a claim this paper should make.
 - "The zkVM backend is zero-knowledge." The open advisory says the STARK is not provably so. We report, not hypothesize.
+
+Note on H6, 2026-11-04: the threshold is unchanged. AuthZEN section 5.5 allows a PEP to reject, so a supported result can only say "on these named PEPs".

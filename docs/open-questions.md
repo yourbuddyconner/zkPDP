@@ -22,7 +22,11 @@ and strike the line here with the record number.
 - Do RISC Zero's precompiles leak private inputs through timing? The docs say they are not constant time. Matters only for the private-attribute mode. E3 and E6.
 - Is a Groth16 wrap needed at all when the verifier is a server and not a chain? Proof size versus wrap time. E1.
 - Can one circuit serve a policy template with literals as inputs, so small policy edits do not need a new verification key? Not planned. Note for the paper's future work.
-- Is the Prezta artifact available for a direct comparison on the same hardware?
+- ~~Is the Prezta artifact available for a direct comparison on the same hardware?~~ Yes, on Zenodo, doi:10.5281/zenodo.20303462. Not yet run.
+
+## For the human researcher, added 2026-11-04
+
+- **Is the request public in the private mode?** The human does not know yet. If the request names a principal, the mode hides attributes but not identity, and it cannot be called anonymous. Until settled, no document says anonymous. Blocks: the private mode's design in E3 and E6.
 
 ## Process
 

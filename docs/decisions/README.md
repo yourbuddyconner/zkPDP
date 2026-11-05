@@ -28,3 +28,6 @@ reviewing each record. Those records are the ones to re-read first.
 | 0017 | A vendored `risc0-sys` with a three-line Metal kernel fix | withdrawn |
 | 0018 | A record-shaped entity commitment for the circuit backend | accepted, pending review |
 | 0019 | How the Cedar to Noir compiler is built | accepted, pending review |
+| 0020 | Corrections from the literature review | applied |
+| 0021 | Keep "proof-carrying authorization" and cite its lineage | accepted |
+| 0022 | GordieHowe as a third backend | accepted |

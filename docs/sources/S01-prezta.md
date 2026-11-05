@@ -31,3 +31,7 @@ proofs are succinct, not zero-knowledge in the strict sense.
 
 - Read the full paper. Record proof sizes, exact hardware, and whether an artifact exists.
 - Confirm the arXiv identifier resolves to this paper. It did on 2026-11-04.
+
+## Update 2026-11-04
+
+Read through the arXiv v2 body by the literature review, appendices not closely. Authors in USENIX order: Wei, Ameer, Zhang, Borisov. 83 percent is 323 of 389 testable conformance cases. Proving about 14 or 28 s, proofs 238 to 250 KB, verifying 14 to 15.5 ms on a 16-vCPU machine. On its heaviest policy RSA was 45 percent and regex 47 percent of user cycles, so "signatures dominate" was too simple. It makes no zero-knowledge claim and has no committed fact store. Artifact: doi:10.5281/zenodo.20303462.

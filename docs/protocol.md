@@ -26,8 +26,9 @@ plain context fields and mean nothing to a PDP that does not know them.
 ## Response
 
 An AuthZEN decision. The proof sits in `context.proof`. AuthZEN says receivers
-must ignore unknown fields, so a PEP that does not know `proof` behaves as
-before.
+must ignore unknown fields, but section 5.5 also lets a PEP reject a permit over
+context it does not understand. So no specification change is needed, and
+behavior at an unmodified PEP has to be tested.
 
 ```json
 {
@@ -91,7 +92,7 @@ Strict mode. Each step is one check. Stop at the first failure.
 7. Check `entities.root` is the commitment you currently accept. Refuse a mismatch.
 8. Check `nonce` equals the nonce you issued, or that the epoch is current.
 9. Check the top-level `decision` equals the journal's `decision`. Refuse a mismatch.
-10. Enforce `decision`.
+10. Enforce the journal's `decision`. A proof that verifies is not a permit. A verified deny is a deny.
 
 ## Compilation proof
 

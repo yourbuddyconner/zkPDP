@@ -27,14 +27,15 @@ plus a small cryptographic proof of this statement:
 > This policy, applied to this request and this committed set of facts about
 > users and resources, gives this answer.
 
-Anyone can check the proof in about 20 milliseconds. Checking needs three
+On the circuit route, anyone can check the proof in about 20 milliseconds. Checking needs three
 published fingerprints: one for the policy, one for the facts, one for the
 program that evaluated them. It needs no trust in the decider.
 
-Two existing standards carry the idea, so nothing new has to be adopted:
+Two existing standards carry the idea, so no new standard is needed.
+A verifier still has to check the proof to gain anything from it:
 
 - **Cedar**, an open-source policy language from AWS, with an evaluator whose behavior is checked against a formal model.
-- **AuthZEN**, the OpenID Foundation's standard format for asking a decision point a question. Its response has room for extra data, and software that does not understand a proof ignores it and works as before.
+- **AuthZEN**, the OpenID Foundation's standard format for asking a decision point a question. Its response has room for extra data. The spec lets a client that does not understand that data ignore it or reject the decision, so compatibility has to be tested on real clients.
 
 ## How
 
@@ -42,19 +43,23 @@ There are two ways to produce such a proof. This project builds both and
 compares them on the same policies, the same data and the same requests.
 
 **Run Cedar inside a proving virtual machine.** The published Cedar evaluator
-runs, unchanged, inside RISC Zero, a system that proves a program ran
-correctly. The policy is ordinary input, so changing it changes nothing else.
+runs inside RISC Zero, a system that proves a program ran correctly. Cedar's own
+source is untouched, but one dependency that cannot build for that target is
+replaced with a stand-in. The policy is ordinary input, so changing it changes nothing else.
 This is the general approach: every Cedar feature works on day one.
 
 **Compile the policy into a circuit.** A Cedar policy set is translated into a
 fixed arithmetic circuit, written in the Noir language, that computes the
-same answer. The translation starts from Cedar's own verified compiler, so
-the hard parts of the language's meaning are not reimplemented. This is the
+same answer. The translation starts from Cedar's own symbolic compiler,
+which has a formal model and proofs in Lean, so the hard parts of the language's
+meaning are not reimplemented. The step from there to Noir is ours, and it is
+tested, not proved. This is the
 fast approach: a circuit does only the work the policy needs.
 
-Both read the facts about users and resources from a Merkle tree, so the
-proof depends on the two or three records a decision touches, not on the size
-of the whole store.
+The circuit reads the facts about users and resources from a Merkle tree, so
+its proof depends on the two or three records a decision touches, not on the
+size of the whole store. The virtual machine route still reads the whole store
+today.
 
 ## What we have found so far
 
@@ -81,7 +86,19 @@ None of this is reviewed or published. Phone measurements, a fair
 like-for-like comparison of the two approaches, and proving times for the
 virtual machine on suitable hardware are still to come. One building block,
 the SHA-256 library used inside the circuits, raises a compiler warning that
-has not been audited.
+has not been audited. The test requests use honest inputs, so they do not show
+that a cheating prover is stopped. Neither route has a published proof that it
+is zero-knowledge, so private inputs are a goal and not yet a claim.
+
+## How new this is
+
+The idea is not new. Proof-carrying authorization dates from 1999, and Prezta
+(USENIX Security 2026) already proves XACML decisions in RISC Zero. What we have
+not found elsewhere is a compiler from Cedar to circuits, or one policy language
+measured on both a virtual machine and a compiled circuit. That is a search
+result, not proof of absence, and this niche moved monthly through 2026. The
+review is in `docs/literature/reports/`, with 423 references in
+`docs/literature/references.bib`.
 
 ## What this is not
 

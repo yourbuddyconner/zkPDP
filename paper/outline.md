@@ -10,8 +10,7 @@ results say which half carried the paper.
 
 A policy decision can be moved to a party the verifier does not trust, at a
 cost of seconds of proving and milliseconds of verification, inside the
-standard AuthZEN wire format, with no change to enforcement points that do not
-understand proofs.
+standard AuthZEN wire format, with no change to the specification.
 
 ## Draft abstract
 
@@ -23,20 +22,20 @@ Phase 7 from the results. Do not quote it.
 > Cedar policy set inside a proof system and returns an ordinary AuthZEN
 > response carrying a succinct proof that a known evaluator applied a known
 > policy to authenticated inputs. We build two backends under one envelope:
-> the unmodified, Lean-verified Cedar evaluator running in a general zkVM, and
-> a compiler from validated Cedar policies, through Cedar's own verified
-> symbolic intermediate representation, to arithmetic circuits proved
+> the published Cedar evaluator, with one dependency replaced, running in a general zkVM, and
+> a compiler from validated Cedar policies, through Cedar's own symbolic
+> intermediate representation, to arithmetic circuits proved
 > client-side. We measure both on a shared corpus, including the cost of
 > input provenance, and show that they compose: proofs bind at the verifier
 > through shared commitments, and a zkVM proof of compilation lets a verifier
-> accept circuit keys without an allowlist. We report what each backend
+> obtain circuit keys by proof for an allowlisted policy. We report what each backend
 > leaks, which is zero-knowledge and which only succinct, and demonstrate
 > that an unmodified AuthZEN enforcement point accepts the response.
 
 ## Contributions, each mapped to evidence
 
 1. A proof-carrying AuthZEN response and verification procedure. `docs/protocol.md`, E7.
-2. Measurements of the unmodified Cedar evaluator in a zkVM, by segment. E1.
+2. Measurements of the published Cedar evaluator in a zkVM, by segment. E1.
 3. A compiler from validated Cedar to circuits through the Term IR, with a coverage number over a public corpus. E2, E4.
 4. The cost of input provenance in both backends. E3.
 5. Composition by verifier-side binding and by compilation proof. E5.
@@ -45,7 +44,7 @@ Phase 7 from the results. Do not quote it.
 
 ## Sections
 
-1. **Introduction.** The trust shift. Three settings where it matters: untrusted deciders including AI agent runtimes, private attributes, audit. One paragraph on where it is overhead. Contributions.
+1. **Introduction.** The trust shift, credited to proof-carrying authorization (Appel and Felten 1999). Three settings where it matters: untrusted deciders including AI agent runtimes, private attributes, audit. One paragraph on where it is overhead. Contributions.
 2. **Background.** Cedar and its verification. AuthZEN. zkVMs and circuits in two paragraphs each. Prezta.
 3. **Threat model.** From `docs/threat-model.md`.
 4. **The envelope.** From `docs/protocol.md`. Freshness, revocation, batch.
@@ -56,7 +55,7 @@ Phase 7 from the results. Do not quote it.
 9. **Evaluation.** Corpus, machines, protocol, equal effort hours. The comparison table. Scaling plots. Gate outcomes, including any cancelled path.
 10. **Privacy.** Per format and mode. The `reasons` demonstration.
 11. **Discussion and limitations.** Prove once present many. Where a signature wins. Trusted setup. Policy agility. Phone memory. What we did not measure.
-12. **Related work.** From `paper/related-work.md`.
+12. **Related work.** Opens with the proof-carrying authorization lineage, then `paper/related-work.md`.
 13. **Conclusion.**
 
 Appendix: result file index. Artifact description. Toolchain versions.

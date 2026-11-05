@@ -3,7 +3,7 @@
 Status: accepted, pending review. Date: 2026-11-04.
 Proposed by: assistant, while designing the E2 circuit.
 Accepted by: not yet reviewed by the human.
-Extends: 0012.
+Extends: 0012. Revised by 0019: 16 ancestor slots, not 8, and a presence bit per attribute.
 
 ## Context
 

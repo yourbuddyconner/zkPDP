@@ -21,3 +21,7 @@ Accessed 2026-11-04. Trust: primary.
 
 - Confirm the Term IR is reachable from a downstream crate and stable across minor versions. E4 step 1.
 - An earlier crate listing showed version 0.1.3 dated 2025-11-10 and 2025-12-12. Version 0.8.1 is current. Rapid movement. Pin.
+
+## Update 2026-11-04
+
+"Modeled and verified in Lean" describes the model. A secondary source says the Rust crate is differentially tested. Decision 0020.

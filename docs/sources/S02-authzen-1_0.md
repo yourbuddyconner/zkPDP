@@ -26,3 +26,7 @@ fetch tool. Last 4 percent of the page not read.
 
 - A secondary source gives the approval date as 2026-01-12. The spec page says 11 January 2026. We use the spec page.
 - Check whether any capability URN registry exists yet.
+
+## Update 2026-11-04
+
+Omitted above: section 5.5 says that a PEP that does not understand the context on a permit may reject the decision. The ignore-unknown rule is general and 5.5 is specific. Section 11.6's claim that signing gives accuracy is worth quoting, since a signature does not.

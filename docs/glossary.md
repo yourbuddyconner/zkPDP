@@ -27,7 +27,7 @@ One name for one thing. These are the names this project uses.
 - **Zero-knowledge proof**: a succinct proof that also reveals nothing about private inputs beyond the public outputs. Not every succinct proof is zero-knowledge.
 - **STARK**: the hash-based proof RISC Zero produces first. Large, no trusted setup.
 - **Groth16**: a small pairing-based proof. RISC Zero can wrap a STARK into one. Needs a trusted setup.
-- **UltraHonk**: Barretenberg's proof system for Noir circuits. Has a zero-knowledge mode.
+- **UltraHonk**: Barretenberg's proof system for Noir circuits. Its zero-knowledge mode is designed to hide the witness. We found no published proof of that.
 - **Term IR**: the typed intermediate representation that Cedar's symbolic compiler produces from a validated policy set.
 - **Symbolic compiler**: the `cedar-policy-symcc` crate. Compiles Cedar to Term IR and then to SMT formulas, for analysis.
 - **JCS**: JSON Canonicalization Scheme, RFC 8785. One byte string for one JSON value.

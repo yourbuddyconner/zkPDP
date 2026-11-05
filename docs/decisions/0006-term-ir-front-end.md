@@ -33,3 +33,7 @@ circuit backend.
 ## Sources
 
 S05, S06, S07.
+
+## Update 2026-11-04
+
+SymCert covers Cedar to Term in a Lean model. The Rust crate is reported, by a secondary source, to be differentially tested. Our Term to Noir step is outside any proof. Whether SymCert's theorems hold for a consumer that is not an SMT solver is unread. Say "a front end with a verified Lean model", not "a verified front end". Decision 0020.

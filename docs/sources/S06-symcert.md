@@ -14,3 +14,7 @@ symbolic compiler and authorizer, and a counterexample extractor.
 
 The formal statement of what the Term IR preserves, which is what makes it a
 trustworthy front end for our translation.
+
+## Update 2026-11-04
+
+Read in part by the literature review. The title page shows Emina Torlak as sole author, FMCAD 2026. It verifies a Lean compiler over a 42-operator term language on Cedar 4.4, covering datetime, duration and tags, and trusts the solver. Whether its theorems hold for a consumer that is not an SMT solver is unread and is the most urgent item for a person.

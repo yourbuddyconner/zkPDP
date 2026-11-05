@@ -35,3 +35,7 @@ that needs no PEP change. The spec's own extension point exists for this.
 ## Sources
 
 S02, S23.
+
+## Update 2026-11-04
+
+AuthZEN section 5.5 lets a PEP reject a permit over context it does not understand. "No specification change" holds. "No behavior change" depends on the implementation. E7 reports named PEPs. Decision 0020.

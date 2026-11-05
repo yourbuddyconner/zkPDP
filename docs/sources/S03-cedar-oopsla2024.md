@@ -15,3 +15,7 @@ reproduces.
 
 - Language semantics reference for the circuit encoding.
 - The benchmark generators as part of our corpus (S12).
+
+## Update 2026-11-04
+
+Read in the relevant sections by the literature review. Key `cutler2024cedar` in `docs/literature/references.bib`. Cedar decides in about 4 to 11 microseconds, which the paper's discussion of verification cost must face.
