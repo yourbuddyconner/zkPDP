@@ -1,6 +1,6 @@
 # E2: TinyTodo as a hand-written Noir circuit
 
-Status: planned. Written 2026-11-04.
+Status: steps 1 to 4, native laptop proving and verification done on 2026-11-04. Browser and phone not done. Written 2026-11-04.
 
 ## Question
 
@@ -69,4 +69,52 @@ Verification time.
 
 ## Results
 
-None yet.
+Run on 2026-11-04 at commit aca6faf. Apple M1 Max, 10 cores, 64 GB, macOS 27.2.
+Noir 1.0.0, Barretenberg 6.0.0, `noir-lang/sha256` v0.3.0. Circuit in
+`bench/circuit/tinytodo`. `results/E2-tinytodo-2026-11-04.jsonl`.
+
+### Correctness
+
+19 of 19 TinyTodo requests: the circuit accepts the oracle's decision and
+rejects the opposite decision. 10 permits and 9 denies.
+
+### Size and time, one decision
+
+| Metric | Zero-knowledge mode | Plain mode |
+|---|---|---|
+| Gates | 353,518 | same circuit |
+| Witness generation | 0.33 s | same |
+| Proving, median of 5 | 2.22 s | 2.19 s |
+| Peak memory | 0.78 GB | 0.75 GB |
+| Proof | 14,656 bytes | 13,120 bytes |
+| Public inputs | 5,184 bytes | 5,184 bytes |
+| Verification, median of 20 | 20 ms | 19 ms |
+| Verification key, once per circuit | 6.0 s | 1.1 s |
+
+Times include process start. Proving used all 10 cores.
+
+### What the circuit is
+
+- Public inputs are the journal: request hash, policy hash, schema hash, entity root, nonce, decision. 162 field elements, one per byte, which is why the public inputs are 5 kB.
+- The request is private. The circuit rebuilds its canonical JSON by concatenation and checks SHA-256 against the request hash.
+- The principal and the resource are opened from the entity root by Merkle path, depth up to 12.
+- The four policies are four boolean expressions over attribute slots and ancestor slots.
+- The policy logic is a few hundred gates. Nearly all 353 thousand are SHA-256: about 80 compressions for the request hash, two UID hashes, two leaves and two paths.
+
+### Design choices recorded
+
+- A record-shaped entity commitment. Decision 0018.
+- Strings in the request are limited to printable ASCII without quote or backslash, so canonical JSON is plain concatenation. Type and action up to 16 bytes, IDs and nonce up to 32.
+- The circuit asserts the request fits the schema: a User acts, with a list action on a List or an application action on the application. A request outside the schema has no proof.
+- A context with anything but a nonce is not supported by this circuit.
+
+### Caveats
+
+- Noir 1.0.0 reports "Brillig function call isn't properly covered by a manual constraint" inside `noir-lang/sha256` v0.3.0, at `build_msg_block`. The library does constrain the block by rebuilding each word, so this reads as a false positive of the checker. It has not been audited here. The library's README calls it experimental. A sound SHA-256 gadget is a precondition for every number above.
+- `bbup` has no Barretenberg version mapped to Noir 1.0.0, which is six days old. Barretenberg 6.0.0, the latest stable, was chosen by hand. It proves and verifies this circuit.
+- Not measured: browser proving, phone proving, the scaling series. The scaling series matters less here: the circuit's size depends on tree depth and slot counts, not on store size.
+
+### Gate B
+
+Passes. 353,518 gates against a threshold of 1 million. Phase 4, the compiler,
+is worth writing.

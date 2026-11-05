@@ -26,3 +26,4 @@ reviewing each record. Those records are the ones to re-read first.
 | 0015 | A stand-in for the `stacker` crate in the guest | accepted, pending review |
 | 0016 | The guest hashes the bytes it parses, and the AuthZEN to Cedar mapping | accepted, pending review |
 | 0017 | A vendored `risc0-sys` with a three-line Metal kernel fix | withdrawn |
+| 0018 | A record-shaped entity commitment for the circuit backend | accepted, pending review |

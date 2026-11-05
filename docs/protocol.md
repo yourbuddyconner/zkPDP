@@ -70,6 +70,7 @@ Fields:
 | `policy_hash` | SHA-256 of the UTF-8 bytes of the policy set after Cedar's formatter with default options. |
 | `schema_hash` | SHA-256 of the bytes of the schema file in Cedar schema syntax, as the policy authority publishes it. 32 zero bytes when no schema is used. Required for the circuit backend. |
 | `entities.type` | `sha256-jcs-v0`: SHA-256 of the JCS bytes of the entity array sorted by UID, before transitive closure. `merkle-sha256-v0`: root of a binary Merkle tree whose leaves are SHA-256 of the JCS bytes of each entity after transitive closure, sorted by UID, with SHA-256 of the entity count as 8 big-endian bytes as the first leaf, SHA-256 over `0x01 || left || right` for inner nodes, and a node without a sibling moved up unchanged. |
+| `entities.type`, continued | `merkle-sha256-record-v0`: the same tree over fixed-shape entity records, for circuits. Each leaf is SHA-256 of the UID hash, the hash of the attribute slots and the hash of the ancestor slots. Defined in `bench/envelope/src/records.rs`. Decision 0018. |
 | `entities.root` | The hash. |
 | `nonce` | Echo of the request nonce, or empty. |
 | `decision` | Boolean. True is permit. |
