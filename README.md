@@ -82,12 +82,13 @@ What that says:
 - **The circuit does not cover everything.** Policies that read extra context from the request, compare dates, or use tags do not compile yet. Most of the gap is one missing feature.
 - **Browsers have a ceiling.** The largest sample circuit proves in 5 seconds natively and about 45 in a browser.
 
+A third route is in progress. TinyTodo written by hand in GordieHowe, a proof system whose security theorems are machine-checked in Lean, proves in about 37 ms on one thread, with a 117 KB proof and 13 ms to check. Its strings have fixed lengths per request shape and its Lean certificate has not been checked for this program, so it is not yet comparable. Attack tests on the Noir circuits and on GordieHowe found no way to get a wrong decision accepted, with one change at a time.
+
 None of this is reviewed or published. Phone measurements, a fair
 like-for-like comparison of the two approaches, and proving times for the
 virtual machine on suitable hardware are still to come. One building block,
 the SHA-256 library used inside the circuits, raises a compiler warning that
-has not been audited. The test requests use honest inputs, so they do not show
-that a cheating prover is stopped. Neither route has a published proof that it
+has not been audited. Neither route has a published proof that it
 is zero-knowledge, so private inputs are a goal and not yet a claim.
 
 ## How new this is

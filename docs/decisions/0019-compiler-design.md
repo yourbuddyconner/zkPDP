@@ -49,3 +49,7 @@ typing, error semantics, and specialization per environment.
 ## Sources
 
 S05.
+
+## Update 2026-11-04
+
+E9 found that string padding was unconstrained, so public inputs had many encodings of one request. `assert_plain` now requires zero padding. Gate counts in E4 predate this by about 620 gates.

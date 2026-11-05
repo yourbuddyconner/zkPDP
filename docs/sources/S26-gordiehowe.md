@@ -19,3 +19,7 @@ PDF supplied by the human on 2026-11-04. Not in this repository. Trust: primary,
 - The language is for writing relations by hand. It has no authorization language and no policy compiler in the text read, so it does not take zk-pdp's claim. It would be a candidate back end for Term IR.
 - Per-program certificates checked in Lean are a direct alternative to the compilation proof (decision 0009). A certificate says the output is faithful. The compilation proof says only which compiler ran. The two answer different questions and could combine.
 - It is a credentials comparison at a different scale: tens of milliseconds and hundreds of kilobytes, against our seconds and 14.7 kB. Different hardware and different statements, so not a direct comparison.
+
+## Update 2026-11-04
+
+Built and run by this project at commit 4837770, natively on Apple silicon with local patches. See E8. Upstream's own tests were not run here.

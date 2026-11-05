@@ -20,8 +20,8 @@ named in `benchmark-protocol.md`.
 | H7 | The `reasons` field leaks attribute values. | At least one corpus policy set where the fired policy IDs determine an attribute value. Constructive. | E6 | open |
 | H8 | Verification is cheap enough for a constrained verifier. | Under 50 milliseconds on the laptop for every format except the raw composite receipt. | E1, E2 | supported for the circuit backend: 20 milliseconds, process start included. Not measured for the zkVM backend. |
 | H9 | The zkVM backend beats the circuit backend on policy-change cost, and the circuit backend beats the zkVM backend on client-side proving time, on the same policy set. | Both directions hold on TinyTodo. | E6 | open |
-| H10 | GordieHowe proves the TinyTodo decision faster than UltraHonk, with a Lean-checked certificate for the program. | Under 1 second on the laptop, proof under 1 MB, Lean accepts the certificate. | E8 | open |
-| H11 | Generated circuits reject adversarial witnesses. | No mutation that changes the proven decision, the opened facts or the bound request is accepted, across every compiled upstream set. | E9 | open |
+| H10 | GordieHowe proves the TinyTodo decision faster than UltraHonk, with a Lean-checked certificate for the program. | Under 1 second on the laptop, proof under 1 MB, Lean accepts the certificate. | E8 | partly supported. 36.7 ms and 116.6 KB. The certificate is not tested, and strings are fixed per request shape. |
+| H11 | Generated circuits reject adversarial witnesses. | No mutation that changes the proven decision, the opened facts or the bound request is accepted, across every compiled upstream set. | E9 | supported within limits: single-value attacks, 3,216 at input level and 546 at witness level, and 236 on GordieHowe. One malleability gap was found and fixed. Not a proof of soundness. |
 
 Hypotheses that were considered and not registered, with the reason:
 

@@ -26,3 +26,7 @@ It is the only option we found that answers "is the proof system zero-knowledge"
 ## Sources
 
 S26, S25, the literature review.
+
+## Update 2026-11-04
+
+The human allowed work on GordieHowe, on this machine only. Upstream documents x86-64 Linux with Nix, and a native build works with small local patches. See E8.
