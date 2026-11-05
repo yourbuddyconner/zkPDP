@@ -35,3 +35,19 @@ Accepted attacks with the same decision change entity slots the selected functio
 - Variable-length strings. `sha256_varlen` is the likely route, and would give one system for all shapes, as Noir has.
 - The Lean link from this interpreter's output to Cedar's term semantics. E10 covers that.
 - The interpreter's parser is new code outside any proof, and it reads text the Rust compiler wrote. Its checks are the differential and attack tests above.
+
+## Update 2026-11-05: one system per policy
+
+Decision 0026 removes the per-shape compile. `results/E11-policy-v1-smoke-2026-11-05.jsonl`, again a smoke run with a Lean build on the machine, so the times are indicative.
+
+| Set | Functions | Compile | Prove, median | Verify, median | Proof |
+|---|---|---|---|---|---|
+| tinytodo | 4 | 4.3 s | 46 ms | 16 ms | 125 KB |
+| github_example | 7 | 6.0 s | 65 ms | 23 ms | 150 KB |
+| document_cloud | 9 | 6.2 s | 67 ms | 24 ms | 157 KB |
+| sales_orgs | 10 | 7.0 s | 89 ms | 33 ms | 160 KB |
+| hotel_chains | 10 | 7.9 s | 126 ms | 47 ms | 163 KB |
+
+40 of 40 requests correct and 40 of 40 controls verified. 2,190 attacks, none accepting the opposite decision, none from a prover crash. 240 attacks with the same decision were accepted, on slots the selected function does not read.
+
+Fixed-length strings are no longer a limit on this comparison. The interpreter's parser remains new code outside any proof.

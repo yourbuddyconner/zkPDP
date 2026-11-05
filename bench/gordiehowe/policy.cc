@@ -5,8 +5,7 @@
 //
 //   zkpdp_policy <policy.ir> <inputs dir> <out.jsonl> <set> <commit> [repeats]
 //
-// Limit: strings have fixed lengths in a relation, so each request shape compiles
-// to its own system. Environments that cannot match a shape are left out of it.
+// Strings use the fixed layout of decision 0026, so one system serves every request.
 #include <algorithm>
 #include <chrono>
 #include <cstdio>
@@ -58,6 +57,16 @@ static ByteVec cat(std::initializer_list<ByteVec> xs) {
   return o;
 }
 static ByteVec str(const std::string &s) { return ByteVec(s.begin(), s.end()); }
+// One length byte, then the bytes, zero-padded. Decision 0026.
+constexpr size_t kCapType = 24, kCapId = 48, kCapAction = 32, kCapNonce = 32;
+static ByteVec fixed(const ByteVec &v, size_t cap) {
+  check(v.size() <= cap, "a string longer than its capacity");
+  ByteVec b{uint8_t(v.size())};
+  b.insert(b.end(), v.begin(), v.end());
+  b.resize(1 + cap, 0);
+  return b;
+}
+static ByteVec fixed(const std::string &s, size_t cap) { return fixed(str(s), cap); }
 static ByteVec unhex(const std::string &hex) {
   ByteVec b;
   for (size_t i = 0; i + 1 < hex.size(); i += 2) b.push_back(uint8_t(std::stoi(hex.substr(i, 2), nullptr, 16)));
@@ -119,8 +128,8 @@ struct Rel {
   HF hf;
   RSH rsh{hf};
   Sys cs{"zkpdp-policy"};
-  PRef request_hash, policy_hash, schema_hash, root, context_hash, nonce, decision;
-  CRef stype, sid, action, rtype, rid, pcopy, scopy, ncopy;
+  PRef request_hash, policy_hash, schema_hash, root, context_hash, decision;
+  CRef stype, sid, action, rtype, rid, nfield, pcopy, scopy;
   struct Opening { CRef uid, present, attrs, anc, path, sides, active; std::vector<CRef> left, right, next; };
   std::vector<Opening> ents;
   std::vector<CRef> sets, rec_present, rec_slots;
@@ -375,41 +384,29 @@ struct Rel {
     auto batch = sh::sha256_batch(cs[D], "sha");
     auto cb = [&](const std::string &s) { return kk::constant_bytes(str(s)); };
     auto constant = [&](const ByteVec &b) { return kk::constant_input(D, kk::constant_bytes(b)); };
-    size_t nl = in["nonce"].size();
     request_hash = D.pub(Bit{}, "request_hash", Shape{256});
     policy_hash = D.pub(Bit{}, "policy_hash", Shape{256});
     schema_hash = D.pub(Bit{}, "schema_hash", Shape{256});
     root = D.pub(Bit{}, "root", Shape{256});
     context_hash = D.pub(Bit{}, "context_hash", Shape{256});
-    nonce = D.pub(Bit{}, "nonce", Shape{nl, 8});
     decision = D.pub(Bit{}, "decision", Shape{1});
-    auto field = [&](const char *nm, const char *k) { return D.priv(Bit{}, nm, Shape{in[k].size(), 8}); };
-    stype = field("stype", "subject_type");
-    sid = field("sid", "subject_id");
-    action = field("action", "action");
-    rtype = field("rtype", "resource_type");
-    rid = field("rid", "resource_id");
+    auto field = [&](const char *nm, size_t cap) { return D.priv(Bit{}, nm, Shape{1 + cap, 8}); };
+    stype = field("stype", kCapType);
+    sid = field("sid", kCapId);
+    action = field("action", kCapAction);
+    rtype = field("rtype", kCapType);
+    rid = field("rid", kCapId);
+    nfield = field("nfield", kCapNonce);
     pcopy = D.priv(Bit{}, "pcopy", Shape{256});
     scopy = D.priv(Bit{}, "scopy", Shape{256});
-    ncopy = D.priv(Bit{}, "ncopy", Shape{nl, 8});
     assert_equal(pcopy, policy_hash, "policy.pub");
     assert_equal(pcopy, constant(pr.policy_hash), "policy_const");
     assert_equal(scopy, schema_hash, "schema.pub");
     assert_equal(scopy, constant(pr.schema_hash), "schema_const");
-    assert_equal(ncopy, nonce, "nonce.pub");
-    int fi = 0;
-    for (const CRef &f : {stype, sid, action, rtype, rid, ncopy}) {
-      if (f.size() == 0) continue;
-      auto w = f.from_bits();
-      assert_true(!(w < 0x20) & (w < 0x7f) & (w != 0x22) & (w != 0x5c), "plain" + std::to_string(fi++));
-    }
-    auto rh = nl ? sh::sha256(batch, "req", kk::sponge_input(cb("{\"action\":{\"name\":\""), action, cb("\"},\"context\":{\"nonce\":\""), nonce,
-                     cb("\"},\"resource\":{\"id\":\""), rid, cb("\",\"type\":\""), rtype, cb("\"},\"subject\":{\"id\":\""), sid, cb("\",\"type\":\""), stype, cb("\"}}")))
-                 : sh::sha256(batch, "req", kk::sponge_input(cb("{\"action\":{\"name\":\""), action, cb("\"},\"context\":{},\"resource\":{\"id\":\""), rid,
-                     cb("\",\"type\":\""), rtype, cb("\"},\"subject\":{\"id\":\""), sid, cb("\",\"type\":\""), stype, cb("\"}}")));
+    auto rh = sh::sha256(batch, "req", kk::sponge_input(cb("zk-pdp-req-v1"), action, nfield, rid, rtype, sid, stype));
     assert_equal(rh, request_hash, "request");
-    auto p_uid = sh::sha256(batch, "p_uid", kk::sponge_input(stype, cb("::\""), sid, cb("\"")));
-    auto r_uid = sh::sha256(batch, "r_uid", kk::sponge_input(rtype, cb("::\""), rid, cb("\"")));
+    auto p_uid = sh::sha256(batch, "p_uid", kk::sponge_input(stype, sid));
+    auto r_uid = sh::sha256(batch, "r_uid", kk::sponge_input(rtype, rid));
 
     std::map<std::string, V> shared;
     V ents_v, ok_v, sets_v, set_h_v, recs_v, rec_h_v;
@@ -479,15 +476,13 @@ struct Rel {
     assert_equal(digest("ctx.h", kk::sponge_input(ctx_present, ctx_slots)), context_hash, "ctx.hash");
 
     // Selection by types and action. Environments this shape cannot match are left out.
-    auto is_str = [&](const CRef &f, const std::string &s) -> BitE { return !(f.flat() ^ constant(str(s))).any(0); };
+    auto is_str = [&](const CRef &f, size_t cap, const std::string &s) -> BitE {
+      return !(f.flat() ^ constant(fixed(s, cap))).any(0);
+    };
     V dec = konst(false), any_sel = konst(false);
     for (const auto &g : pr.groups) {
       V sel = konst(false);
-      for (const auto &e : g.envs) {
-        if (e.p.size() != in["subject_type"].size() || e.a.size() != in["action"].size() || e.r.size() != in["resource_type"].size()) continue;
-        sel = v_or(sel, bitv(is_str(stype, e.p) & is_str(action, e.a) & is_str(rtype, e.r)));
-      }
-      if (sel.c && !*sel.c) continue;
+      for (const auto &e : g.envs) sel = v_or(sel, bitv(is_str(stype, kCapType, e.p) & is_str(action, kCapAction, e.a) & is_str(rtype, kCapType, e.r)));
       functions++;
       std::map<std::string, V> vars;
       vars["sel"] = sel;
@@ -541,7 +536,6 @@ struct Rel {
     st.set(schema_hash, bits(in["schema_hash"]));
     st.set(root, bits(in["entities_root"]));
     st.set(context_hash, bits(in["context_hash"]));
-    st.set(nonce, bits(in["nonce"]));
     bool d = in["decision"][0] != 0;
     st.set(decision, flags({flip ? !d : d}));
     return st;
@@ -551,12 +545,12 @@ struct Rel {
     Sys::Assignment w;
     w.set(pcopy, bits(in["policy_hash"]));
     w.set(scopy, bits(in["schema_hash"]));
-    w.set(ncopy, bits(in["nonce"]));
-    w.set(stype, bits(in["subject_type"]));
-    w.set(sid, bits(in["subject_id"]));
-    w.set(action, bits(in["action"]));
-    w.set(rtype, bits(in["resource_type"]));
-    w.set(rid, bits(in["resource_id"]));
+    w.set(stype, bits(fixed(in["subject_type"], kCapType)));
+    w.set(sid, bits(fixed(in["subject_id"], kCapId)));
+    w.set(action, bits(fixed(in["action"], kCapAction)));
+    w.set(rtype, bits(fixed(in["resource_type"], kCapType)));
+    w.set(rid, bits(fixed(in["resource_id"], kCapId)));
+    w.set(nfield, bits(fixed(in["nonce"], kCapNonce)));
     for (size_t k = 0; k < ents.size(); k++) {
       const Opening &o = ents[k];
       std::string e = "ents." + std::to_string(k);
@@ -593,11 +587,7 @@ struct Rel {
   }
 };
 
-static std::string shape_of(const Input &in) {
-  std::ostringstream s;
-  for (auto k : {"nonce", "subject_type", "subject_id", "action", "resource_type", "resource_id"}) s << in[k].size() << ".";
-  return s.str();
-}
+static std::string shape_of(const Input &) { return "all"; }
 
 int main(int argc, char **argv) {
   Program pr = read_program(argv[1]);

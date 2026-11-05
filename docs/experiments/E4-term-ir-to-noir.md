@@ -147,3 +147,17 @@ Decision 0024. Coverage of distinct upstream policy sets rises from 3 of 7 to 5 
 | sales_orgs | 798,171 |
 
 Two blocked sets remain: `streaming_service` by extension values and arithmetic, and `tags_n_roles` by entity tags. H4 stays refuted: 5 of 7 is 71 percent against a threshold of 80 percent. The two stores that do not conform to their schemas compile, and their requests match an oracle run without a schema.
+
+### Update 2026-11-05: fixed-layout hashes
+
+Decision 0026. All five circuits got smaller, and the string checks went away. `results/E4-compiled-v1-2026-11-05.jsonl`. 40 of 40 requests match. 3,880 more input attacks, none accepted the opposite decision: `results/E9-input-attacks-v1-2026-11-05.jsonl`.
+
+| Set | Gates, with JSON | Gates, fixed layout |
+|---|---|---|
+| tinytodo | 474,605 | 431,573 |
+| github_example | 652,500 | 609,470 |
+| document_cloud | 668,192 | 625,162 |
+| sales_orgs | 798,171 | 755,144 |
+| hotel_chains | 879,278 | 836,248 |
+
+The hand-written TinyTodo circuit went from 388,686 to 367,960 gates, and the signed one from 435,232 to 415,020.

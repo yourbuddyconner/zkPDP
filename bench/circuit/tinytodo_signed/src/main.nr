@@ -13,14 +13,12 @@
 mod consts;
 
 use consts::{POLICY_HASH, SCHEMA_HASH};
-use sha256::{digest, sha256_var};
+use sha256::digest;
 
-global MAX_TYPE: u32 = 16;
-global MAX_ID: u32 = 32;
-global MAX_ACTION: u32 = 16;
+global MAX_TYPE: u32 = 24;
+global MAX_ID: u32 = 48;
+global MAX_ACTION: u32 = 32;
 global MAX_NONCE: u32 = 32;
-global MAX_UID: u32 = 52; // type, `::"`, id, `"`
-global MAX_REQ: u32 = 256;
 global MAX_ATTRS: u32 = 8;
 global MAX_ANC: u32 = 16;
 global MAX_DEPTH: u32 = 12;
@@ -49,34 +47,26 @@ fn eq_str<let N: u32, let M: u32>(s: BoundedVec<u8, N>, lit: str<M>) -> bool {
     same
 }
 
-// The bytes must be ones that JSON and Cedar write without escaping, so the
-// canonical request and the UID text can be rebuilt by concatenation.
-fn assert_plain<let N: u32>(s: BoundedVec<u8, N>) {
+// A string's fixed form: one length byte, then its zero-padded storage. Decision 0026.
+fn write_str<let N: u32, let M: u32>(out: &mut [u8; M], at: u32, s: BoundedVec<u8, N>) -> u32 {
     assert(s.len() <= N);
+    out[at] = s.len() as u8;
+    let st = s.storage();
     for i in 0..N {
-        let c = s.get_unchecked(i);
-        let ok = (c >= 0x20) & (c < 0x7f) & (c != 0x22) & (c != 0x5c);
-        assert(ok | (i >= s.len()));
-        // Padding is zero, so one string has one encoding. E9.
-        assert((i < s.len()) | (c == 0));
+        out[at + 1 + i] = st[i];
     }
+    at + 1 + N
 }
 
-fn push_str<let N: u32, let M: u32>(buf: &mut BoundedVec<u8, N>, lit: str<M>) {
-    buf.extend_from_array(lit.as_bytes());
-}
-
-// SHA-256 of `Type::"id"`.
+// SHA-256 of a type's and an id's fixed forms.
 fn uid_hash(ty: BoundedVec<u8, MAX_TYPE>, id: BoundedVec<u8, MAX_ID>) -> [u8; 32] {
-    let mut buf: BoundedVec<u8, MAX_UID> = BoundedVec::new();
-    buf.extend_from_bounded_vec(ty);
-    push_str(&mut buf, "::\"");
-    buf.extend_from_bounded_vec(id);
-    push_str(&mut buf, "\"");
-    sha256_var(buf.storage(), buf.len())
+    let mut b: [u8; 2 + MAX_TYPE + MAX_ID] = [0; 2 + MAX_TYPE + MAX_ID];
+    let at = write_str(&mut b, 0, ty);
+    let _ = write_str(&mut b, at, id);
+    digest(b)
 }
 
-// SHA-256 of the canonical (JCS) AuthZEN request.
+// SHA-256 of the fixed-layout request. The nonce is bound here. The context's attributes are behind context_hash.
 fn request_digest(
     subject_type: BoundedVec<u8, MAX_TYPE>,
     subject_id: BoundedVec<u8, MAX_ID>,
@@ -85,21 +75,18 @@ fn request_digest(
     resource_id: BoundedVec<u8, MAX_ID>,
     nonce: BoundedVec<u8, MAX_NONCE>,
 ) -> [u8; 32] {
-    let mut b: BoundedVec<u8, MAX_REQ> = BoundedVec::new();
-    push_str(&mut b, "{\"action\":{\"name\":\"");
-    b.extend_from_bounded_vec(action);
-    push_str(&mut b, "\"},\"context\":{\"nonce\":\"");
-    b.extend_from_bounded_vec(nonce);
-    push_str(&mut b, "\"},\"resource\":{\"id\":\"");
-    b.extend_from_bounded_vec(resource_id);
-    push_str(&mut b, "\",\"type\":\"");
-    b.extend_from_bounded_vec(resource_type);
-    push_str(&mut b, "\"},\"subject\":{\"id\":\"");
-    b.extend_from_bounded_vec(subject_id);
-    push_str(&mut b, "\",\"type\":\"");
-    b.extend_from_bounded_vec(subject_type);
-    push_str(&mut b, "\"}}");
-    sha256_var(b.storage(), b.len())
+    let mut b: [u8; 13 + 6 + MAX_ACTION + MAX_NONCE + 2 * MAX_ID + 2 * MAX_TYPE] = [0; 13 + 6 + MAX_ACTION + MAX_NONCE + 2 * MAX_ID + 2 * MAX_TYPE];
+    let tag = "zk-pdp-req-v1".as_bytes();
+    for i in 0..13 {
+        b[i] = tag[i];
+    }
+    let at = write_str(&mut b, 13, action);
+    let at = write_str(&mut b, at, nonce);
+    let at = write_str(&mut b, at, resource_id);
+    let at = write_str(&mut b, at, resource_type);
+    let at = write_str(&mut b, at, subject_id);
+    let _ = write_str(&mut b, at, subject_type);
+    digest(b)
 }
 
 fn leaf_hash(uid_h: [u8; 32], e: Entity) -> [u8; 32] {
@@ -161,9 +148,9 @@ fn main(
     authority_x: pub [u8; 32],
     authority_y: pub [u8; 32],
     epoch: pub u64,
-    nonce: pub BoundedVec<u8, MAX_NONCE>,
     decision: pub bool,
-    // The request, private. The request hash binds it.
+    // The request, private. The request hash binds it, the nonce included.
+    nonce: BoundedVec<u8, MAX_NONCE>,
     subject_type: BoundedVec<u8, MAX_TYPE>,
     subject_id: BoundedVec<u8, MAX_ID>,
     action: BoundedVec<u8, MAX_ACTION>,
@@ -196,12 +183,6 @@ fn main(
     assert(schema_hash == SCHEMA_HASH);
 
     // The request is the one the verifier hashed.
-    assert_plain(subject_type);
-    assert_plain(subject_id);
-    assert_plain(action);
-    assert_plain(resource_type);
-    assert_plain(resource_id);
-    assert_plain(nonce);
     assert(
         request_digest(subject_type, subject_id, action, resource_type, resource_id, nonce)
             == request_hash,

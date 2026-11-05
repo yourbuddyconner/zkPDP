@@ -3,9 +3,7 @@
 //
 //   zkpdp_tinytodo <inputs dir> <out.jsonl> <commit> [repeats]
 //
-// Limit: strings have fixed lengths in a relation, so each request shape
-// (the six string lengths) compiles to its own system. The Noir circuit is
-// one circuit for all shapes. Compile time is measured for that reason.
+// Strings use the fixed layout of decision 0026, so one system serves every request.
 #include <algorithm>
 #include <chrono>
 #include <cstdio>
@@ -72,6 +70,16 @@ static ByteVec cat(std::initializer_list<ByteVec> xs) {
   return o;
 }
 static ByteVec str(const std::string &s) { return ByteVec(s.begin(), s.end()); }
+// One length byte, then the bytes, zero-padded. Decision 0026.
+constexpr size_t kCapType = 24, kCapId = 48, kCapAction = 32, kCapNonce = 32;
+static ByteVec fixed(const ByteVec &v, size_t cap) {
+  check(v.size() <= cap, "a string longer than its capacity");
+  ByteVec b{uint8_t(v.size())};
+  b.insert(b.end(), v.begin(), v.end());
+  b.resize(1 + cap, 0);
+  return b;
+}
+static ByteVec fixed(const std::string &s, size_t cap) { return fixed(str(s), cap); }
 
 struct Input {
   std::map<std::string, ByteVec> v;
@@ -102,7 +110,8 @@ struct Tiny {
   HF hf;
   RSH rsh{hf};
   Sys cs{"zkpdp-tinytodo"};
-  PRef request_hash, policy_hash, schema_hash, nonce, decision;
+  PRef request_hash, policy_hash, schema_hash, decision;
+  CRef nfield;
 #ifdef ZKPDP_SIGNED
   examples::mdoc::p256_ecdsa::Pub issuer_pk;
   PRef epoch;
@@ -131,8 +140,7 @@ struct Tiny {
   explicit Tiny(const Input &in) {
     auto &H = cs.domain(examples::domain_profile<P>(hf, rsh), "H");
     auto batch = sh::sha256_batch(cs[H], "sha");
-    auto byte_field = [&](const char *nm, size_t n) { return H.priv(Bit{}, nm, Shape{n, 8}); };
-    size_t nl = in["nonce"].size();
+    auto byte_field = [&](const char *nm, size_t cap) { return H.priv(Bit{}, nm, Shape{1 + cap, 8}); };
     request_hash = H.pub(Bit{}, "request_hash", Shape{256});
     policy_hash = H.pub(Bit{}, "policy_hash", Shape{256});
     schema_hash = H.pub(Bit{}, "schema_hash", Shape{256});
@@ -144,49 +152,31 @@ struct Tiny {
 #else
     root = H.pub(Bit{}, "root", Shape{256});
 #endif
-    nonce = H.pub(Bit{}, "nonce", Shape{nl, 8});
     decision = H.pub(Bit{}, "decision", Shape{1});
-    stype = byte_field("stype", in["subject_type"].size());
-    sid = byte_field("sid", in["subject_id"].size());
-    action = byte_field("action", in["action"].size());
-    rtype = byte_field("rtype", in["resource_type"].size());
-    rid = byte_field("rid", in["resource_id"].size());
+    stype = byte_field("stype", kCapType);
+    sid = byte_field("sid", kCapId);
+    action = byte_field("action", kCapAction);
+    rtype = byte_field("rtype", kCapType);
+    rid = byte_field("rid", kCapId);
+    nfield = byte_field("nfield", kCapNonce);
 
     // This relation is one policy set under one schema.
     auto constant = [&](const ByteVec &b) { return kk::constant_input(H, kk::constant_bytes(b)); };
     // A public value alone is no domain value, so each is pinned through a committed copy.
     pcopy = H.priv(Bit{}, "pcopy", Shape{256});
     scopy = H.priv(Bit{}, "scopy", Shape{256});
-    ncopy = H.priv(Bit{}, "ncopy", Shape{nl, 8});
     assert_equal(pcopy, policy_hash, "policy.pub");
     assert_equal(pcopy, constant(in["policy_hash"]), "policy");
     assert_equal(scopy, schema_hash, "schema.pub");
     assert_equal(scopy, constant(in["schema_hash"]), "schema_const");
-    assert_equal(ncopy, nonce, "nonce.pub");
-
-    // Strings JSON and Cedar write without escaping, so concatenation is canonical.
-    {
-      int fi = 0;
-      for (const CRef &f : {stype, sid, action, rtype, rid}) {
-        auto w = f.from_bits();
-        assert_true(!(w < 0x20) & (w < 0x7f) & (w != 0x22) & (w != 0x5c), "plain" + std::to_string(fi++));
-      }
-    }
-    {
-      auto w = ncopy.from_bits();
-      assert_true(!(w < 0x20) & (w < 0x7f) & (w != 0x22) & (w != 0x5c), "plain_nonce");
-    }
 
     // The canonical request is the one the verifier hashed.
     auto cb = [&](const std::string &s) { return kk::constant_bytes(str(s)); };
-    auto rh = sh::sha256(batch, "req",
-        kk::sponge_input(cb("{\"action\":{\"name\":\""), action, cb("\"},\"context\":{\"nonce\":\""), nonce,
-                         cb("\"},\"resource\":{\"id\":\""), rid, cb("\",\"type\":\""), rtype,
-                         cb("\"},\"subject\":{\"id\":\""), sid, cb("\",\"type\":\""), stype, cb("\"}}")));
+    auto rh = sh::sha256(batch, "req", kk::sponge_input(cb("zk-pdp-req-v1"), action, nfield, rid, rtype, sid, stype));
     assert_equal(rh, request_hash, "request");
 
-    auto p_uid = sh::sha256(batch, "p_uid", kk::sponge_input(stype, cb("::\""), sid, cb("\"")));
-    auto r_uid = sh::sha256(batch, "r_uid", kk::sponge_input(rtype, cb("::\""), rid, cb("\"")));
+    auto p_uid = sh::sha256(batch, "p_uid", kk::sponge_input(stype, sid));
+    auto r_uid = sh::sha256(batch, "r_uid", kk::sponge_input(rtype, rid));
 
     // The principal and the resource are leaves of the committed store.
     auto open = [&](Opening &o, const std::string &nm, const CRef &uid) {
@@ -236,19 +226,17 @@ struct Tiny {
 
     // The request fits the schema, and the four policies.
     auto zero = H.constant(Bit{}, std::vector<uint64_t>{0}, Shape{1}).at(0);
-    auto is_str = [&](const CRef &f, size_t len, const std::string &s) -> BitE {
-      if (len != s.size()) return BitE(zero);
-      return !(f.flat() ^ constant(str(s))).any(0);
+    auto is_str = [&](const CRef &f, size_t cap, const std::string &s) -> BitE {
+      return !(f.flat() ^ constant(fixed(s, cap))).any(0);
     };
-    size_t al = in["action"].size(), rl = in["resource_type"].size(), il = in["resource_id"].size(), sl = in["subject_type"].size();
-    auto a = [&](const std::string &s) { return is_str(action, al, s); };
-    BitE is_list = is_str(rtype, rl, "List");
-    BitE is_app = is_str(rtype, rl, "Application") & is_str(rid, il, "TinyTodo");
+    auto a = [&](const std::string &s) { return is_str(action, kCapAction, s); };
+    BitE is_list = is_str(rtype, kCapType, "List");
+    BitE is_app = is_str(rtype, kCapType, "Application") & is_str(rid, kCapId, "TinyTodo");
     BitE get_list = a("GetList");
     BitE edits = a("UpdateList") | a("CreateTask") | a("UpdateTask") | a("DeleteTask");
     BitE list_action = get_list | edits | a("DeleteList") | a("EditShare");
     BitE app_action = a("CreateList") | a("GetLists");
-    assert_true(is_str(stype, sl, "User"), "subject type");
+    assert_true(is_str(stype, kCapType, "User"), "subject type");
     assert_true((list_action & is_list) | (app_action & is_app), "fits_schema");
     auto &pe = ents[0]; auto &re = ents[1];
     auto slot_eq = [&](BitE x, BitE y) -> BitE { return !(x ^ y).any(0); };
@@ -293,7 +281,6 @@ struct Tiny {
 #else
     st.set(root, bits(in["entities_root"]));
 #endif
-    st.set(nonce, bits(in["nonce"]));
     bool d = in["decision"][0] != 0;
     st.set(decision, flags({flip ? !d : d}));
     return st;
@@ -311,12 +298,12 @@ struct Tiny {
 #endif
     w.set(pcopy, bits(in["policy_hash"]));
     w.set(scopy, bits(in["schema_hash"]));
-    w.set(ncopy, bits(in["nonce"]));
-    w.set(stype, bits(in["subject_type"]));
-    w.set(sid, bits(in["subject_id"]));
-    w.set(action, bits(in["action"]));
-    w.set(rtype, bits(in["resource_type"]));
-    w.set(rid, bits(in["resource_id"]));
+    w.set(stype, bits(fixed(in["subject_type"], kCapType)));
+    w.set(sid, bits(fixed(in["subject_id"], kCapId)));
+    w.set(action, bits(fixed(in["action"], kCapAction)));
+    w.set(rtype, bits(fixed(in["resource_type"], kCapType)));
+    w.set(rid, bits(fixed(in["resource_id"], kCapId)));
+    w.set(nfield, bits(fixed(in["nonce"], kCapNonce)));
     auto one = [&](const Opening &o, const std::string &e, const ByteVec &uid) {
       w.set(o.present, bits(in[e + ".present"]));
       w.set(o.attrs, bits(in[e + ".attrs"]));
@@ -339,17 +326,13 @@ struct Tiny {
         h = nx;
       }
     };
-    one(ents[0], "principal", sha(str(in.s("subject_type") + "::\"" + in.s("subject_id") + "\"")));
-    one(ents[1], "resource", sha(str(in.s("resource_type") + "::\"" + in.s("resource_id") + "\"")));
+    one(ents[0], "principal", sha(cat({fixed(in["subject_type"], kCapType), fixed(in["subject_id"], kCapId)})));
+    one(ents[1], "resource", sha(cat({fixed(in["resource_type"], kCapType), fixed(in["resource_id"], kCapId)})));
     return w;
   }
 };
 
-static std::string shape_of(const Input &in) {
-  std::ostringstream s;
-  for (auto k : {"nonce", "subject_type", "subject_id", "action", "resource_type", "resource_id"}) s << in[k].size() << ".";
-  return s.str();
-}
+static std::string shape_of(const Input &) { return "all"; }
 
 #ifndef ZKPDP_SIGNED
 // The compiled system's plan, realized program and proof modules, as Lean, for
@@ -460,7 +443,7 @@ int main(int argc, char **argv) {
       if (an == "control_honest" && acc) controls++;
       out << "{\"experiment\":\"E9\",\"part\":\"gordiehowe\",\"backend\":\"gordiehowe\",\"set\":\"tinytodo\",\"request\":\"" << name << "\",\"attack\":\"" << an << "\",\"flip\":" << flip << ",\"outcome\":\"" << (acc ? "accepted" : threw ? "prover_threw" : "verify_rejected") << "\"}\n";
     };
-    ByteVec p_uid = sha(str(in.s("subject_type") + "::\"" + in.s("subject_id") + "\""));
+    ByteVec p_uid = sha(cat({fixed(in["subject_type"], kCapType), fixed(in["subject_id"], kCapId)}));
     auto setslot = [](ByteVec &b, size_t i, const ByteVec &x) { std::copy(x.begin(), x.end(), b.begin() + 32 * i); };
     if (name.find("stranger") != std::string::npos || name.find("reader-updates") != std::string::npos || name.find("editor-deletes") != std::string::npos) {
       // A deny: claim the permit with forged facts.

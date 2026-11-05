@@ -6,7 +6,7 @@
 //! and `inputs/<n>.toml` plus `inputs/index.json`, one per corpus request.
 //! With a fourth argument `signed`, the inputs are for the signed-store circuit.
 
-use envelope::{canonical_request, parse_hex_hash, sha256, uid_text, RecordStore, MAX_ANC, MAX_ATTRS};
+use envelope::{parse_hex_hash, request_fixed, sha256, uid_text, RecordStore, MAX_ANC, MAX_ATTRS};
 use serde_json::{json, Value};
 use std::fmt::Write as _;
 use std::fs;
@@ -72,7 +72,7 @@ fn main() {
         let req = &r["request"];
         let f = |p: &str| req.pointer(p).and_then(Value::as_str).unwrap().to_owned();
         let mut t = String::new();
-        writeln!(t, "request_hash = {}", arr(&sha256(&canonical_request(req)))).unwrap();
+        writeln!(t, "request_hash = {}", arr(&sha256(&request_fixed(req).expect("request fits")))).unwrap();
         writeln!(t, "policy_hash = {}", arr(&policy_hash)).unwrap();
         writeln!(t, "schema_hash = {}", arr(&schema_hash)).unwrap();
         if signed {
@@ -89,11 +89,11 @@ fn main() {
         writeln!(t, "entities_root = {}", arr(&store.root)).unwrap();
         writeln!(t, "decision = {}\n", r["oracle"]["decision"]).unwrap();
         t += &bounded("nonce", &f("/context/nonce"), 32);
-        t += &bounded("subject_type", &f("/subject/type"), 16);
-        t += &bounded("subject_id", &f("/subject/id"), 32);
-        t += &bounded("action", &f("/action/name"), 16);
-        t += &bounded("resource_type", &f("/resource/type"), 16);
-        t += &bounded("resource_id", &f("/resource/id"), 32);
+        t += &bounded("subject_type", &f("/subject/type"), 24);
+        t += &bounded("subject_id", &f("/subject/id"), 48);
+        t += &bounded("action", &f("/action/name"), 32);
+        t += &bounded("resource_type", &f("/resource/type"), 24);
+        t += &bounded("resource_id", &f("/resource/id"), 48);
         for (name, who) in [("principal", "subject"), ("resource", "resource")] {
             let uid = uid_text(&req[who]).unwrap();
             let (rec, path) = store.open(&uid).unwrap_or_else(|| panic!("{uid} is not in the store"));
@@ -120,7 +120,7 @@ fn main() {
         "set": set,
         "policy_hash": m["policy_hash"],
         "schema_hash": m["schema_hash"],
-        "entities": { "type": "merkle-sha256-record-v0", "root": envelope::hex_hash(&store.root) },
+        "entities": { "type": "merkle-sha256-record-v1", "root": envelope::hex_hash(&store.root) },
         "requests": index,
     });
     fs::write(out.join("inputs/index.json"), serde_json::to_string_pretty(&idx).unwrap() + "\n").unwrap();

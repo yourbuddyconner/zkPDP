@@ -48,6 +48,19 @@ fn uid_text(v: &Value) -> Option<String> {
     Some(format!("{t}::\"{}\"", id.replace('\\', "\\\\").replace('"', "\\\"")))
 }
 
+// `uid_h`: SHA-256 of the type's and the id's fixed forms. Decision 0026.
+fn uid_h(v: &Value) -> [u8; 32] {
+    let u = v.get("__entity").unwrap_or(v);
+    let (t, id) = (u["type"].as_str().unwrap(), u["id"].as_str().unwrap());
+    assert!(t.len() <= 24 && id.len() <= 48);
+    let mut b = vec![0u8; 2 + 24 + 48];
+    b[0] = t.len() as u8;
+    b[1..1 + t.len()].copy_from_slice(t.as_bytes());
+    b[25] = id.len() as u8;
+    b[26..26 + id.len()].copy_from_slice(id.as_bytes());
+    sha(&b)
+}
+
 fn is_ref(v: &Value) -> bool {
     let u = v.get("__entity").unwrap_or(v);
     matches!(u.as_object(), Some(o) if o.len() == 2 && o.get("type").map_or(false, Value::is_string) && o.get("id").map_or(false, Value::is_string))
@@ -56,7 +69,7 @@ fn is_ref(v: &Value) -> bool {
 // The encoding of `bench/envelope/src/records.rs`, without a layout.
 fn slot(v: &Value) -> [u8; 32] {
     if is_ref(v) {
-        return sha(uid_text(v).unwrap().as_bytes());
+        return uid_h(v);
     }
     match v {
         Value::Number(n) if n.is_i64() => {
@@ -94,7 +107,7 @@ fn open(entity: &Value, path: &[u8]) -> [u8; 32] {
         block[1 + 32 * i..1 + 32 * (i + 1)].copy_from_slice(&slot(&attrs[*n]));
     }
     let mut ancs: Vec<[u8; 32]> =
-        entity["parents"].as_array().expect("parents").iter().map(|p| sha(uid_text(p).unwrap().as_bytes())).collect();
+        entity["parents"].as_array().expect("parents").iter().map(uid_h).collect();
     ancs.sort();
     assert!(ancs.len() <= MAX_ANC);
     let mut anc_block = vec![0u8; 32 * MAX_ANC];
@@ -102,7 +115,7 @@ fn open(entity: &Value, path: &[u8]) -> [u8; 32] {
         anc_block[32 * i..32 * (i + 1)].copy_from_slice(a);
     }
     let mut leaf = Vec::with_capacity(96);
-    leaf.extend_from_slice(&sha(uid_text(&entity["uid"]).unwrap().as_bytes()));
+    leaf.extend_from_slice(&uid_h(&entity["uid"]));
     leaf.extend_from_slice(&sha(&block));
     leaf.extend_from_slice(&sha(&anc_block));
     let mut h = sha(&leaf);

@@ -1,4 +1,4 @@
-//! `merkle-sha256-record-v0`: an entity commitment a circuit can open cheaply.
+//! `merkle-sha256-record-v1`: an entity commitment a circuit can open cheaply.
 //!
 //! `merkle-sha256-v0` hashes each entity's JSON. A circuit would have to parse
 //! JSON to use it. Here each entity is a fixed-shape record, so a circuit
@@ -6,7 +6,7 @@
 //! ancestors are the transitive closure, computed by whoever publishes the
 //! root, so `in` is one scan and a deny can be proved as well as a permit.
 //!
-//! uid_h   = SHA-256(UTF-8 of `Type::"id"`)
+//! uid_h   = SHA-256(fixed form of the type || fixed form of the id). Decision 0026
 //! slot    = 32 bytes for one value:
 //!             entity reference   its uid_h
 //!             integer            24 zero bytes, then the i64 big-endian
@@ -34,7 +34,7 @@ use crate::merkle::{merkle_path, merkle_root, Step};
 use serde_json::{Map, Value};
 use std::collections::{BTreeMap, BTreeSet};
 
-pub const ENTITIES_MERKLE_SHA256_RECORD_V0: &str = "merkle-sha256-record-v0";
+pub const ENTITIES_MERKLE_SHA256_RECORD_V1: &str = "merkle-sha256-record-v1";
 pub const MAX_ATTRS: usize = 8;
 pub const MAX_ANC: usize = 16;
 pub const MAX_SET: usize = 8;
@@ -51,8 +51,49 @@ pub enum Kind {
 /// Attribute layouts by entity type name.
 pub type Layouts = BTreeMap<String, Vec<(String, Kind)>>;
 
+pub const CAP_TYPE: usize = 24;
+pub const CAP_ID: usize = 48;
+pub const CAP_ACTION: usize = 32;
+pub const CAP_NONCE: usize = 32;
+
+/// One length byte, then the bytes, zero-padded to the capacity. Decision 0026.
+pub fn fixed_str(s: &str, cap: usize) -> Result<Vec<u8>, String> {
+    if s.len() > cap {
+        return Err(format!("a string of {} bytes, more than {cap}", s.len()));
+    }
+    let mut b = vec![s.len() as u8];
+    b.extend_from_slice(s.as_bytes());
+    b.resize(1 + cap, 0);
+    Ok(b)
+}
+
+/// SHA-256 of the type's and the id's fixed forms.
+pub fn uid_hash_parts(ty: &str, id: &str) -> Result<[u8; 32], String> {
+    let mut b = fixed_str(ty, CAP_TYPE)?;
+    b.extend_from_slice(&fixed_str(id, CAP_ID)?);
+    Ok(sha256(&b))
+}
+
+/// `uid_h` from the text `Type::"id"`. A UID that does not fit panics: the
+/// store's construction checks every entity first.
 pub fn uid_hash(uid_text: &str) -> [u8; 32] {
-    sha256(uid_text.as_bytes())
+    let at = uid_text.find("::\"").expect("UID text");
+    let id = &uid_text[at + 3..uid_text.len() - 1];
+    let id = id.replace("\\\"", "\"").replace("\\\\", "\\");
+    uid_hash_parts(&uid_text[..at], &id).expect("UID fits the fixed layout")
+}
+
+/// The circuit backends' `request_hash` preimage. The context's attributes are behind `context_hash`.
+pub fn request_fixed(request: &Value) -> Result<Vec<u8>, String> {
+    let f = |p: &str| request.pointer(p).and_then(Value::as_str).unwrap_or("");
+    let mut b = b"zk-pdp-req-v1".to_vec();
+    b.extend_from_slice(&fixed_str(f("/action/name"), CAP_ACTION)?);
+    b.extend_from_slice(&fixed_str(f("/context/nonce"), CAP_NONCE)?);
+    b.extend_from_slice(&fixed_str(f("/resource/id"), CAP_ID)?);
+    b.extend_from_slice(&fixed_str(f("/resource/type"), CAP_TYPE)?);
+    b.extend_from_slice(&fixed_str(f("/subject/id"), CAP_ID)?);
+    b.extend_from_slice(&fixed_str(f("/subject/type"), CAP_TYPE)?);
+    Ok(b)
 }
 
 fn is_entity_ref(v: &Value) -> bool {
@@ -173,6 +214,8 @@ impl RecordStore {
         let mut json = BTreeMap::new();
         for e in &sorted {
             let uid = key(e);
+            let u = e["uid"].get("__entity").unwrap_or(&e["uid"]);
+            uid_hash_parts(u["type"].as_str().unwrap_or(""), u["id"].as_str().unwrap_or("")).map_err(|m| format!("{uid}: {m}"))?;
             // Transitive closure of the parent relation.
             let mut seen = BTreeSet::new();
             let mut todo = parents[&uid].clone();

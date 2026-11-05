@@ -1,125 +1,125 @@
 {
-  "entities": {
-    "root": "sha256:6fb3fd1202fb63b9042a269a5cbe690f10da57574c5d7df3a50f5ad6c427cb6a",
-    "type": "merkle-sha256-record-v0"
-  },
+  "set": "tinytodo",
   "policy_hash": "sha256:443dfe8937a65db10be57915411e301daf0ee9111fd6146e3e8c643eaca1f866",
+  "schema_hash": "sha256:cb857ed32f67317355e06ab15191295cf1e64d2146e95882da76de7a01de2121",
+  "entities": {
+    "type": "merkle-sha256-record-v1",
+    "root": "sha256:6ddbf59faa71f73b4b4b82502781b0f54d71cc97b7639d487091a9e25fe31d7e"
+  },
   "requests": [
     {
-      "decision": true,
       "n": 0,
       "name": "l0-reader-gets",
+      "decision": true,
       "request_hash": "sha256:34c55ba961004e1b39faef0b20cb8a414b4bbdc3af6e6877cf9ec79711011c91"
     },
     {
-      "decision": false,
       "n": 1,
       "name": "l0-stranger-gets",
+      "decision": false,
       "request_hash": "sha256:388e221c9fb428cb92cd451be57a965995a4751d8949d8c061847d2930bc6258"
     },
     {
-      "decision": true,
       "n": 2,
       "name": "l0-editor-updates",
+      "decision": true,
       "request_hash": "sha256:4c74f2cf92904bbb94c6e8f0f5d91e2142a0a613056d7ad4e4df19f2fa70ed67"
     },
     {
-      "decision": false,
       "n": 3,
       "name": "l0-reader-updates",
+      "decision": false,
       "request_hash": "sha256:c5ffae37cf7cbc13f04cc824f33edace5788707af4573695a04ee57d8c39ecdf"
     },
     {
-      "decision": true,
       "n": 4,
       "name": "l0-owner-deletes",
+      "decision": true,
       "request_hash": "sha256:e19f3a2cff1af3c06b3c213c76a79dc674d600299f95b30ee7d1fe8637fdac40"
     },
     {
-      "decision": false,
       "n": 5,
       "name": "l0-editor-deletes",
+      "decision": false,
       "request_hash": "sha256:577726566079aa2c6b47af3e70cc97f5acf34fdabf27927ea9538cef59796f0f"
     },
     {
-      "decision": true,
       "n": 6,
       "name": "l1-reader-gets",
+      "decision": true,
       "request_hash": "sha256:845e4ccc9f3f2e5e6de2813690caae0bc000bf6ce035076977e1bac9f7e237c0"
     },
     {
-      "decision": false,
       "n": 7,
       "name": "l1-stranger-gets",
+      "decision": false,
       "request_hash": "sha256:8bb684d8e19e075b84c0e3c8ac985229df9a5d4533e02a73451e8e567be3b725"
     },
     {
-      "decision": true,
       "n": 8,
       "name": "l1-editor-updates",
+      "decision": true,
       "request_hash": "sha256:41c2faff5cbcbab73f67e4f0f2241ef964306dd5d917741055ad965f7594b027"
     },
     {
-      "decision": false,
       "n": 9,
       "name": "l1-reader-updates",
+      "decision": false,
       "request_hash": "sha256:928cbe062f52462671a464fabc82865bec0ae2972748570ce9cbb733f0f9fa13"
     },
     {
-      "decision": true,
       "n": 10,
       "name": "l1-owner-deletes",
+      "decision": true,
       "request_hash": "sha256:e43268ec6f8c1ae88896848dcc443c021e3e8628a0cdb1ffc0f460d41790113c"
     },
     {
-      "decision": false,
       "n": 11,
       "name": "l1-editor-deletes",
+      "decision": false,
       "request_hash": "sha256:7c135b88812229f17f98ea97afd2c1ebdb928d75d43e4bfacd093734419b1bd2"
     },
     {
-      "decision": true,
       "n": 12,
       "name": "l2-reader-gets",
+      "decision": true,
       "request_hash": "sha256:95ab4e95d0011f830f5a3d06631d4f00296834524fbe5a1d7d8d33e1a39ee52b"
     },
     {
-      "decision": false,
       "n": 13,
       "name": "l2-stranger-gets",
+      "decision": false,
       "request_hash": "sha256:88a015be6987b75593b1ebe40f026d53e8920f36fa86f008eef4ce18e400aae4"
     },
     {
-      "decision": true,
       "n": 14,
       "name": "l2-editor-updates",
+      "decision": true,
       "request_hash": "sha256:b91f331da8a611a0e690ec38fd8b0729f0a598d6ba156fc9fa78610612107406"
     },
     {
-      "decision": false,
       "n": 15,
       "name": "l2-reader-updates",
+      "decision": false,
       "request_hash": "sha256:315a47e749dbc668a9815e97d18e829a5935ff89bbf1490f1ce1721fe35a9d30"
     },
     {
-      "decision": true,
       "n": 16,
       "name": "l2-owner-deletes",
+      "decision": true,
       "request_hash": "sha256:ddca00ec367d5f68c72ca70698c26d4dd99fd9889dced947bcb60956db0ba3b5"
     },
     {
-      "decision": false,
       "n": 17,
       "name": "l2-editor-deletes",
+      "decision": false,
       "request_hash": "sha256:f89cc8b7a99380d8674dca0a5ac033c57f242845e910e7b9a1228feb757b16b3"
     },
     {
-      "decision": true,
       "n": 18,
       "name": "anyone-creates-list",
+      "decision": true,
       "request_hash": "sha256:9967d37f5c0dea042c6c28806f4a556af49a2ee06642e9615252805a91866f73"
     }
-  ],
-  "schema_hash": "sha256:cb857ed32f67317355e06ab15191295cf1e64d2146e95882da76de7a01de2121",
-  "set": "tinytodo"
+  ]
 }
