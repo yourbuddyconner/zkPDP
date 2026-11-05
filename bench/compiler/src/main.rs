@@ -9,7 +9,7 @@ mod gen;
 use cedar_policy::{Effect, PolicySet, Schema};
 use cedar_policy_symcc::op::Op;
 use cedar_policy_symcc::term::Term;
-use cedar_policy_symcc::{never_matches_asserts, CompiledPolicy};
+use cedar_policy_symcc::{never_matches_asserts, CompiledPolicy, SymEnv};
 use envelope::{
     block_bytes, canonical_request, hex_hash, parse_hex_hash, record_block, set_block, sha256, uid_text, Kind, Layouts,
     RecordStore, MAX_ANC, MAX_ATTRS, MAX_SET,
@@ -39,13 +39,25 @@ struct Compiled {
     terms_ok: usize,
     blockers: BTreeMap<String, usize>,
     envs: usize,
+    /// The context's attribute layout per environment, from the schema.
+    contexts: BTreeMap<(String, String, String), Vec<(String, Kind)>>,
 }
 
 fn compile(policies: &PolicySet, schema: &Schema) -> Compiled {
-    let mut c = Compiled { groups: vec![], layouts: Layouts::new(), terms: 0, terms_ok: 0, blockers: BTreeMap::new(), envs: 0 };
+    let mut c = Compiled { groups: vec![], layouts: Layouts::new(), terms: 0, terms_ok: 0, blockers: BTreeMap::new(), envs: 0, contexts: BTreeMap::new() };
     for env in schema.request_envs() {
         c.envs += 1;
         let (mut permits, mut forbids, mut ok) = (vec![], vec![], true);
+        let key = (env.principal().to_string(), AsRef::<str>::as_ref(env.action().id()).to_string(), env.resource().to_string());
+        match SymEnv::new(schema, &env).map(|e| gen::kind_of(&e.request.context.type_of())) {
+            Ok(Kind::Record(layout)) => {
+                c.contexts.insert(key.clone(), layout);
+            }
+            _ => {
+                *c.blockers.entry("a request context the schema does not type as a record".into()).or_default() += 1;
+                ok = false;
+            }
+        }
         if env.action().type_name().to_string() != "Action" {
             *c.blockers.entry("an action in a namespace".into()).or_default() += 1;
             ok = false;
@@ -78,7 +90,6 @@ fn compile(policies: &PolicySet, schema: &Schema) -> Compiled {
             continue;
         }
         let (body, needs) = EnvGen::new(&mut c.layouts).finish(&permits, &forbids).expect("terms translated alone");
-        let key = (env.principal().to_string(), AsRef::<str>::as_ref(env.action().id()).to_string(), env.resource().to_string());
         match c.groups.iter_mut().find(|g| g.body == body) {
             Some(g) => g.envs.push(key),
             None => c.groups.push(Group { body, needs, envs: vec![key] }),
@@ -111,19 +122,20 @@ fn emit(c: &Compiled, policy_hash: &[u8; 32], schema_hash: &[u8; 32], set: &str)
     writeln!(s, "global POLICY_HASH: [u8; 32] = {};", arr(policy_hash)).unwrap();
     writeln!(s, "global SCHEMA_HASH: [u8; 32] = {};", arr(schema_hash)).unwrap();
     writeln!(s, "global NE: u32 = {ne}; // opened entities\nglobal NS: u32 = {ns}; // opened set attributes\nglobal NR: u32 = {nr}; // opened record attributes\n").unwrap();
-    let params = "sel: bool, p_uid: [u8; 32], r_uid: [u8; 32], ents: [Entity; NE], ent_ok: [bool; NE], sets: [[[u8; 32]; MAX_SET]; NS], set_h: [[u8; 32]; NS], recs: [Rec; NR], rec_h: [[u8; 32]; NR]";
+    let params = "sel: bool, p_uid: [u8; 32], r_uid: [u8; 32], ents: [Entity; NE], ent_ok: [bool; NE], sets: [[[u8; 32]; MAX_SET]; NS], set_h: [[u8; 32]; NS], recs: [Rec; NR], rec_h: [[u8; 32]; NR], ctx: Rec";
     for (i, g) in c.groups.iter().enumerate() {
         for (p, a, r) in &g.envs {
             writeln!(s, "// {p} does {a} on {r}").unwrap();
         }
         writeln!(s, "fn env_{i}({params}) -> bool {{\n{}\n}}\n", g.body).unwrap();
     }
-    s += "fn main(\n    request_hash: pub [u8; 32],\n    policy_hash: pub [u8; 32],\n    schema_hash: pub [u8; 32],\n    entities_root: pub [u8; 32],\n    nonce: pub BoundedVec<u8, MAX_NONCE>,\n    decision: pub bool,\n    subject_type: BoundedVec<u8, MAX_TYPE>,\n    subject_id: BoundedVec<u8, MAX_ID>,\n    action: BoundedVec<u8, MAX_ACTION>,\n    resource_type: BoundedVec<u8, MAX_TYPE>,\n    resource_id: BoundedVec<u8, MAX_ID>,\n    ents: [Entity; NE],\n    sets: [[[u8; 32]; MAX_SET]; NS],\n    recs: [Rec; NR],\n) {\n";
+    s += "fn main(\n    request_hash: pub [u8; 32],\n    policy_hash: pub [u8; 32],\n    schema_hash: pub [u8; 32],\n    entities_root: pub [u8; 32],\n    nonce: pub BoundedVec<u8, MAX_NONCE>,\n    decision: pub bool,\n    context_hash: pub [u8; 32],\n    ctx: Rec,\n    subject_type: BoundedVec<u8, MAX_TYPE>,\n    subject_id: BoundedVec<u8, MAX_ID>,\n    action: BoundedVec<u8, MAX_ACTION>,\n    resource_type: BoundedVec<u8, MAX_TYPE>,\n    resource_id: BoundedVec<u8, MAX_ID>,\n    ents: [Entity; NE],\n    sets: [[[u8; 32]; MAX_SET]; NS],\n    recs: [Rec; NR],\n) {\n";
     s += "    assert(policy_hash == POLICY_HASH);\n    assert(schema_hash == SCHEMA_HASH);\n";
     for f in ["subject_type", "subject_id", "action", "resource_type", "resource_id", "nonce"] {
         writeln!(s, "    assert_plain({f});").unwrap();
     }
     s += "    assert(request_digest(subject_type, subject_id, action, resource_type, resource_id, nonce) == request_hash);\n";
+    s += "    assert(rec_digest(ctx.present, ctx.slots) == context_hash);\n";
     s += "    let p_uid = uid_hash(subject_type, subject_id);\n    let r_uid = uid_hash(resource_type, resource_id);\n";
     s += "    let mut ent_ok = [false; NE];\n    for k in 0..NE {\n        ent_ok[k] = opens(ents[k], entities_root);\n    }\n";
     s += "    let mut set_h = [ZERO; NS];\n    for j in 0..NS {\n        set_h[j] = set_digest(sets[j]);\n    }\n";
@@ -135,7 +147,7 @@ fn emit(c: &Compiled, policy_hash: &[u8; 32], schema_hash: &[u8; 32], set: &str)
             .map(|(p, a, r)| format!("(eq_str(subject_type, \"{p}\") & eq_str(action, \"{a}\") & eq_str(resource_type, \"{r}\"))"))
             .collect();
         writeln!(s, "    let sel_{i} = {};", sel.join("\n        | ")).unwrap();
-        writeln!(s, "    let d_{i} = env_{i}(sel_{i}, p_uid, r_uid, ents, ent_ok, sets, set_h, recs, rec_h);").unwrap();
+        writeln!(s, "    let d_{i} = env_{i}(sel_{i}, p_uid, r_uid, ents, ent_ok, sets, set_h, recs, rec_h, ctx);").unwrap();
     }
     let n = c.groups.len();
     writeln!(s, "    // The request fits the schema.\n    assert({});", (0..n).map(|i| format!("sel_{i}")).collect::<Vec<_>>().join(" | ")).unwrap();
@@ -143,11 +155,31 @@ fn emit(c: &Compiled, policy_hash: &[u8; 32], schema_hash: &[u8; 32], set: &str)
     s
 }
 
+/// The context's attributes: everything but the verifier's nonce and epoch.
+fn context_attrs(req: &Value) -> Value {
+    let mut c = req["context"].as_object().cloned().unwrap_or_default();
+    c.remove("nonce");
+    c.remove("epoch");
+    Value::Object(c)
+}
+
+/// The request whose canonical bytes are hashed: its context holds only the nonce.
+fn reduced_request(req: &Value) -> Value {
+    let mut r = req.clone();
+    let nonce = req.pointer("/context/nonce").cloned();
+    r["context"] = match nonce {
+        Some(n) => json!({ "nonce": n }),
+        None => json!({}),
+    };
+    r
+}
+
 /// The concrete value of a term that names an entity, a set or a record, as Cedar JSON. Null when absent.
 fn path_eval(t: &Term, req: &Value, store: &RecordStore) -> Result<Value, String> {
     Ok(match t {
         Term::Var(v) if v.id == "principal" => json!({ "__entity": req["subject"] }),
         Term::Var(v) if v.id == "resource" => json!({ "__entity": req["resource"] }),
+        Term::Var(v) if v.id == "context" => context_attrs(req),
         Term::Some(x) => path_eval(x, req, store)?,
         Term::App { op: Op::OptionGet, args, .. } => path_eval(&args[0], req, store)?,
         Term::App { op: Op::RecordGet(a), args, .. } => path_eval(&args[0], req, store)?.get(a.as_str()).cloned().unwrap_or(Value::Null),
@@ -174,10 +206,6 @@ fn bounded(name: &str, s: &str, max: usize) -> Result<String, String> {
 fn input(c: &Compiled, r: &Value, store: &RecordStore, policy_hash: &[u8; 32], schema_hash: &[u8; 32]) -> Result<String, String> {
     let req = &r["request"];
     let f = |p: &str| req.pointer(p).and_then(Value::as_str).unwrap_or("").to_owned();
-    let ctx = req["context"].as_object().cloned().unwrap_or_default();
-    if ctx.keys().any(|k| k != "nonce") {
-        return Err("the request has a context".into());
-    }
     let key = (f("/subject/type"), f("/action/name"), f("/resource/type"));
     let g = c.groups.iter().find(|g| g.envs.contains(&key)).ok_or("the request fits no environment of the schema")?;
     let ne = c.groups.iter().map(|g| g.needs.ents.len()).max().unwrap().max(1);
@@ -185,7 +213,11 @@ fn input(c: &Compiled, r: &Value, store: &RecordStore, policy_hash: &[u8; 32], s
     let nr = c.groups.iter().map(|g| g.needs.recs.len()).max().unwrap().max(1);
 
     let mut t = String::new();
-    writeln!(t, "request_hash = {}", arr(&sha256(&canonical_request(req)))).unwrap();
+    let layout = c.contexts.get(&key).ok_or("no context layout for this environment")?;
+    let attrs = context_attrs(req);
+    let (ctx_present, ctx_slots) = record_block(attrs.as_object().unwrap(), layout)?;
+    writeln!(t, "request_hash = {}", arr(&sha256(&canonical_request(&reduced_request(req))))).unwrap();
+    writeln!(t, "context_hash = {}", arr(&sha256(&block_bytes(ctx_present, &ctx_slots)))).unwrap();
     writeln!(t, "policy_hash = {}", arr(policy_hash)).unwrap();
     writeln!(t, "schema_hash = {}", arr(schema_hash)).unwrap();
     writeln!(t, "entities_root = {}", arr(&store.root)).unwrap();
@@ -198,6 +230,7 @@ fn input(c: &Compiled, r: &Value, store: &RecordStore, policy_hash: &[u8; 32], s
         }
     }
     writeln!(t, "sets = [{}]\n", sets.iter().map(|s| rows(s)).collect::<Vec<_>>().join(", ")).unwrap();
+    writeln!(t, "[ctx]\npresent = {ctx_present}\nslots = {}\n", rows(&ctx_slots)).unwrap();
     t += &bounded("nonce", &f("/context/nonce"), 32)?;
     t += &bounded("subject_type", &key.0, 24)?;
     t += &bounded("subject_id", &f("/subject/id"), 48)?;
@@ -241,7 +274,6 @@ fn input(c: &Compiled, r: &Value, store: &RecordStore, policy_hash: &[u8; 32], s
             },
             None => (0, [[0u8; 32]; MAX_ATTRS]),
         };
-        debug_assert_eq!(block_bytes(present, &slots).len(), 1 + 32 * MAX_ATTRS);
         writeln!(t, "[[recs]]\npresent = {present}\nslots = {}\n", rows(&slots)).unwrap();
     }
     Ok(t)
@@ -317,7 +349,7 @@ fn main() {
                 match input(&c, &r, &store, &policy_hash, &schema_hash) {
                     Ok(t) => {
                         fs::write(out.join(format!("inputs/{n}.toml")), t).unwrap();
-                        index.push(json!({ "n": n, "name": r["name"], "decision": r["oracle"]["decision"], "request_hash": r["request_hash"] }));
+                        index.push(json!({ "n": n, "name": r["name"], "decision": r["oracle"]["decision"], "request_hash": hex_hash(&sha256(&canonical_request(&reduced_request(&r["request"])))) }));
                     }
                     Err(e) => index.push(json!({ "n": n, "name": r["name"], "skipped": e, "request_hash": r["request_hash"] })),
                 }

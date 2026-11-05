@@ -77,6 +77,12 @@ function attacks(input, others) {
     add(`rec${j}.present.flip`, (x) => { x.recs[j].present ^= 1; });
     add(`rec${j}.emptied`, (x) => { x.recs[j].present = 0; x.recs[j].slots = x.recs[j].slots.map((a) => a.map(() => 0)); });
   });
+  if (input.ctx) {
+    input.ctx.slots.forEach((_, i) => add(`ctx.slot${i}.flip`, (x) => flip(x.ctx.slots[i])));
+    add("ctx.present.flip", (x) => { x.ctx.present ^= 1; });
+    add("ctx.emptied", (x) => { x.ctx.present = 0; x.ctx.slots = x.ctx.slots.map((a) => a.map(() => 0)); });
+    add("context_hash.flip", (x) => flip(x.context_hash));
+  }
   for (const f of ["subject_type", "subject_id", "action", "resource_type", "resource_id", "nonce"]) {
     add(`${f}.flip`, (x) => { x[f].storage[0] ^= 1; });
     if (input[f].len > 0) add(`${f}.shorter`, (x) => { x[f].storage[x[f].len - 1] = 0; x[f].len -= 1; });

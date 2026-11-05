@@ -216,7 +216,13 @@ impl<'a> EnvGen<'a> {
             Term::Var(v) => match v.id.as_str() {
                 "principal" => Val::B32("p_uid".into()),
                 "resource" => Val::B32("r_uid".into()),
-                "context" => Val::Opaque("the request context".into()),
+                // The context's attributes are a record bound to a public hash (decision 0024).
+                "context" => match &v.ty {
+                    TermType::Record { rty } if rty.len() <= MAX_ATTRS => {
+                        Val::Rec { present: "ctx.present".into(), slots: "ctx.slots".into(), rty: rty.clone() }
+                    }
+                    _ => return Err(format!("a request context with more than {MAX_ATTRS} attributes")),
+                },
                 other => Val::Opaque(format!("the variable `{other}`")),
             },
             Term::None(ty) => Val::Opt("false".into(), Box::new(Self::zero_of(ty))),

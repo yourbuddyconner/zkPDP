@@ -32,3 +32,4 @@ reviewing each record. Those records are the ones to re-read first.
 | 0021 | Keep "proof-carrying authorization" and cite its lineage | accepted |
 | 0022 | GordieHowe as a third backend | accepted |
 | 0023 | A paper first, practical if possible, and the order of work | accepted |
+| 0024 | The request context is a record behind its own public hash | accepted, pending review |

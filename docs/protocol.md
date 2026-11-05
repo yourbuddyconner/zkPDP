@@ -120,6 +120,10 @@ project uses a placeholder and says so in the paper.
 - `context` becomes the Cedar context after `nonce` and `epoch` are removed.
 - `properties` are ignored in version 0. Attributes come only from the committed entity store. See decision 0016.
 
+## Context in the circuit backends
+
+Decision 0024. For `noir-*` formats the journal has one more field, `context_hash`: SHA-256 of the record block of the context's attributes, in the schema's layout for this principal type, action and resource type. There `request_hash` covers the request with its context reduced to the nonce. The verifier computes both from the request it will enforce. For `risc0-*` formats `request_hash` covers the whole context, and `context_hash` is absent.
+
 ## Who canonicalizes
 
 The evaluator hashes the bytes it parses. It does not canonicalize. The party

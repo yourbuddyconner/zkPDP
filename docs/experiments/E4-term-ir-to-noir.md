@@ -133,3 +133,17 @@ The plan drops E5 if the compiler handles under half the corpus. By corpus
 sets it handles 65 percent. By distinct upstream sets, 43 percent. The plan's
 wording was "the corpus", so the gate passes on its letter. The spirit is
 borderline. Context support would settle it.
+
+### Update 2026-11-05: request context
+
+Decision 0024. Coverage of distinct upstream policy sets rises from 3 of 7 to 5 of 7. All 40 requests of the five compiled sets give the oracle's decision and reject the opposite. `results/E4-compiled-context-2026-11-05.jsonl`, `results/E4-coverage-context-2026-11-05.jsonl`.
+
+| Set | Gates |
+|---|---|
+| tinytodo | 474,605 |
+| github_example | 652,500 |
+| hotel_chains | 879,278 |
+| document_cloud | 668,192 |
+| sales_orgs | 798,171 |
+
+Two blocked sets remain: `streaming_service` by extension values and arithmetic, and `tags_n_roles` by entity tags. H4 stays refuted: 5 of 7 is 71 percent against a threshold of 80 percent. The two stores that do not conform to their schemas compile, and their requests match an oracle run without a schema.
