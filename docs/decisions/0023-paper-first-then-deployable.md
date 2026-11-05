@@ -26,3 +26,7 @@ Priority here is measured in weeks, so measurements matter more than claims. The
 Decision 0009's compilation proof waits. GordieHowe's per-program certificates may reduce its importance. A new record decides.
 
 The human's concern on "practical" is noted against the fact that GordieHowe and Noir both warn against production use.
+
+## Update 2026-11-05
+
+The human asked for all six, so step 3 did not wait for the Lean verdict: GordieHowe's speed justifies it as a target on its own. If E10 ends in no-go, GordieHowe stays a target with per-program certificates and no link to Cedar's semantics.

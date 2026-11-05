@@ -102,6 +102,10 @@ fn supported(c: &Compiled) -> bool {
     c.blockers.is_empty() && !c.groups.is_empty()
 }
 
+fn hex_of(b: &[u8]) -> String {
+    b.iter().map(|x| format!("{x:02x}")).collect()
+}
+
 fn arr(b: &[u8]) -> String {
     format!("[{}]", b.iter().map(|x| x.to_string()).collect::<Vec<_>>().join(", "))
 }
@@ -334,6 +338,22 @@ fn main() {
             fs::create_dir_all(out.join("inputs")).unwrap();
             fs::write(out.join("Nargo.toml"), "[package]\nname = \"policy\"\ntype = \"bin\"\nauthors = [\"\"]\n\n[dependencies]\nsha256 = { tag = \"v0.3.0\", git = \"https://github.com/noir-lang/sha256\" }\n").unwrap();
             fs::write(out.join("src/main.nr"), emit(&c, &policy_hash, &schema_hash, set)).unwrap();
+            // The same functions as data, for the GordieHowe backend's interpreter (bench/gordiehowe/policy.cc).
+            let mut ir = String::new();
+            let dims = |f: &dyn Fn(&Group) -> usize| c.groups.iter().map(f).max().unwrap().max(1);
+            writeln!(ir, "policy_hash {}", hex_of(&policy_hash)).unwrap();
+            writeln!(ir, "schema_hash {}", hex_of(&schema_hash)).unwrap();
+            writeln!(ir, "dims {} {} {}", dims(&|g| g.needs.ents.len()), dims(&|g| g.needs.sets.len()), dims(&|g| g.needs.recs.len())).unwrap();
+            for g in &c.groups {
+                writeln!(ir, "group").unwrap();
+                for (p, a, r) in &g.envs {
+                    writeln!(ir, "env {p} {a} {r}").unwrap();
+                }
+                writeln!(ir, "body").unwrap();
+                writeln!(ir, "{}", g.body).unwrap();
+                writeln!(ir, "end").unwrap();
+            }
+            fs::write(out.join("policy.ir"), ir).unwrap();
 
             let entities: Value = serde_json::from_slice(&fs::read(l.dir.join("entities.json")).unwrap()).unwrap();
             let store = match RecordStore::new(&entities, &c.layouts) {

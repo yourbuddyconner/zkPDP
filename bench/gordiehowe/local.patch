@@ -1,5 +1,5 @@
 diff --git a/lib/gordiehowe/CMakeLists.txt b/lib/gordiehowe/CMakeLists.txt
-index 9b9b0f6..2da7cce 100644
+index 9b9b0f6..bdbb246 100644
 --- a/lib/gordiehowe/CMakeLists.txt
 +++ b/lib/gordiehowe/CMakeLists.txt
 @@ -55,7 +55,7 @@ add_library(gordiehowe_compiler_digest STATIC ${GORDIEHOWE_COMPILER_DIGEST})
@@ -21,7 +21,7 @@ index 9b9b0f6..2da7cce 100644
  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
    # Without timestamps ccache can hash the precompiled header.
    target_compile_options(gordiehowe_pch PRIVATE -Xclang -fno-pch-timestamp)
-@@ -161,3 +160,12 @@ add_subdirectory(tests)
+@@ -161,3 +160,14 @@ add_subdirectory(tests)
  add_subdirectory(examples)
  add_subdirectory(bench/hash_comparisons)
  add_subdirectory(heldout)
@@ -34,6 +34,8 @@ index 9b9b0f6..2da7cce 100644
 +add_executable(zkpdp_tinytodo_signed $ENV{HOME}/code/zk-pdp/bench/gordiehowe/tinytodo.cc)
 +target_compile_definitions(zkpdp_tinytodo_signed PRIVATE ZKPDP_SIGNED=1)
 +target_link_libraries(zkpdp_tinytodo_signed gordiehowe_instances_mdoc gordiehowe_compiler_digest flatsha ec algebra util pthread OpenSSL::Crypto)
++add_executable(zkpdp_policy $ENV{HOME}/code/zk-pdp/bench/gordiehowe/policy.cc)
++target_link_libraries(zkpdp_policy gordiehowe_instances_gf128_sha256 gordiehowe_compiler_digest flatsha ec algebra util pthread OpenSSL::Crypto)
 diff --git a/lib/gordiehowe/compiler/program_printer.h b/lib/gordiehowe/compiler/program_printer.h
 index e4dc5e1..b0f692f 100644
 --- a/lib/gordiehowe/compiler/program_printer.h
