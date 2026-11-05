@@ -26,6 +26,11 @@
 #include "gordiehowe/compiler/plan_export.h"
 #include "gordiehowe/compiler/plan_program.h"
 #include "gordiehowe/compiler/plan_proofs.h"
+#ifdef ZKPDP_SIGNED
+#include "gordiehowe/examples/mdoc/mdoc_signatures.h"
+#include "gordiehowe/examples/shared/setup.h"
+#include "gordiehowe/instances.h"
+#endif
 #include "params/param_sets.h"
 #include "random/secure_random_engine.h"
 #include "util/crypto.h"
@@ -36,7 +41,13 @@ using P = param_sets::ROMParams;
 using HF = P::HashField;
 using PH = P::ProtocolHash;
 using RSH = LCH14ReedSolomonFactory<HF>;
+#ifdef ZKPDP_SIGNED
+// E3: the store's root is private and an authority's P-256 signature is checked in domain A.
+using AF = P::EcdsaField;
+using Sys = ConstraintSystem<PH, HF, AF>;
+#else
 using Sys = ConstraintSystem<PH, HF>;
+#endif
 using Clock = std::chrono::steady_clock;
 using ByteVec = std::vector<uint8_t>;
 using BitE = Expr<HF, Bit>;
@@ -91,7 +102,16 @@ struct Tiny {
   HF hf;
   RSH rsh{hf};
   Sys cs{"zkpdp-tinytodo"};
-  PRef request_hash, policy_hash, schema_hash, root, nonce, decision;
+  PRef request_hash, policy_hash, schema_hash, nonce, decision;
+#ifdef ZKPDP_SIGNED
+  examples::mdoc::p256_ecdsa::Pub issuer_pk;
+  PRef epoch;
+  CRef root, ecopy;
+  HostInput e_host, sig_host;
+  P256ReedSolomon rs_a;
+#else
+  PRef root;
+#endif
   CRef stype, sid, action, rtype, rid, pcopy, scopy, ncopy;
   Opening ents[2];
   std::unique_ptr<typename Sys::Compiled> comp;
@@ -116,7 +136,14 @@ struct Tiny {
     request_hash = H.pub(Bit{}, "request_hash", Shape{256});
     policy_hash = H.pub(Bit{}, "policy_hash", Shape{256});
     schema_hash = H.pub(Bit{}, "schema_hash", Shape{256});
+#ifdef ZKPDP_SIGNED
+    root = H.priv(Bit{}, "root", Shape{256});
+    epoch = H.pub(Bit{}, "epoch", Shape{64});
+    ecopy = H.priv(Bit{}, "ecopy", Shape{64});
+    assert_equal(ecopy, epoch, "epoch.pub");
+#else
     root = H.pub(Bit{}, "root", Shape{256});
+#endif
     nonce = H.pub(Bit{}, "nonce", Shape{nl, 8});
     decision = H.pub(Bit{}, "decision", Shape{1});
     stype = byte_field("stype", in["subject_type"].size());
@@ -190,6 +217,20 @@ struct Tiny {
       }
       assert_equal(h, root, nm + ".root");
     };
+#ifdef ZKPDP_SIGNED
+    {
+      namespace ms = examples::mdoc::signatures;
+      auto &A = cs.domain(examples::domain_profile<P>(p256_base, rs_a.factory()), "A");
+      issuer_pk = A.pub(Field{}, "issuer_pk", Shape{2});
+      // The verifier pins this key, so it checks once that the key is on the curve.
+      auto signed_digest = sh::sha256(batch, "signed", kk::sponge_input(cb("zk-pdp-root-v0"), root, ecopy));
+      e_host = cs.root().host_input("e_host", 32);
+      sig_host = cs.root().host_input("sig_host", 64);
+      auto issuer = ms::ecdsa_verify_public_key(cs.scope("issuer"), A, issuer_pk, e_host, sig_host);
+      const std::vector<size_t> order = lib::arith::big_endian_bit_order(32);
+      assert_equal(signed_digest[order].named("cross.e"), issuer.e);
+    }
+#endif
     open(ents[0], "p", p_uid);
     open(ents[1], "r", r_uid);
 
@@ -226,7 +267,11 @@ struct Tiny {
     assert_equal(decision.at(0), p0 | p1 | p2 | p3, "decision");
 
     auto t = Clock::now();
+#ifdef ZKPDP_SIGNED
+    comp = compile(cs, examples::mac_profile<P>("zkpdp-tinytodo-signed"));
+#else
     comp = compile(cs);
+#endif
     compile_ms = ms(t);
   }
 
@@ -235,7 +280,19 @@ struct Tiny {
     st.set(request_hash, bits(in["request_hash"]));
     st.set(policy_hash, bits(in["policy_hash"]));
     st.set(schema_hash, bits(in["schema_hash"]));
+#ifdef ZKPDP_SIGNED
+    st.set(epoch, bits(in["epoch"]));
+    {
+      auto elt = [](const ByteVec &be) {
+        uint8_t le[32];
+        for (size_t i = 0; i < 32; i++) le[i] = be[31 - i];
+        return *p256_base.of_bytes_field(le);
+      };
+      st.set(issuer_pk, std::vector<AF::Elt>{elt(in["authority_x"]), elt(in["authority_y"])});
+    }
+#else
     st.set(root, bits(in["entities_root"]));
+#endif
     st.set(nonce, bits(in["nonce"]));
     bool d = in["decision"][0] != 0;
     st.set(decision, flags({flip ? !d : d}));
@@ -246,6 +303,12 @@ struct Tiny {
   Sys::Assignment witness(Input in, const std::function<void(Input &)> &mut = {}) const {
     if (mut) mut(in);
     Sys::Assignment w;
+#ifdef ZKPDP_SIGNED
+    w.set(root, bits(in["entities_root"]));
+    w.set(ecopy, bits(in["epoch"]));
+    w.set(e_host, sha(cat({str("zk-pdp-root-v0"), in["entities_root"], in["epoch"]})));
+    w.set(sig_host, in["signature"]);
+#endif
     w.set(pcopy, bits(in["policy_hash"]));
     w.set(scopy, bits(in["schema_hash"]));
     w.set(ncopy, bits(in["nonce"]));
@@ -288,6 +351,7 @@ static std::string shape_of(const Input &in) {
   return s.str();
 }
 
+#ifndef ZKPDP_SIGNED
 // The compiled system's plan, realized program and proof modules, as Lean, for
 // Lean's kernel to check (E10). Follows examples::write_plan, without its test header.
 template <class C>
@@ -327,8 +391,11 @@ static void export_lean(const C &cs, const std::string &dir, const std::string &
   printf("%s\n", report.substr(0, 2600).c_str());
 }
 
+#endif
+
 int main(int argc, char **argv) {
   std::string dir = argv[1];
+  #ifndef ZKPDP_SIGNED
   if (const char *ex = getenv("ZKPDP_EXPORT")) {
     std::vector<std::string> fs;
     for (auto &e : std::filesystem::directory_iterator(dir)) fs.push_back(e.path().string());
@@ -339,6 +406,7 @@ int main(int argc, char **argv) {
     export_lean(*t.comp, ex, argv[3]);
     return 0;
   }
+#endif
   std::ofstream out(argv[2], std::ios::app);
   std::string commit = argv[3];
   int repeats = argc > 4 ? atoi(argv[4]) : 1;
@@ -402,6 +470,10 @@ int main(int argc, char **argv) {
     }
     // Control: the same path with an honest witness must verify, or "rejected" means nothing.
     try_attack("control_honest", {}, false);
+#ifdef ZKPDP_SIGNED
+    try_attack("signature_flip", [&](Input &x) { x.v["signature"][63] ^= 1; }, false);
+    try_attack("root_swap", [&](Input &x) { x.v["entities_root"][0] ^= 1; }, false);
+#endif
     try_attack("flip_decision_only", {}, true);
     try_attack("attr_flip", [&](Input &x) { x.v["resource.attrs"][31] ^= 1; }, false);
     try_attack("anc_flip", [&](Input &x) { x.v["principal.ancestors"][31] ^= 1; }, false);

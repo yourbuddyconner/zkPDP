@@ -22,5 +22,10 @@ for r in idx["requests"]:
             lines.append(f"{e}.{k} {b''.join(bytes(s) for s in x[k]).hex()}")
         lines.append(f"{e}.sides {bytes(int(b) for b in x['sibling_is_left']).hex()}")
         lines.append(f"{e}.path_len {x['path_len']:02x}")
+    if "signature" in t:
+        lines.append(f"authority_x {bytes(t['authority_x']).hex()}")
+        lines.append(f"authority_y {bytes(t['authority_y']).hex()}")
+        lines.append(f"epoch {t['epoch'].to_bytes(8, 'big').hex()}")
+        lines.append(f"signature {bytes(t['signature']).hex()}")
     open(f"{out}/{r['n']}.txt", "w").write("\n".join(lines) + "\n")
 print(len(idx["requests"]), "inputs")

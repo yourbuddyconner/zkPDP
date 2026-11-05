@@ -1,6 +1,6 @@
 # E3: input provenance in both backends
 
-Status: Noir and zkVM done on 2026-11-05, GordieHowe in progress. Written 2026-11-04. Mode 2 changed to P-256 by decision 0025.
+Status: done on 2026-11-05 for all three backends, timing to be repeated on an idle machine. Written 2026-11-04. Mode 2 changed to P-256 by decision 0025.
 
 ## Question
 
@@ -52,6 +52,8 @@ Mode 2, an authority's ECDSA P-256 signature over the root and epoch. TinyTodo.
 | RISC Zero, cycles | 5.38 M | 5.58 M | 198 thousand, with the precompile | 69 thousand |
 
 `results/E3-tinytodo-signed-2026-11-05.jsonl`, `results/E3-exec-signed-2026-11-05.jsonl`. All 19 requests match the oracle in both. A forged signature and a wrong epoch are rejected by the circuit. A forged signature aborts the guest.
+
+GordieHowe, with the signature in a second domain over the P-256 base field joined by a MAC equality on the digest, all 19 requests correct, 274 attacks and 19 controls, none accepted, none from a prover crash. About 80 ms to prove, 274 KB, about 37 ms to verify, against 37 ms, 117 KB and 13 ms unsigned. These figures came from a smoke run during the Lean build and were not written to `results/`. They are to be repeated. The build skips the `relation.h` header, which needs clang 21, and the curve check on the pinned key, which the verifier does once.
 
 Noir's proving time here, 2.92 s, was measured while a Lean build used the machine, so it is not comparable and is to be retimed.
 
