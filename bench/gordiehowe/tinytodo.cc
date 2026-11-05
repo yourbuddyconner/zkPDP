@@ -225,34 +225,39 @@ struct Tiny {
     open(ents[1], "r", r_uid);
 
     // The request fits the schema, and the four policies.
-    auto zero = H.constant(Bit{}, std::vector<uint64_t>{0}, Shape{1}).at(0);
+    // Each intermediate bit is committed with its own small predicate. Without this the Lean
+    // export prints shared expressions as one tree, and `decision` alone is 90 MB (E10).
+    int nbit = 0;
+    auto c1 = [&](const std::string &nm, BitE e) -> BitE {
+      return BitE(H.priv(nm + "." + std::to_string(nbit++), e.flat()).at(0));
+    };
     auto is_str = [&](const CRef &f, size_t cap, const std::string &s) -> BitE {
-      return !(f.flat() ^ constant(fixed(s, cap))).any(0);
+      return c1("is." + s, !(f.flat() ^ constant(fixed(s, cap))).any(0));
     };
     auto a = [&](const std::string &s) { return is_str(action, kCapAction, s); };
     BitE is_list = is_str(rtype, kCapType, "List");
-    BitE is_app = is_str(rtype, kCapType, "Application") & is_str(rid, kCapId, "TinyTodo");
+    BitE is_app = c1("is_app", is_str(rtype, kCapType, "Application") & is_str(rid, kCapId, "TinyTodo"));
     BitE get_list = a("GetList");
-    BitE edits = a("UpdateList") | a("CreateTask") | a("UpdateTask") | a("DeleteTask");
-    BitE list_action = get_list | edits | a("DeleteList") | a("EditShare");
-    BitE app_action = a("CreateList") | a("GetLists");
+    BitE edits = c1("edits", a("UpdateList") | a("CreateTask") | a("UpdateTask") | a("DeleteTask"));
+    BitE list_action = c1("list_action", get_list | edits | a("DeleteList") | a("EditShare"));
+    BitE app_action = c1("app_action", a("CreateList") | a("GetLists"));
     assert_true(is_str(stype, kCapType, "User"), "subject type");
     assert_true((list_action & is_list) | (app_action & is_app), "fits_schema");
     auto &pe = ents[0]; auto &re = ents[1];
-    auto slot_eq = [&](BitE x, BitE y) -> BitE { return !(x ^ y).any(0); };
+    auto slot_eq = [&](BitE x, BitE y) -> BitE { return c1("eq", !(x ^ y).any(0)); };
     auto in_anc = [&](BitE group) -> BitE {
-      BitE found = BitE(zero);
-      for (size_t i = 0; i < kAnc; i++) found = found | slot_eq(BitE(pe.anc.at(i)), group);
+      BitE found = slot_eq(BitE(pe.anc.at(0)), group);
+      for (size_t i = 1; i < kAnc; i++) found = c1("found", found | slot_eq(BitE(pe.anc.at(i)), group));
       return found;
     };
     // Attributes in name order: editors, name, owner, readers, tasks.
     BitE editors = BitE(re.attrs.at(0)), owner = BitE(re.attrs.at(2)), readers = BitE(re.attrs.at(3));
     BitE in_e = in_anc(editors), in_r = in_anc(readers);
-    BitE p0 = app_action & is_app;
-    BitE p1 = is_list & slot_eq(owner, BitE(p_uid));
-    BitE p2 = get_list & is_list & (in_r | in_e);
-    BitE p3 = edits & is_list & in_e;
-    assert_equal(decision.at(0), p0 | p1 | p2 | p3, "decision");
+    BitE p0 = c1("p0", app_action & is_app);
+    BitE p1 = c1("p1", is_list & slot_eq(owner, BitE(p_uid)));
+    BitE p2 = c1("p2", get_list & is_list & (in_r | in_e));
+    BitE p3 = c1("p3", edits & is_list & in_e);
+    assert_equal(decision.at(0), c1("permit", p0 | p1 | p2 | p3), "decision");
 
     auto t = Clock::now();
 #ifdef ZKPDP_SIGNED
