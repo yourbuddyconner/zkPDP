@@ -11,6 +11,7 @@ risc0-zkvm = { version = "3.0", default-features = false, features = ["std"] }
 cedar-policy = "=4.14.1"
 serde_json = "1"
 serde_jcs = "0.2"
+p256 = { version = "0.13", default-features = false, features = ["ecdsa", "alloc"] }
 envelope = { path = "../../../envelope", default-features = false }
 
 [profile.release]
@@ -21,3 +22,6 @@ codegen-units = 1
 # The real stacker does not build for the guest target. Decision 0015.
 [patch.crates-io]
 stacker = { path = "../stacker-stub" }
+# The P-256 precompile, for the signed-store guest.
+p256 = { git = "https://github.com/risc0/RustCrypto-elliptic-curves", tag = "p256/v0.13.2-risczero.1" }
+crypto-bigint = { git = "https://github.com/risc0/RustCrypto-crypto-bigint", tag = "v0.5.5-risczero.0" }

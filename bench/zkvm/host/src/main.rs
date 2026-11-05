@@ -16,7 +16,7 @@ use envelope::{
     FORMAT_RISC0_COMPOSITE, FORMAT_RISC0_GROTH16, FORMAT_RISC0_SUCCINCT,
 };
 use envelope::{hex_hash, sorted_entities, uid_text, Layouts, RecordStore};
-use methods::{FULL_ELF as CEDAR_GUEST_ELF, FULL_ID as CEDAR_GUEST_ID, RECORDS_ELF, RECORDS_ID};
+use methods::{FULL_ELF as CEDAR_GUEST_ELF, FULL_ID as CEDAR_GUEST_ID, RECORDS_ELF, RECORDS_ID, SIGNED_ELF, SIGNED_ID};
 use risc0_zkvm::{default_executor, default_prover, sha::Digest, ExecutorEnv, ProverOpts, Receipt};
 use serde_json::{json, Value};
 
@@ -389,6 +389,60 @@ fn records_input(repo: &Path, name: &str, request: &Value) -> (Vec<u8>, [u8; 32]
 
 const RECORD_SEGMENTS: [&str; 6] = ["read", "open_records", "parse_policies", "build_entities", "map_request", "authorize"];
 
+/// The signed-store guest's input: the record guest's, then key, epoch and signature.
+fn signed_input(repo: &Path, name: &str, request: &Value) -> Vec<u8> {
+    use p256::ecdsa::{signature::hazmat::PrehashSigner, Signature, SigningKey};
+    let (mut b, root) = records_input(repo, name, request);
+    let key = SigningKey::from_slice(&envelope::sha256(b"zk-pdp test authority key, not a secret")).unwrap();
+    let mut m = b"zk-pdp-root-v0".to_vec();
+    m.extend_from_slice(&root);
+    let epoch = 1u64.to_be_bytes();
+    m.extend_from_slice(&epoch);
+    let sig: Signature = key.sign_prehash(&envelope::sha256(&m)).unwrap();
+    let sig = sig.normalize_s().unwrap_or(sig);
+    for f in [key.verifying_key().to_encoded_point(false).as_bytes(), &epoch[..], &sig.to_bytes()[..]] {
+        b.extend_from_slice(&(f.len() as u32).to_le_bytes());
+        b.extend_from_slice(f);
+    }
+    b
+}
+
+/// E3: correctness and cycles of the signed-store guest; a forged signature must abort it.
+fn cmd_exec_signed(repo: &Path, out: &str, name: &str) {
+    let mut o = Out::new(repo, out, "E3");
+    let set = load(repo, name);
+    let segs = ["read", "open_records", "signature", "parse_policies", "build_entities", "map_request", "authorize", "commit"];
+    let (mut ok, mut bad) = (0, 0);
+    let mut totals = Vec::new();
+    for r in &set.requests {
+        let blob = signed_input(repo, name, &r["request"]);
+        let mut stdout = Vec::new();
+        let session = {
+            let env = ExecutorEnv::builder().write_slice(&blob).stdout(&mut stdout).build().unwrap();
+            default_executor().execute(env, SIGNED_ELF).expect("execute")
+        };
+        let j: Journal = session.journal.decode().unwrap();
+        let good = j.decision == r["oracle"]["decision"].as_bool().unwrap();
+        if good { ok += 1 } else { bad += 1 }
+        let marks: Vec<u64> = stdout.chunks(8).map(|c| u64::from_le_bytes(c.try_into().unwrap())).collect();
+        totals.push(*marks.last().unwrap());
+        o.line(&set, r, "user_cycles", json!(*marks.last().unwrap()), 0, if good { "ok" } else { "failed" }, "signed store");
+        for (n, w) in segs.iter().zip(marks.windows(2)) {
+            o.line(&set, r, &format!("cycles_{n}"), json!(w[1] - w[0]), 0, "ok", "");
+        }
+    }
+    totals.sort();
+    println!("{name}: matched oracle {ok}, failed {bad}, median cycles {}", totals[totals.len() / 2]);
+    let r = &set.requests[0];
+    let mut forged = signed_input(repo, name, &r["request"]);
+    let n = forged.len();
+    forged[n - 1] ^= 1;
+    let env = ExecutorEnv::builder().write_slice(&forged).build().unwrap();
+    println!("forged signature aborts the guest: {}", default_executor().execute(env, SIGNED_ELF).is_err());
+    let _ = SIGNED_ID;
+    if bad > 0 { std::process::exit(1); }
+}
+
 /// E1b: correctness and cycles of the record guest, every request of a set.
 fn cmd_exec_records(repo: &Path, out: &str, name: &str) {
     let mut o = Out::new(repo, out, "E1b");
@@ -452,6 +506,7 @@ fn main() {
     let repo = PathBuf::from(&a[2]);
     match a[1].as_str() {
         "exec" => cmd_exec(&repo, &a[3]),
+        "exec-signed" => cmd_exec_signed(&repo, &a[3], &a[4]),
         "exec-records" => cmd_exec_records(&repo, &a[3], &a[4]),
         "prove-records" => cmd_prove_records(&repo, &a[3], &a[4], a[5].parse().unwrap(), a[6].parse().unwrap()),
         "prove" => cmd_prove(&repo, &a[3], &a[4], &a[5], a[6].parse().unwrap()),

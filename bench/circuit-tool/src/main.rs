@@ -4,6 +4,7 @@
 //!
 //! Writes `src/consts.nr` (the policy and schema hashes the circuit is for)
 //! and `inputs/<n>.toml` plus `inputs/index.json`, one per corpus request.
+//! With a fourth argument `signed`, the inputs are for the signed-store circuit.
 
 use envelope::{canonical_request, parse_hex_hash, sha256, uid_text, RecordStore, MAX_ANC, MAX_ATTRS};
 use serde_json::{json, Value};
@@ -24,8 +25,25 @@ fn bounded(name: &str, s: &str, max: usize) -> String {
     format!("[{name}]\nstorage = {}\nlen = {}\n\n", arr(&b), s.len())
 }
 
+/// The authority's test key: fixed, public, and for this corpus only.
+fn test_authority() -> p256::ecdsa::SigningKey {
+    let seed = sha256(b"zk-pdp test authority key, not a secret");
+    p256::ecdsa::SigningKey::from_slice(&seed).expect("scalar in range")
+}
+
+const TEST_EPOCH: u64 = 1;
+
+/// The signed bytes: tag, root, epoch big-endian.
+fn signed_bytes(root: &[u8; 32], epoch: u64) -> Vec<u8> {
+    let mut m = b"zk-pdp-root-v0".to_vec();
+    m.extend_from_slice(root);
+    m.extend_from_slice(&epoch.to_be_bytes());
+    m
+}
+
 fn main() {
     let a: Vec<String> = std::env::args().collect();
+    let signed = a.get(4).map(String::as_str) == Some("signed");
     let (repo, set, out) = (Path::new(&a[1]), &a[2], Path::new(&a[3]));
     let dir = repo.join("corpus/sets").join(set);
     let manifest: Value = serde_json::from_slice(&fs::read(repo.join("corpus/MANIFEST.json")).unwrap()).unwrap();
@@ -57,6 +75,17 @@ fn main() {
         writeln!(t, "request_hash = {}", arr(&sha256(&canonical_request(req)))).unwrap();
         writeln!(t, "policy_hash = {}", arr(&policy_hash)).unwrap();
         writeln!(t, "schema_hash = {}", arr(&schema_hash)).unwrap();
+        if signed {
+            use p256::ecdsa::{signature::hazmat::PrehashSigner, Signature};
+            let key = test_authority();
+            let point = key.verifying_key().to_encoded_point(false);
+            writeln!(t, "authority_x = {}", arr(point.x().unwrap())).unwrap();
+            writeln!(t, "authority_y = {}", arr(point.y().unwrap())).unwrap();
+            writeln!(t, "epoch = {TEST_EPOCH}").unwrap();
+            let sig: Signature = key.sign_prehash(&sha256(&signed_bytes(&store.root, TEST_EPOCH))).expect("sign");
+            let sig = sig.normalize_s().unwrap_or(sig);
+            writeln!(t, "signature = {}", arr(&sig.to_bytes())).unwrap();
+        }
         writeln!(t, "entities_root = {}", arr(&store.root)).unwrap();
         writeln!(t, "decision = {}\n", r["oracle"]["decision"]).unwrap();
         t += &bounded("nonce", &f("/context/nonce"), 32);

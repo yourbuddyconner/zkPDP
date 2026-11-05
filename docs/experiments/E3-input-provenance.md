@@ -1,6 +1,6 @@
 # E3: input provenance in both backends
 
-Status: planned. Written 2026-11-04.
+Status: Noir and zkVM done on 2026-11-05, GordieHowe in progress. Written 2026-11-04. Mode 2 changed to P-256 by decision 0025.
 
 ## Question
 
@@ -42,4 +42,17 @@ delta.
 
 ## Results
 
-None yet.
+Mode 1, opening records against a root, is what E1b, E2 and E8 already measure.
+
+Mode 2, an authority's ECDSA P-256 signature over the root and epoch. TinyTodo.
+
+| Backend | Unsigned | Signed | Signature's cost | Authorization's cost |
+|---|---|---|---|---|
+| Noir, gates | 388,686 | 435,232 | 46,546 | a few hundred, estimated from the circuit |
+| RISC Zero, cycles | 5.38 M | 5.58 M | 198 thousand, with the precompile | 69 thousand |
+
+`results/E3-tinytodo-signed-2026-11-05.jsonl`, `results/E3-exec-signed-2026-11-05.jsonl`. All 19 requests match the oracle in both. A forged signature and a wrong epoch are rejected by the circuit. A forged signature aborts the guest.
+
+Noir's proving time here, 2.92 s, was measured while a Lean build used the machine, so it is not comparable and is to be retimed.
+
+H3 is supported on its threshold: the signature costs at least 2 times evaluation in both. In the zkVM it is small against parsing, 3.5 percent of the total.

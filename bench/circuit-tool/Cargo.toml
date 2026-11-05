@@ -7,3 +7,5 @@ publish = false
 [dependencies]
 envelope = { path = "../envelope" }
 serde_json = "1"
+p256 = { version = "0.13", features = ["ecdsa"] }
+sha2 = "0.10"
