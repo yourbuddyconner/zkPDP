@@ -15,7 +15,8 @@ use envelope::{
     canonical_request, parse_hex_hash, response, verify, Journal, Pins, SealVerifier,
     FORMAT_RISC0_COMPOSITE, FORMAT_RISC0_GROTH16, FORMAT_RISC0_SUCCINCT,
 };
-use methods::{CEDAR_GUEST_ELF, CEDAR_GUEST_ID};
+use envelope::{hex_hash, sorted_entities, uid_text, Layouts, RecordStore};
+use methods::{FULL_ELF as CEDAR_GUEST_ELF, FULL_ID as CEDAR_GUEST_ID, RECORDS_ELF, RECORDS_ID};
 use risc0_zkvm::{default_executor, default_prover, sha::Digest, ExecutorEnv, ProverOpts, Receipt};
 use serde_json::{json, Value};
 
@@ -341,11 +342,118 @@ fn cmd_demo(repo: &Path, name: &str, kind: &str, outdir: &str) {
     println!("unlisted policy:    {:?}", verify(&r["request"], &resp, &stale, &Risc0Seals));
 }
 
+/// The record guest's input: the two entities with closed ancestors as parents, and their paths.
+fn records_input(repo: &Path, name: &str, request: &Value) -> (Vec<u8>, [u8; 32]) {
+    let set = load(repo, name);
+    let d = repo.join("corpus/sets").join(name);
+    let entities: Value = serde_json::from_slice(&set.entities).unwrap();
+    let store = RecordStore::new(&entities, &Layouts::new()).expect("record store");
+    let sorted = sorted_entities(&entities).unwrap();
+    // Parents by UID text, for the closure.
+    let parents: std::collections::BTreeMap<String, Vec<Value>> = sorted
+        .iter()
+        .map(|e| (uid_text(&e["uid"]).unwrap(), e["parents"].as_array().cloned().unwrap_or_default()))
+        .collect();
+    let one = |who: &Value| -> (Vec<u8>, Vec<u8>) {
+        let u = uid_text(who).unwrap();
+        let e = sorted.iter().find(|e| uid_text(&e["uid"]).as_deref() == Some(&u)).expect("entity in store");
+        let (mut seen, mut todo, mut closed) = (std::collections::BTreeSet::new(), parents[&u].clone(), Vec::new());
+        while let Some(p) = todo.pop() {
+            let t = uid_text(&p).unwrap();
+            if seen.insert(t.clone()) {
+                todo.extend(parents.get(&t).cloned().unwrap_or_default());
+                closed.push(p);
+            }
+        }
+        let mut x = e.clone();
+        x["parents"] = Value::Array(closed);
+        let (_, path) = store.open(&u).unwrap();
+        let mut pb = Vec::new();
+        for st in &path {
+            pb.extend_from_slice(&st.sibling);
+            pb.push(st.sibling_is_left as u8);
+        }
+        (serde_json::to_vec(&x).unwrap(), pb)
+    };
+    let (pj, pp) = one(&request["subject"]);
+    let (rj, rp) = one(&request["resource"]);
+    let schema = fs::read(d.join("schema.cedarschema")).unwrap();
+    let req = canonical_request(request);
+    let mut b = vec![1u8];
+    for f in [&set.policies[..], &schema[..], &req[..], &store.root[..], &pj[..], &pp[..], &rj[..], &rp[..]] {
+        b.extend_from_slice(&(f.len() as u32).to_le_bytes());
+        b.extend_from_slice(f);
+    }
+    (b, store.root)
+}
+
+const RECORD_SEGMENTS: [&str; 6] = ["read", "open_records", "parse_policies", "build_entities", "map_request", "authorize"];
+
+/// E1b: correctness and cycles of the record guest, every request of a set.
+fn cmd_exec_records(repo: &Path, out: &str, name: &str) {
+    let mut o = Out::new(repo, out, "E1b");
+    let set = load(repo, name);
+    let (mut ok, mut bad) = (0, 0);
+    let mut medians: Vec<u64> = Vec::new();
+    for r in &set.requests {
+        let (blob, root) = records_input(repo, name, &r["request"]);
+        let mut stdout = Vec::new();
+        let session = {
+            let env = ExecutorEnv::builder().write_slice(&blob).stdout(&mut stdout).build().unwrap();
+            default_executor().execute(env, RECORDS_ELF).expect("execute")
+        };
+        let j: Journal = session.journal.decode().unwrap();
+        let reasons: Vec<String> = r["oracle"]["reasons"].as_array().unwrap().iter().map(|x| x.as_str().unwrap().into()).collect();
+        let good = j.decision == r["oracle"]["decision"].as_bool().unwrap() && j.reasons.as_ref() == Some(&reasons) && j.entities.root == root
+            && j.request_hash == parse_hex_hash(r["request_hash"].as_str().unwrap()).unwrap();
+        if good { ok += 1 } else { bad += 1; eprintln!("FAIL {}", r["name"]); }
+        let marks: Vec<u64> = stdout.chunks(8).map(|c| u64::from_le_bytes(c.try_into().unwrap())).collect();
+        let total = *marks.last().unwrap();
+        medians.push(total);
+        o.line(&set, r, "user_cycles", json!(total), 0, if good { "ok" } else { "failed" }, &hex_hash(&root));
+        for (n, w) in RECORD_SEGMENTS.iter().zip(marks.windows(2)) {
+            o.line(&set, r, &format!("cycles_{n}"), json!(w[1] - w[0]), 0, "ok", "");
+        }
+    }
+    medians.sort();
+    println!("{name}: matched oracle {ok}, failed {bad}, median cycles {}", medians[medians.len() / 2]);
+    if bad > 0 { std::process::exit(1); }
+}
+
+/// E1b: prove one request with the record guest.
+fn cmd_prove_records(repo: &Path, out: &str, name: &str, n: usize, which: usize) {
+    let mut o = Out::new(repo, out, "E1b");
+    let set = load(repo, name);
+    let r = &set.requests[which];
+    let (blob, _) = records_input(repo, name, &r["request"]);
+    for i in 0..n {
+        let env = ExecutorEnv::builder().write_slice(&blob).build().unwrap();
+        let t = Instant::now();
+        let info = default_prover().prove_with_opts(env, RECORDS_ELF, &ProverOpts::composite()).expect("prove");
+        let secs = t.elapsed().as_secs_f64();
+        let j: Journal = info.receipt.journal.decode().unwrap();
+        assert_eq!(j.decision, r["oracle"]["decision"].as_bool().unwrap());
+        o.line(&set, r, "prove_time_s_composite", json!(secs), i, "ok", "record guest");
+        o.line(&set, r, "receipt_bytes_composite", json!(bincode::serialize(&info.receipt).unwrap().len()), i, "ok", "");
+        println!("{name} #{i}: {secs:.1} s, {} bytes", bincode::serialize(&info.receipt).unwrap().len());
+        if i == n - 1 {
+            for k in 0..20 {
+                let t = Instant::now();
+                info.receipt.verify(RECORDS_ID).expect("verifies");
+                o.line(&set, r, "verify_time_ms_composite", json!(t.elapsed().as_secs_f64() * 1e3), k, "ok", "");
+            }
+        }
+    }
+    o.line(&set, r, "peak_memory_gb_composite", json!(peak_children_gb()), 0, "ok", "");
+}
+
 fn main() {
     let a: Vec<String> = std::env::args().collect();
     let repo = PathBuf::from(&a[2]);
     match a[1].as_str() {
         "exec" => cmd_exec(&repo, &a[3]),
+        "exec-records" => cmd_exec_records(&repo, &a[3], &a[4]),
+        "prove-records" => cmd_prove_records(&repo, &a[3], &a[4], a[5].parse().unwrap(), a[6].parse().unwrap()),
         "prove" => cmd_prove(&repo, &a[3], &a[4], &a[5], a[6].parse().unwrap()),
         "demo" => cmd_demo(&repo, &a[3], &a[4], &a[5]),
         c => panic!("unknown command {c}"),

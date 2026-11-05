@@ -150,3 +150,26 @@ structures. The levers, in order of expected gain:
 3. Pass entities and policies in a pre-parsed binary form, such as Cedar's experimental protobuf encoding.
 
 It also strengthens the case for the circuit backend, which parses nothing.
+
+## Later results
+
+### First finished proof, 2026-11-05
+
+Commit dabc4ca, tree clean. TinyTodo without schema in the guest, 11.7 million cycles, one request. `results/E1-prove-noschema-2026-11-05.jsonl`.
+
+| Metric | Value |
+|---|---|
+| Composite proof, one run | 1,711 s, 28.5 minutes |
+| Peak memory | 9.5 GB |
+| Receipt | 4.2 MB |
+| Verification, median of 20 | 298 ms |
+
+About 6.8 kHz on this CPU prover. For the last few minutes a low-priority `brew install`, and some reading commands, ran alongside. One run, so no spread. At this rate the stopped 23.3 million cycle proof needed about an hour, so it was not close to finishing at 28 minutes, and the assistant's suggestion that it might be was wrong. S27's 21 kHz on an M4 Pro did not carry over to this machine.
+
+### E1b: the guest reads the same two records as the circuits
+
+`bench/zkvm/methods/guest/src/bin/records.rs`. The guest recomputes both leaves from the entities' JSON and checks their paths to the root, then gives Cedar only those two entities, with closed ancestors as parents. 19 of 19 TinyTodo requests match the oracle's decision and determining policies. `results/E1b-exec-records-2026-11-05.jsonl`.
+
+Median 5.38 million cycles: Cedar building its entities 3.08 million, parsing the policy set 2.00 million, opening the records 0.13 million, mapping the request 0.07 million, authorizing 0.07 million.
+
+Differences that remain from the circuits, by design: the guest hashes the schema without parsing it, so it does not refuse a request outside the schema, and Cedar denies it. It handles any string length. A policy that dereferences a third entity would need that entity opened too, and this guest opens two.
