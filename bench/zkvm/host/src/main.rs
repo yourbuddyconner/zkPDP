@@ -114,7 +114,7 @@ impl Out {
             },
             "image_id": hex::encode(image_id()),
             "variant": if std::env::var("ZKPDP_NO_SCHEMA").is_ok() { "no-schema" } else { "schema" },
-            "prover_build": if cfg!(feature = "metal") { "in-process, metal" } else { "r0vm prebuilt, ipc" },
+            "prover_build": "r0vm prebuilt, ipc, cpu",
         });
         let file = fs::OpenOptions::new().create(true).append(true).open(path).unwrap();
         Out { file, header }

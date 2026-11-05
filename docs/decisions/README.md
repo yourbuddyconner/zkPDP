@@ -25,4 +25,4 @@ reviewing each record. Those records are the ones to re-read first.
 | 0014 | Plain names, no coined names | accepted |
 | 0015 | A stand-in for the `stacker` crate in the guest | accepted, pending review |
 | 0016 | The guest hashes the bytes it parses, and the AuthZEN to Cedar mapping | accepted, pending review |
-| 0017 | A vendored `risc0-sys` with a three-line Metal kernel fix | accepted, pending review |
+| 0017 | A vendored `risc0-sys` with a three-line Metal kernel fix | withdrawn |

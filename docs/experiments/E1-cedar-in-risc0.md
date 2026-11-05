@@ -136,7 +136,8 @@ Not measured. What is known:
 
 - One composite proof of a TinyTodo decision on the prebuilt `r0vm`, which uses CPU cores only here, was stopped unfinished after 28 minutes at about 8 busy cores and 10 GB. No result line was written, so this is recorded here and in the notebook, not in `results/`.
 - A proof of the smallest set, 7.9 million cycles, was stopped unfinished after about 12 minutes on the same prover while builds competed for the cores.
-- The in-process Metal GPU prover builds after decision 0017. It was not timed.
+- No GPU proving is available on Apple silicon with RISC Zero 3.0.6. The Metal branch of the segment prover is commented out in the release (upstream issue 3753). Decision 0017 is withdrawn.
+- RISC Zero `main` at 164c64b re-enables Metal (upstream PR 3688). The harness built against it after fetching Git LFS archives by hand and one API change. A proof of the 7.9 million cycle set did not finish in 300 seconds, and the human's GPU monitor showed only brief small spikes. Not pursued further.
 
 ### What this says
 

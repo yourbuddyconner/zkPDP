@@ -1,6 +1,6 @@
 # 0017: A vendored `risc0-sys` with a three-line Metal kernel fix
 
-Status: accepted, pending review. Date: 2026-11-04.
+Status: withdrawn the same day. Date: 2026-11-04.
 Proposed by: assistant. The human asked for any acceleration available.
 Accepted by: not yet reviewed by the human.
 
@@ -35,3 +35,13 @@ verify.
 ## Sources
 
 Build log in the notebook for 2026-11-04.
+
+## Withdrawn, 2026-11-04
+
+The vendored fix made the build pass and bought nothing. RISC Zero 3.0.6 does
+not use Metal for the main circuit on Apple silicon: in
+`risc0-circuit-rv32im` 4.0.5, `segment_prover()` has the Metal branch
+commented out and falls through to the CPU. The `metal` feature of
+`risc0-zkvm` only implies `prove`. Upstream issue risc0/risc0#3753 reports
+the same. The vendored copy and the `metal` feature of the harness were
+removed. See the notebook for what else was tried.
