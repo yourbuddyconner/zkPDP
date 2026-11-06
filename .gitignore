@@ -5,3 +5,5 @@ node_modules/
 bench/circuit/*/target/
 bench/circuit/*/Prover.toml
 bench/circuit/generated/
+__pycache__/
+*.pyc
